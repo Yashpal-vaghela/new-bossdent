@@ -1,0 +1,7 @@
+/* text grident */
+.txt-grident{
+    background: linear-gradient(286.49deg, #C3942F 22.55%, #D89C27 32.43%, #DFC86F 42.86%, #DFC86F 50%, #D89C27 67.57%, #C99C30 77.45%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    color:transparent !important;
+}
