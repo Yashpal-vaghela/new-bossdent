@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import HomeBanner from "../component/HomeBanner";
 import { Link } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
 
 const Home = () => {
   const CategoryData = [
@@ -35,11 +40,11 @@ const Home = () => {
     { id: 10 },
     { id: 11 },
   ];
-  const OtherBannerData = [
-    { id: 1, img: "/img/other-banner-img1.png" },
-    { id: 2, img: "/img/other-banner-img2.png" },
-    { id: 3, img: "/img/other-banner-img3.png" },
-  ];
+  // const OtherBannerData = [
+  //   { id: 1, img: "/img/other-banner-img1.png" },
+  //   { id: 2, img: "/img/other-banner-img2.png" },
+  //   { id: 3, img: "/img/other-banner-img3.png" },
+  // ];
   const SearchProductData = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
   const DentalProductData = [
     { id: 1 },
@@ -51,35 +56,62 @@ const Home = () => {
     { id: 7 },
     { id: 8 },
   ];
+
+  const swiperRef = useRef(null);
+
   return (
     <React.Fragment>
       <HomeBanner></HomeBanner>
-      <section className="contact-link-section mt-5">
+      <section className="contact-link-section mb-4 mt-4 mt-lg-5">
         <div className="container">
           <div className="row">
-            <div className="contact-content-wrapper col-lg-3 col-md-6 col-12 d-flex justify-content-center align-items-center">
-              <img src="/img/Trusted-dentist-icon.svg" className="trusted-dentist-icon img-fluid" alt="trusted-dentist-icon" width="53" height="52"></img>
+            <div className="contact-content-wrapper mb-3 mb-md-0 col-lg-3 col-md-6  col-6 d-flex justify-content-center align-items-center">
+              <img
+                src="/img/Trusted-dentist-icon.svg"
+                className="trusted-dentist-icon img-fluid"
+                alt="trusted-dentist-icon"
+                width="53"
+                height="52"
+              ></img>
               <div className="contact-link-section-content d-block">
                 <h2 className="mb-1">Trusted Dentists</h2>
                 <p className="mb-1">Serving 10k+ Dental Clinics</p>
               </div>
             </div>
-            <div className="contact-content-wrapper col-lg-3 col-md-6 col-12 d-flex justify-content-center align-items-center">
-              <img src="/img/headphones-icon1.svg" className="headphone-icon-img img-fluid" alt="headphones-icon" width="53" height="52"></img>
+            <div className="contact-content-wrapper mb-3 mb-md-0 col-lg-3 col-md-6 col-6 d-flex justify-content-center align-items-center">
+              <img
+                src="/img/headphones-icon1.svg"
+                className="headphone-icon-img img-fluid"
+                alt="headphones-icon"
+                width="53"
+                height="52"
+              ></img>
               <div className="contact-link-section-content d-block">
                 <h2 className="mb-1">Quick & Easy Support</h2>
                 <p className="mb-1">Fast, Easy Help Anytime</p>
               </div>
             </div>
-            <div className="contact-content-wrapper col-lg-3 col-md-6 col-12 d-flex justify-content-center align-items-center">
-              <img src="/img/secure-icon1.svg" className="secure-icon-img img-fluid" alt="secure-icon" width="53" height="52"></img>
+            <div className="contact-content-wrapper mb-1 mb-md-0 col-lg-3 col-md-6 col-6 d-flex justify-content-center align-items-center">
+              <img
+                src="/img/secure-icon1.svg"
+                className="secure-icon-img img-fluid"
+                alt="secure-icon"
+                width="53"
+                height="52"
+              ></img>
               <div className="contact-link-section-content d-block">
                 <h2 className="mb-1">Secure Payment Options</h2>
                 <p className="mb-1">Safe, Protected & Hassle-Free</p>
               </div>
             </div>
-            <div className="contact-content-wrapper col-lg-3 col-md-6 col-12 d-flex justify-content-center align-items-center">
-              <img src="/img/product-quality-icon.svg" alt="product-quality-icon" className="product-quality-img img-fluid" width="53" height="52"></img>
+            <div className="contact-content-wrapper mb-1 mb-md-0 col-lg-3 col-md-6 col-6 d-flex justify-content-center align-items-center">
+              <img
+                src="/img/product-quality-icon.svg"
+                alt="product-quality-icon"
+                className="product-quality-img img-fluid"
+                width="53"
+                height="52"
+              ></img>
               <div className="contact-link-section-content d-block">
                 <h2 className="mb-1">Authentic Product Quality</h2>
                 <p className="mb-1">Genuine, Certified & Reliable</p>
@@ -88,34 +120,48 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <section className="dental-product-section py-5">
+      <section className="dental-product-section ">
         <div className="container">
-          <h2 className="text-white fs-2 text-center">
+          <h2 className="text-white fs-2 text-center section-title">
             Our Dental Products Range
           </h2>
           <div className="product-filter-content">
             <ul className="product-filter-category-list">
-              <li className="product-category">All</li>
-              <li className="product-category">Accessories</li>
-              <li className="product-category">General Dentistry</li>
-              <li className="product-category">Gloves</li>
-              <li className="product-category">Masks</li>
-              <li className="product-category">View All</li>
+              <li className="product-category">
+                <Link to="/">All</Link>
+              </li>
+              <li className="product-category">
+                <Link to="#">Accessories</Link>
+              </li>
+              <li className="product-category">
+                <Link to="#">General Dentistry</Link>
+              </li>
+              <li className="product-category">
+                <Link to="#">Gloves</Link>
+              </li>
+              <li className="product-category">
+                <Link to="#">Masks</Link>
+              </li>
+              <li className="product-category">
+                <Link to="#">View All</Link>
+              </li>
             </ul>
           </div>
-          <div className="row pt-3">
+          <div className="row pt-3 justify-content-center">
             {DentalProductData?.map((item, index) => {
               return (
-                <div className="col-lg-3 col-md-6 col-12" key={index}>
+                <div className="col-lg-3 col-md-4 col-sm-6 col-6" key={index}>
                   <div className="card">
                     <img
                       src="/img/product-img4.png"
                       className="card-img-top img-fluid"
                       alt="dental-product-img"
                     ></img>
-                    <div className="card-body d-flex align-items-center justify-content-between px-3 py-2">
+                    <div className="card-body d-flex align-items-center justify-content-between px-lg-3 px-0 py-2">
                       <div className="d-block">
-                        <h2 className="product-card-title mb-0">Product Title</h2>
+                        <h2 className="product-card-title mb-0">
+                          Product Title
+                        </h2>
                         <p className="product-price mb-0">$12.00</p>
                         <div className="rating-stars">
                           <i className="fa-solid fa-star"></i>
@@ -138,7 +184,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <section className="banner-img-section py-5">
+      <section className="banner-img-section ">
         <div className="container">
           <img
             src="/img/banner-img.png"
@@ -151,10 +197,13 @@ const Home = () => {
         <div className="container">
           <h2 className="category-title txt-grident">CATEGORY</h2>
           <h1 className="category-subtitle">Shop by Top Categories</h1>
-          <div className="row ">
+          {/* <div className="row ">
             {CategoryData?.map((category, index) => {
               return (
-                <div className="col-lg-2 category-content-wrapper" key={index}>
+                <div
+                  className="col-lg-2 col-md-3 col-12 category-content-wrapper"
+                  key={index}
+                >
                   <Link to={category?.href}>
                     <img
                       src={category?.cat_img}
@@ -166,14 +215,72 @@ const Home = () => {
                 </div>
               );
             })}
-          </div>
+          </div> */}
+          <Swiper
+            ref={swiperRef}
+            spaceBetween={0}
+            slidesPerView={6}
+            centeredSlides={true}
+            autoplay="false"
+            grabCursor={true}
+            pagination={{
+              clickable: true,
+            }}
+            loop={true}
+            navigation={true}
+            modules={[Autoplay, Pagination, Navigation]}
+            className="categorySwiper mt-lg-4"
+            breakpoints={{
+              0: {
+                spaceBetween: 8,
+                slidesPerView: 3,
+              },
+              768: {
+                spaceBetween: 20,
+                slidesPerView: 4,
+              },
+              991: {
+                spaceBetween: 0,
+                slidesPerView: 5,
+              },
+              1024: {
+                spaceBetween: 0,
+                slidesPerView: 6,
+              },
+              1200: {
+                spaceBetween: 0,
+                slidesPerView: 6,
+              },
+            }}
+          >
+            {CategoryData?.map((category, index) => {
+              return (
+                <SwiperSlide
+                  key={index}
+                  className="category-slide category-content-wrapper"
+                >
+                  <Link to={category?.href}>
+                    <img
+                      src={category?.cat_img}
+                      alt="slide-image"
+                      className="slide-image card-img-top img-fluid"
+                    ></img>
+                    <p className="my-3">{category?.cat_name}</p>
+                  </Link>
+                </SwiperSlide>
+              );
+            })}
+          </Swiper>
         </div>
       </section>
-      <section className="premium-products-section py-5">
+
+      <section className="premium-products-section">
         <div className="container">
           <div className="d-flex justify-content-between align-items-center">
-            <h1 className="text-white fs-2">Exclusive Premium Products</h1>
-            <button className="btn btn-dafult txt-grident">
+            <h1 className="text-white fs-2 section-title">
+              Exclusive Premium Products
+            </h1>
+            <button className="btn btn-dafult txt-grident btn-view">
               view All <i className="fa-solid fa-arrow-right"></i>
             </button>
           </div>
@@ -268,59 +375,66 @@ const Home = () => {
               );
             })}
           </div>
-          {/* <div className="row text-white">
-            <div className="col-lg-5">Big Product card</div>
-            <div className="col-lg-7">
-              <div className="row">
-                <div className="col-lg-4">product card1</div>
-                <div className="col-lg-4">product card2</div>
-                <div className="col-lg-4">product card3</div>
-                <div className="col-lg-4">product card4</div>
-                <div className="col-lg-4">product card5</div>
-                <div className="col-lg-4">product card6</div>
-              </div>
-            </div>
-            <div className="col-lg-2">product card7</div>
-            <div className="col-lg-3">product card8</div>
-            <div className="col-lg-2">product card9</div>
-            <div className="col-lg-2">product card10</div>
-            <div className="col-lg-2">product card11</div>
-          </div> */}
         </div>
       </section>
-      <section className="Otherbanner-section py-5 my-4">
+      <section className="Otherbanner-section">
         <div className="container">
-          <div className="row">
-            {OtherBannerData?.map((item, index) => {
+          <div className="row align-items-center  justify-content-center justify-content-lg-center">
+            <div className="col-lg-4 col-md-4 col-12">
+              <img
+                src="/img/other-banner-img1.png"
+                className="other-banner-img img-fluid"
+                alt="other-banner-img"
+              ></img>
+            </div>
+            <div className="col-lg-4 col-md-4 col-sm-5 col-6">
+              <img
+                src="/img/other-banner-img2.png"
+                className="other-banner-img img-fluid"
+                alt="other-banner-img"
+              ></img>
+            </div>
+            <div className="col-lg-4 col-md-4 col-sm-5 col-6">
+              <img
+                src="/img/other-banner-img3.png"
+                className="other-banner-img img-fluid"
+                alt="other-banner-img"
+              ></img>
+            </div>
+            {/* {OtherBannerData?.map((item, index) => {
               return (
                 <div className="col-lg-4 col-md-6 col-12" key={index}>
                   <img
                     src={item.img}
-                    className="img-fluid"
+                    className="other-banner-img img-fluid"
                     alt="other-banner-img"
                   ></img>
                 </div>
               );
-            })}
+            })} */}
           </div>
         </div>
       </section>
-      <section className="RecentSearch-section py-4">
+      <section className="RecentSearch-section">
         <div className="container">
-          <h2 className="text-white fs-2 text-center">Recent Searched</h2>
-          <div className="row py-4">
+          <h2 className="text-white fs-2 text-center section-title">
+            Recent Searched
+          </h2>
+          <div className="row py-3 py-md-4">
             {SearchProductData?.map((item, index) => {
               return (
-                <div className="col-lg-3 col-md-4 col-12" key={index}>
+                <div className="col-lg-3 col-md-3 col-6 " key={index}>
                   <div className="search-product-card card">
                     <img
                       src="/img/product-img4.png"
                       alt="search-rpoduct-img"
                       className="card-img-top img-fluid"
                     ></img>
-                    <div className="card-body d-flex align-items-center justify-content-between px-3 py-2">
+                    <div className="card-body d-flex align-items-center justify-content-between px-0 px-lg-3 px-md-0 py-2">
                       <div className="d-block">
-                        <h2 className="product-card-title mb-0">Product Title</h2>
+                        <h2 className="product-card-title mb-0">
+                          Product Title
+                        </h2>
                         <p className="product-price mb-0">$12.00</p>
                         <div className="rating-stars">
                           <i className="fa-solid fa-star"></i>

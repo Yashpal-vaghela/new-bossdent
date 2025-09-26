@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -7,15 +7,17 @@ const Navbar = () => {
   const [searchIcon, setSearchIcon] = useState(false);
   const [suggested, setSuggested] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
+
   const navigate = useNavigate();
 
   const handleSearchChange = async (e) => {
     const query = e.target.value;
     setSearchQuery(query);
-    // console.log("searchQuery", searchQuery, "query", query);
-    // if (query !== "") {
-    //   setSuggestions([]);
-    // }
+    if (query) {
+      setSearchIcon(true);
+    } else {
+      setSearchIcon(false);
+    }
     try {
       const response = await axios.get(
         `https://admin.bossdentindia.com/wp-json/custom/v1/product-search?s=${searchQuery}`
@@ -40,10 +42,6 @@ const Navbar = () => {
     }
   };
 
-  //   const handleSearch = async (e) => {
-  //     setSuggested(true);
-  //   };
-
   const handleClick = (product) => {
     navigate(`/products/${encodeURIComponent(product.slug)}`);
     handleOffcanvas1();
@@ -64,9 +62,76 @@ const Navbar = () => {
       }
     }
   };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const topNav = document.querySelector(".navbar-top");
+      // const menuSubElements = document.getElementsByClassName("navbar-content-wrapper");
+      const navbarMainElements =
+        document.getElementsByClassName("navbar-wrapper");
+      const navbarlogoElements = document.getElementById("navbar-logo-desktop");
+      const navbarContactElement = document.querySelector(
+        ".navbar-contact-wrapper"
+      );
+
+      // console.log("search",searchQuery,"searchIcon",searchIcon);
+      if (window.innerWidth > 991) {
+        if (window.scrollY >= 20) {
+          topNav.style.display = "none";
+          Array.from(navbarMainElements).forEach((element) => {
+            element.style.position = "fixed";
+            element.style.padding = "0px 0px 5px 0px";
+          });
+          navbarlogoElements.classList.remove("d-lg-none");
+          navbarContactElement != null ? (
+            navbarContactElement.classList.add("navbarcontact-position-sticky")
+          ) : (
+            <></>
+          );
+        } else {
+          topNav.style.display = "flex";
+          navbarContactElement != null ? (
+            navbarContactElement.classList.remove(
+              "navbarcontact-position-sticky"
+            )
+          ) : (
+            <></>
+          );
+          Array.from(navbarMainElements).forEach((element) => {
+            element.style.position = "relative";
+            element.style.padding = "0px 0px 22px 0px";
+          });
+          navbarlogoElements.classList.add("d-lg-none");
+        }
+      } else {
+        topNav.style.display = "flex";
+        navbarContactElement !== null ? (
+          (navbarContactElement.style.display = "none")
+        ) : (
+          <></>
+        );
+        Array.from(navbarMainElements).forEach((element) => {
+          element.style.position = "relative";
+          element.style.padding = "0px 0px 22px 0px";
+        });
+        navbarlogoElements.classList.add("d-lg-none");
+      }
+    };
+    const handleResize = () => {
+      handleScroll();
+    };
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", handleResize);
+    handleScroll();
+    return () => {
+      window.addEventListener("scroll", handleScroll);
+      window.addEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <div className="navbar-wrapper">
-      <nav className="navbar navbar-dark navbar-expand-lg">
+      <nav className="navbar navbar-top navbar-dark navbar-expand-lg">
         <div className="container position-relative">
           <Link to="/" className="navbar-logo">
             <img src="/img/logo2.svg" className="img-fluid" alt="logo"></img>
@@ -83,6 +148,16 @@ const Navbar = () => {
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="social-link-wrapper">
+            <img
+              className="search-icon img-fluid pe-2 m-2"
+              alt="search-icon"
+              id="search-icon"
+              width="35"
+              height="35"
+              src="/img/search-icon.svg"
+              onClick={() => setSearchIcon((prev) => !prev)}
+            ></img>
+      
             <img
               src="/img/heart-icon.svg"
               className="img-fluid heart-icon"
@@ -120,6 +195,7 @@ const Navbar = () => {
               placeholder="Search"
               name="search"
               value={searchQuery}
+              id="searchInput"
               onChange={handleSearchChange}
             ></input>
             <button
@@ -169,21 +245,18 @@ const Navbar = () => {
             data-bs-dismiss="offcanvas"
             aria-label="Close"
             id="close"
-          >
-            {/* <i className="fa-solid fa-xmark"></i> */}
-          </button>
+          ></button>
         </div>
-        <div className="offcanvas-body container  align-items-center">
-          <ul className="navbar-nav me-auto">
+        <div className="offcanvas-body container align-items-center">
+          <ul className="navbar-nav me-auto me-lg-0">
             <li className="nav-item">
-              <Link href="/">Home</Link>
+              <Link to="/">Home</Link>
             </li>
             <li className="nav-item">
-              <Link href="/">Product</Link>
+              <Link to="/products">Product</Link>
             </li>
             <li className="nav-item dropdown">
-              <Link
-                href="#"
+              <div
                 className="nav-link dropdown-toggle"
                 role="button"
                 data-bs-toggle="dropdown"
@@ -197,57 +270,144 @@ const Navbar = () => {
                 ></img>
                 <ul className="dropdown-menu">
                   <li>
-                    <Link href="#" className="dropdown-item">
+                    <Link to="#" className="dropdown-item">
                       category1
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="dropdown-item">
+                    <Link to="#" className="dropdown-item">
                       category2
                     </Link>
                   </li>
                   <li>
-                    <Link href="#" className="dropdown-item">
+                    <Link to="#" className="dropdown-item">
                       category3
                     </Link>
                   </li>
                 </ul>
-              </Link>
+              </div>
             </li>
             <li className="nav-item">
-              <Link href="/">About Us</Link>
+              <Link to="/">About Us</Link>
             </li>
             <li className="nav-item">
-              <Link href="/contact">Contact Us</Link>
+              <Link to="/contact">Contact Us</Link>
             </li>
           </ul>
+          <Link
+            to="/"
+            className="navbar-logo d-none d-lg-none"
+            id="navbar-logo-desktop"
+          >
+            <img src="/img/logo2.svg" className="img-fluid" alt="logo"></img>
+          </Link>
           <div className="navbar-contact-wrapper d-flex align-items-center">
-            <div className="navbar-contact">
+            <div className="navbar-contact align-items-center">
+              <div className="d-block search-input-content">
+                {searchIcon || searchQuery ? (
+                  <div className="search-icon-wrapper search-icon-position-sticky">
+                    {searchQuery ? (
+                      <i
+                        className="fa-solid fa-xmark"
+                        onClick={handleClearSearch}
+                        id="close-icon"
+                      ></i>
+                    ) : (
+                      <img
+                        src="/img/Search.svg"
+                        className="search-icon d-none img-fluid"
+                        alt="search-icon"
+                        id="search-icon"
+                      ></img>
+                    )}
+                    <input
+                      className="form-control w-75 d-none searchInput"
+                      type="text"
+                      placeholder="Search..."
+                      name="search"
+                      id="searchInput"
+                      value={searchQuery}
+                      onChange={handleSearchChange}
+                    ></input>
+                    {searchQuery && (
+                      <>
+                        {suggestions?.length !== 0 ? (
+                          <div
+                            className="suggestion-main d-none"
+                            id="suggestion-main"
+                          >
+                            <ul className="suggestions">
+                              {suggestions.map((product, index) => (
+                                <li
+                                  key={index}
+                                  onClick={() => handleClick(product)}
+                                >
+                                  {product.title}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ) : (
+                          <div className="suggestion-main" id="suggestion-main">
+                            <ul className="suggestions">
+                              <li>
+                                <h2 className="d-flex m-auto align-items-center justify-content-center">
+                                  No Products Items Found!
+                                </h2>
+                              </li>
+                            </ul>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  <img
+                    src="/img/search-icon.svg"
+                    className="search-icon d-none  img-fluid m-2"
+                    alt="search-icon"
+                    id="search-icon"
+                    width="30"
+                    height="30"
+                    onClick={() => setSearchIcon((prev) => !prev)}
+                  ></img>
+                )}
+              </div>
               <img
-                src="/img/user-icon1.svg"
-                className="img-fluid user-icon d-lg-none d-md-block"
+                src="/img/heart-icon.svg"
+                className="img-fluid heart-icon d-none"
+                alt="heart-icon"
+                id="heart-icon"
+                width="28"
+                height="28"
+              ></img>
+              <img
+                className="img-fluid user-icon d-none"
                 alt="user-icon"
-                width="40"
-                height="40"
+                src="/img/user-icon1.svg"
+                id="user-icon"
               ></img>
               <div className="d-flex justify-content-center align-items-center">
                 <img
                   src="/img/call-icon.svg"
-                  className="img-fluid"
+                  className="call-icon img-fluid"
                   alt="call-icon"
+                  width="28"
+                  height="28"
                 ></img>
                 <span className="navbar-contact-title">+91 76988 28883</span>
               </div>
             </div>
-
-            <div className="navbar-cart-wrapper d-lg-flex d-none">
-              <img
-                src="/img/cart-icon.svg"
-                className="img-fluid"
-                alt="cart-icon"
-              ></img>
-              <span className="navbar-cart-counter">2</span>
-              <div className="d-block">
+            <div className="navbar-cart-wrapper d-lg-flex d-none align-items-center">
+              <div className="navbar-counter">
+                <img
+                  src="/img/cart-icon.svg"
+                  className="img-fluid"
+                  alt="cart-icon"
+                ></img>
+                <span className="navbar-cart-counter">2</span>
+              </div>
+              <div className="d-block cart-info" id="cart-info">
                 <p className="mb-2">shopping cart:</p>
                 <span className="fw-bold">₹57.00</span>
               </div>
@@ -258,5 +418,4 @@ const Navbar = () => {
     </div>
   );
 };
-
 export default Navbar;
