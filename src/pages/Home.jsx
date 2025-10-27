@@ -1,8 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import HomeBanner from "../component/HomeBanner";
 import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import { useSelector } from "react-redux";
+
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
@@ -56,11 +58,15 @@ const Home = () => {
     { id: 7 },
     { id: 8 },
   ];
+  const [showAll, setShowAll] = useState(false);
+  const {categories,loading,error} = useSelector((state)=>state.category);
+  // const { categories, loading, error } = useCategories();
+  const visibleCategories = showAll ? categories : categories.slice(0, 5);
 
   const swiperRef = useRef(null);
 
   return (
-    <React.Fragment>
+    <div className="home-main overflow-hidden">
       <HomeBanner></HomeBanner>
       <section className="contact-link-section mb-4 mt-4 mt-lg-5">
         <div className="container">
@@ -127,24 +133,18 @@ const Home = () => {
           </h2>
           <div className="product-filter-content">
             <ul className="product-filter-category-list">
-              <li className="product-category">
-                <Link to="/">All</Link>
-              </li>
-              <li className="product-category">
-                <Link to="#">Accessories</Link>
-              </li>
-              <li className="product-category">
-                <Link to="#">General Dentistry</Link>
-              </li>
-              <li className="product-category">
-                <Link to="#">Gloves</Link>
-              </li>
-              <li className="product-category">
-                <Link to="#">Masks</Link>
-              </li>
-              <li className="product-category">
-                <Link to="#">View All</Link>
-              </li>
+              {visibleCategories?.map((category, index) => {
+                return (
+                  <li className="product-category" key={index}>
+                    <Link to={category?.slug}>{category?.name}</Link>
+                  </li>
+                );
+              })}
+              {categories.length > 5 && (
+                <li className="product-category" onClick={()=>setShowAll((prev)=>!prev)}>
+                  <Link to="#">{showAll ? "View Less" :"View All"}</Link>
+                </li>
+              )}
             </ul>
           </div>
           <div className="row pt-3 justify-content-center">
@@ -163,13 +163,6 @@ const Home = () => {
                           Product Title
                         </h2>
                         <p className="product-price mb-0">$12.00</p>
-                        <div className="rating-stars">
-                          <i className="fa-solid fa-star"></i>
-                          <i className="fa-solid fa-star"></i>
-                          <i className="fa-solid fa-star"></i>
-                          <i className="fa-solid fa-star"></i>
-                          <i className="fa-solid fa-star"></i>
-                        </div>
                       </div>
                       <img
                         className="shopping-bag-icon img-fluid"
@@ -315,14 +308,14 @@ const Home = () => {
               <h3 className="product-price">
                 $12.00 <span className="txt-dashed-price">$24.00</span>
               </h3>
-              <div className="rating-stars d-flex align-items-center justify-content-center">
+              {/* <div className="rating-stars d-flex align-items-center justify-content-center">
                 <i className="fa-solid fa-star"></i>
                 <i className="fa-solid fa-star"></i>
                 <i className="fa-solid fa-star"></i>
                 <i className="fa-solid fa-star"></i>
                 <i className="fa-solid fa-star"></i>
                 <span className="rating-count">(524 Feedback)</span>
-              </div>
+              </div> */}
               <div className="sale-content d-block">
                 <p className="sale-price-title mb-2">
                   Hurry up! Offer ends In:
@@ -357,13 +350,13 @@ const Home = () => {
                     <div className="d-block">
                       <h2 className="product-card-title mb-0">Product Title</h2>
                       <p className="product-price mb-1">$12.00</p>
-                      <div className="rating-stars">
+                      {/* <div className="rating-stars">
                         <i className="fa-solid fa-star"></i>
                         <i className="fa-solid fa-star"></i>
                         <i className="fa-solid fa-star"></i>
                         <i className="fa-solid fa-star"></i>
                         <i className="fa-solid fa-star"></i>
-                      </div>
+                      </div> */}
                     </div>
                     <img
                       src="/img/lightShopping-bag-icon.svg"
@@ -436,13 +429,13 @@ const Home = () => {
                           Product Title
                         </h2>
                         <p className="product-price mb-0">$12.00</p>
-                        <div className="rating-stars">
+                        {/* <div className="rating-stars">
                           <i className="fa-solid fa-star"></i>
                           <i className="fa-solid fa-star"></i>
                           <i className="fa-solid fa-star"></i>
                           <i className="fa-solid fa-star"></i>
                           <i className="fa-solid fa-star"></i>
-                        </div>
+                        </div> */}
                       </div>
                       <img
                         className="shopping-bag-icon img-fluid"
@@ -457,7 +450,7 @@ const Home = () => {
           </div>
         </div>
       </section>
-    </React.Fragment>
+    </div>
   );
 };
 

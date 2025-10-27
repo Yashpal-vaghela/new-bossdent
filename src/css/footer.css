@@ -125,14 +125,22 @@
     gap:20px;
   }
   .footer-copyright{
-    margin-bottom: 15px !important;
-    gap:0px;
+    margin-bottom: 0px !important;
+    gap:8px;
     justify-content: space-between;
   }
   .footer-copyright-wrapper{
     width:100%;
     grid-template-columns: 1fr;
     padding: 20px 0px 20px;
+  }
+}
+@media(max-width:768px){
+  .footer-copyright{
+    margin-bottom: 12px !important;
+  }
+  .footer-section p{
+    text-align: center;
   }
 }
 @media(max-width:576px){
@@ -146,5 +154,4 @@
   .email-input-wrapper input,.email-input-wrapper .btn{
     border-radius: 20px;
   }
-  
 }

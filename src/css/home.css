@@ -1,4 +1,7 @@
 
+.home-main{
+  margin-top: 150px;
+}
 .banner-section .swiper-pagination-bullet {
   width: var(
     --swiper-pagination-bullet-width,
@@ -240,9 +243,14 @@
     gap: 10px;
   }
 }
-.card-img-top {
+.category-content-wrapper .card-img-top,
+.dental-product-section .card-img-top,
+.search-product-card .card-img-top{
   padding: 30px 30px 5px;
 }
+/* .card-img-top {
+  padding: 30px 30px 5px;
+} */
 .RecentSearch-section .col-lg-3,
 .dental-product-section .row .col-lg-3 {
   border: 1px solid #fff;
@@ -259,6 +267,7 @@
   color: #fff;
   list-style: none;
   /* width:75%; */
+  flex-wrap: wrap;
   margin: 25px auto;
   line-height: normal;
   font-size: 14px;
@@ -270,6 +279,7 @@
 .product-filter-category-list .product-category {
   border-right: 1.5px solid rgba(180, 204, 180, 1);
   padding: 0px 20px;
+  margin: 12px 0px;
 }
 .product-filter-category-list .product-category a {
   color: #fff;
@@ -366,6 +376,7 @@
   .product-filter-category-list .product-category {
     padding: 0px 10px;
     font-size: 12px;
+    margin: 0px 0px 15px;
   }
   .dental-product-section .card-body .shopping-bag-icon,
   .search-product-card .card-body .shopping-bag-icon {
@@ -441,7 +452,7 @@
     padding: 10px 0px;
   }
   .product-cart-wrapper .heart-icon{
-    padding: 12px;
+    padding: 8px;
     width: 9%;
   }
   .sale-time-wrapper{
@@ -564,15 +575,15 @@
   .category-section .card-img-top{
     padding: 15px 5px 5px;
   }
-  .banner-section{
+  /* .banner-section{
     margin-top: 13.5%;
-  }
+  } */
 }
-@media(max-width:768px){
+/* @media(max-width:768px){
   .banner-section{
     margin-top: 18%;
   }
-}
+} */
 @media(max-width:576px){
   .category-section .card-img-top {
     padding: 15px 0px 0px;
@@ -615,12 +626,15 @@
   .contact-link-section .row{
     padding: 12px 0px 0px;
   }
-  .banner-section{
+  /* .banner-section{
     margin-top: 25%;
-  }
+  } */
+   .home-main{
+    margin-top: 135px;
+   }
 }
-@media(max-width:480px){
+/* @media(max-width:480px){
   .banner-section{
     margin-top: 28%;
   }
-}
+} */
