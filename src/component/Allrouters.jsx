@@ -6,6 +6,7 @@ import Cart from '../pages/Cart';
 import Wishlist from '../pages/Wishlist';
 import Login from '../pages/Login';
 import Profile from '../pages/Profile';
+import Category from '../pages/Category';
 
 export const Allrouters = () => {
     return (
@@ -14,6 +15,7 @@ export const Allrouters = () => {
                 <Route path="/" element={<Home/>}></Route>
                 <Route path="/products" element={<Product></Product>}></Route>
                 <Route path="/products/:slug" element={<SingleProduct></SingleProduct>}></Route>
+                <Route path="/category/:slug" element={<Category />}></Route>
                 <Route path="/cart" element={<Cart></Cart>}></Route>
                 <Route path="/wishlist" element={<Wishlist></Wishlist>}></Route>
                 <Route path="/login" element={<Login></Login>}></Route>

@@ -171,9 +171,16 @@
   font-weight: 500;
   color: rgba(255, 255, 255, 1);
 }
-.product-price span {
+/* .product-price span {
   color: rgba(153, 153, 153, 1);
   text-decoration: line-through;
+} */
+.product-price .text-muted{
+  color: #bbb;
+}
+.product-price .fw-blod{
+  color:#fff !important;
+  font-weight: 600;
 }
 .rating-stars {
   padding: 0px 0px 10px;
@@ -246,7 +253,7 @@
 .category-content-wrapper .card-img-top,
 .dental-product-section .card-img-top,
 .search-product-card .card-img-top{
-  padding: 30px 30px 5px;
+  padding: 30px 30px 20px;
 }
 /* .card-img-top {
   padding: 30px 30px 5px;
@@ -261,6 +268,10 @@
   /* border: 1px solid #fff; */
   color: #fff;
 }
+.disposable-swiper .card {
+  border: 1px solid #fff !important;
+}
+
 .product-filter-category-list {
   display: flex;
   justify-content: center;
@@ -291,6 +302,22 @@
 .product-filter-category-list .product-category:last-child a {
   color: rgba(128, 128, 128, 1);
 }
+.product-filter-category-list .product-category.active a{
+    background: linear-gradient(286.49deg, #C3942F 22.55%, #D89C27 32.43%, #DFC86F 42.86%, #DFC86F 50%, #D89C27 67.57%, #C99C30 77.45%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    color: transparent !important;
+}
+.card .discount-badge {
+  background-color: #EA4B48;
+  font-size: 0.9rem;
+  font-weight: 400;
+  z-index: 5;
+  top: 10px !important;
+  left: 0px;
+  right: auto !important;
+  padding: 4px 8px !important;
+}
 .contact-content-wrapper {
   padding: 15px 0px;
 }
@@ -313,6 +340,7 @@
   color: rgba(153, 153, 153, 1);
   line-height: 1.5;
 }
+
 @media (max-width: 1200px) {
   .contact-content-wrapper {
     padding: 10px 0px;

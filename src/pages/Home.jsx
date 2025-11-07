@@ -3,11 +3,14 @@ import HomeBanner from "../component/HomeBanner";
 import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
-import { useSelector } from "react-redux";
+import axios from "axios";
+import BASE_URL from "../api/config";
 
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import PremiumProducts from "../component/PremiumProducts";
+import DisposableProducts from "../component/DisposableProducts";
 
 const Home = () => {
   const CategoryData = [
@@ -29,42 +32,83 @@ const Home = () => {
     { cat_name: "Polishing Kits", cat_img: "/img/cat-img12.png", href: "" },
     // {cat_name:"Endo Categories",cat_img:"/img/cat-img6.png",href:""},
   ];
-  const ProductData = [
-    { id: 1 },
-    { id: 2 },
-    { id: 3 },
-    { id: 4 },
-    { id: 5 },
-    { id: 6 },
-    { id: 7 },
-    { id: 8 },
-    { id: 9 },
-    { id: 10 },
-    { id: 11 },
-  ];
+  // const ProductData = [
+  //   { id: 1 },
+  //   { id: 2 },
+  //   { id: 3 },
+  //   { id: 4 },
+  //   { id: 5 },
+  //   { id: 6 },
+  //   { id: 7 },
+  //   { id: 8 },
+  //   { id: 9 },
+  //   { id: 10 },
+  //   { id: 11 },
+  // ];
   // const OtherBannerData = [
   //   { id: 1, img: "/img/other-banner-img1.png" },
   //   { id: 2, img: "/img/other-banner-img2.png" },
   //   { id: 3, img: "/img/other-banner-img3.png" },
   // ];
   const SearchProductData = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
-  const DentalProductData = [
-    { id: 1 },
-    { id: 2 },
-    { id: 3 },
-    { id: 4 },
-    { id: 5 },
-    { id: 6 },
-    { id: 7 },
-    { id: 8 },
-  ];
   const [showAll, setShowAll] = useState(false);
-  const {categories,loading,error} = useSelector((state)=>state.category);
-  // const { categories, loading, error } = useCategories();
+  // for fetching product categories
+  const [categories, setCategories] = useState([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
+  const [errorCategories, setErrorCategories] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  //for fetching product
+  const [dentalProducts, setDentalProducts] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+  const [errorProducts, setErrorProducts] = useState(null);
   const visibleCategories = showAll ? categories : categories.slice(0, 5);
-
   const swiperRef = useRef(null);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/categories`);
+        setCategories(response.data?.data || []);
+      } catch(error) {
+        console.error("Error fetching Product Categories: ", error);
+        setErrorCategories("Failed to load the product categories");
+      } finally {
+        setLoadingCategories(false);
+      }
+    }
+    fetchCategories()
+  },[]);
 
+  const fetchProducts = async (categorySlug = null) => {
+    setLoadingProducts(true);
+      try {
+        const url = categorySlug
+          ? `${BASE_URL}/category/${categorySlug}`
+          : `${BASE_URL}/products`;
+
+        const response = await axios.get(url); 
+        setDentalProducts(response.data?.data || []);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setErrorProducts("Failed to load products");
+      } finally {
+        setLoadingProducts(false);
+      }
+    };
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const handleCategoryClick = (slug) =>{
+    setSelectedCategory(slug);
+    if (!slug) {
+      fetchProducts();
+    } else {
+      fetchProducts(slug);
+    }
+  };
+  const visibleProducts = Array.isArray(dentalProducts)
+  ? (dentalProducts.length > 8 ? dentalProducts.slice(0, 8) : dentalProducts)
+  : [];
   return (
     <div className="home-main overflow-hidden">
       <HomeBanner></HomeBanner>
@@ -126,57 +170,108 @@ const Home = () => {
           </div>
         </div>
       </section>
+      {/* product range section */}
       <section className="dental-product-section ">
         <div className="container">
           <h2 className="text-white fs-2 text-center section-title">
             Our Dental Products Range
           </h2>
           <div className="product-filter-content">
-            <ul className="product-filter-category-list">
-              {visibleCategories?.map((category, index) => {
-                return (
-                  <li className="product-category" key={index}>
-                    <Link to={category?.slug}>{category?.name}</Link>
-                  </li>
-                );
-              })}
-              {categories.length > 5 && (
-                <li className="product-category" onClick={()=>setShowAll((prev)=>!prev)}>
-                  <Link to="#">{showAll ? "View Less" :"View All"}</Link>
+            {loadingCategories ? (
+              <p>Loading categories...</p>
+            ) : errorCategories ? (
+              <p className="text-danger">{errorCategories}</p>
+            ): (
+               <ul className="product-filter-category-list">
+                <li
+                  className={`product-category ${
+                    selectedCategory === null ? "active" : ""
+                  }`}
+                  onClick={() => handleCategoryClick(null)}
+                >
+                  <Link to="#">All Products</Link>
                 </li>
-              )}
-            </ul>
+                {visibleCategories?.map((category, index) => {
+                  return (
+                    <li
+                      key={index}
+                      className={`product-category ${
+                        selectedCategory === category.slug ? "active" : ""
+                      }`}
+                      onClick={() => handleCategoryClick(category.slug)}
+                    >
+                      <Link to="#">{category.name}</Link>
+                    </li>
+                  );
+                })}
+                {categories.length > 5 && (
+                  <li
+                    className="product-category"
+                    onClick={() => setShowAll((prev) => !prev)}
+                  >
+                    <Link to="#">{showAll ? "View Less" : "View All"}</Link>
+                  </li>
+                )}
+              </ul> 
+            )}   
           </div>
           <div className="row pt-3 justify-content-center">
-            {DentalProductData?.map((item, index) => {
-              return (
-                <div className="col-lg-3 col-md-4 col-sm-6 col-6" key={index}>
-                  <div className="card">
-                    <img
-                      src="/img/product-img4.png"
-                      className="card-img-top img-fluid"
-                      alt="dental-product-img"
-                    ></img>
-                    <div className="card-body d-flex align-items-center justify-content-between px-lg-3 px-0 py-2">
-                      <div className="d-block">
-                        <h2 className="product-card-title mb-0">
-                          Product Title
-                        </h2>
-                        <p className="product-price mb-0">$12.00</p>
-                      </div>
+            {loadingProducts ? (
+              <p>Loading products...</p>
+            ) : errorProducts ? (
+              <p className="text-danger">{errorProducts}</p>
+            ) : (
+                visibleProducts.length  > 0 ? ( visibleProducts.map((item, index) => (
+                  <div className="col-lg-3 col-md-4 col-sm-6 col-6" key={item.id || index}>
+                    <div className="card position-relative">
+                      {item.regular_price && item.sale_price && (
+                        <span className="discount-badge position-absolute top-0 end-0 m-2 px-2 py-1 rounded text-white">
+                          Sale {Math.round(((item.regular_price - item.sale_price) / item.regular_price) * 100)}%
+                        </span>
+                      )}
                       <img
-                        className="shopping-bag-icon img-fluid"
-                        alt="shopping-bages"
-                        src="/img/lightShopping-bag-icon.svg"
-                      ></img>
+                        src={item.image || "/img/product-img4.png"}
+                        className="card-img-top img-fluid"
+                        alt={item.name || "Product"}
+                      />
+                      <div className="card-body d-flex align-items-center justify-content-between px-lg-3 px-0 py-2">
+                        <div className="d-block">
+                          <h2 className="product-card-title mb-0">
+                            {item.name || "Product Title"}
+                          </h2>
+                          <p className="product-price mb-0">
+                            {item.sale_price ? (
+                                <>
+                                  <span className="text-muted text-decoration-line-through me-2">
+                                    ₹{item.regular_price}
+                                  </span>
+                                  <span className="fw-bold text-white">
+                                    ₹{item.sale_price}
+                                  </span>
+                                </>
+                              ) : (
+                                <span className="fw-bold text-white">₹{item.price || item.regular_price || "0"}</span>
+                              )}
+                          {/* ₹{item.sale_price || item.price || "0"} */}
+                          </p>
+                        </div>
+                        <img
+                          className="shopping-bag-icon img-fluid"
+                          alt="shopping-bag"
+                          src="/img/lightShopping-bag-icon.svg"
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                ))
+              ) :(
+                 <p className="text-light text-center">No products found for this category.</p>
+              )
+            )}
           </div>
         </div>
       </section>
+      {/* Banner Section  */}
       <section className="banner-img-section ">
         <div className="container">
           <img
@@ -186,6 +281,7 @@ const Home = () => {
           ></img>
         </div>
       </section>
+      {/* categories section  */}
       <section className="category-section">
         <div className="container">
           <h2 className="category-title txt-grident">CATEGORY</h2>
@@ -266,8 +362,8 @@ const Home = () => {
           </Swiper>
         </div>
       </section>
-
-      <section className="premium-products-section">
+      {/* Exclusive Premium Products section */}
+      {/* <section className="premium-products-section">
         <div className="container">
           <div className="d-flex justify-content-between align-items-center">
             <h1 className="text-white fs-2 section-title">
@@ -308,14 +404,6 @@ const Home = () => {
               <h3 className="product-price">
                 $12.00 <span className="txt-dashed-price">$24.00</span>
               </h3>
-              {/* <div className="rating-stars d-flex align-items-center justify-content-center">
-                <i className="fa-solid fa-star"></i>
-                <i className="fa-solid fa-star"></i>
-                <i className="fa-solid fa-star"></i>
-                <i className="fa-solid fa-star"></i>
-                <i className="fa-solid fa-star"></i>
-                <span className="rating-count">(524 Feedback)</span>
-              </div> */}
               <div className="sale-content d-block">
                 <p className="sale-price-title mb-2">
                   Hurry up! Offer ends In:
@@ -350,13 +438,6 @@ const Home = () => {
                     <div className="d-block">
                       <h2 className="product-card-title mb-0">Product Title</h2>
                       <p className="product-price mb-1">$12.00</p>
-                      {/* <div className="rating-stars">
-                        <i className="fa-solid fa-star"></i>
-                        <i className="fa-solid fa-star"></i>
-                        <i className="fa-solid fa-star"></i>
-                        <i className="fa-solid fa-star"></i>
-                        <i className="fa-solid fa-star"></i>
-                      </div> */}
                     </div>
                     <img
                       src="/img/lightShopping-bag-icon.svg"
@@ -369,7 +450,8 @@ const Home = () => {
             })}
           </div>
         </div>
-      </section>
+      </section> */}
+      <PremiumProducts />
       <section className="Otherbanner-section">
         <div className="container">
           <div className="row align-items-center  justify-content-center justify-content-lg-center">
@@ -450,6 +532,7 @@ const Home = () => {
           </div>
         </div>
       </section>
+      <DisposableProducts />
     </div>
   );
 };

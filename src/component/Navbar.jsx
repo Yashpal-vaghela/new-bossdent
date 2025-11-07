@@ -521,16 +521,18 @@ const Navbar = () => {
                       data-bs-target="#exampleModal"
                     ></img>
                     <div className="d-flex justify-content-center align-items-center">
-                      <img
-                        src="/img/call-icon.svg"
-                        className="call-icon img-fluid"
-                        alt="call-icon"
-                        width="28"
-                        height="28"
-                      ></img>
-                      <span className="navbar-contact-title">
-                        +91 76988 28883
-                      </span>
+                      <a href="tel:+917698828883" className="ms-2 text-decoration-none">
+                        <img
+                          src="/img/call-icon.svg"
+                          className="call-icon img-fluid"
+                          alt="call-icon"
+                          width="28"
+                          height="28"
+                        ></img>
+                        <span className="navbar-contact-title">
+                          +91 76988 28883
+                        </span>
+                      </a>
                     </div>
                   </div>
                   <div className="navbar-cart-wrapper d-lg-flex d-none align-items-center">
