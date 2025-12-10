@@ -1,0 +1,240 @@
+import { useFormik } from "formik";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import Indian_states_cities_list from "indian-states-cities-list";
+import { ProfileSideBar } from "../component/ProfileSideBar";
+
+export const Settings = () => {
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.user.user);
+  const [States, setStates] = useState([]);
+  const originalValues = {
+    first_name: Object.keys(user).length !== 0 ? user?.first_name : "",
+    last_name: Object.keys(user).length !== 0 ? user?.last_name : "",
+    address: Object.keys(user).length !== 0 ? user?.address : "",
+    email: Object.keys(user).length !== 0 ? user?.email : "",
+    city: Object.keys(user).length !== 0 ? user?.city : "",
+    phone: Object.keys(user).length !== 0 ? user?.phone_number.slice(2) : "",
+    state: Object.keys(user).length !== 0 ? user?.state : "",
+    zip: Object.keys(user).length !== 0 ? user?.zipcode : "",
+    country: "In" || "",
+    gst_number: "",
+    company_name: "",
+  };
+  const formik = useFormik({
+    initialValues: originalValues,
+    enableReinitialize: true,
+    // validationSchema:false,
+    validateOnChange: true,
+    validateOnBlur: false,
+    onSubmit: () => {
+      // console.log("formik submit",formik?.values);
+      const isSame =
+        JSON.stringify(formik?.values) === JSON.stringify(originalValues);
+      if (isSame) {
+        console.log("No Changes found - API Not Called");
+        return;
+      }
+      console.warn("save user data api calling");
+      navigate("/profile");
+    },
+  });
+
+  useEffect(() => {
+    setStates(Indian_states_cities_list?.STATES_OBJECT);
+  }, []);
+  return (
+    <div className="home-main pt-4">
+      <section className="Breadcrumbs-section">
+        <div className="container">
+          <nav aria-label="breadcrumb">
+            <ol className="breadcrumb">
+              <li className="breadcrumb-item">
+                <Link to="/">Home</Link>
+              </li>
+              <li className="breadcrumb-item active">
+                <Link to="/profile">Profile</Link>
+              </li>
+            </ol>
+          </nav>
+        </div>
+      </section>
+      <section className="profile-section setting-section">
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-3 setting-content-wrapper profile-content-wrapper">
+              <button
+                className="navbar-toggler"
+                type="button"
+                data-bs-toggle="offcanvas"
+                href="#offcanvasExample1"
+                aria-controls="offcanvasExample1"
+              >
+                <span className="navbar-toggler-icon"></span>
+              </button>
+              <ProfileSideBar></ProfileSideBar>
+            </div>
+            <div className="col-lg-9 setting-details-wrapper">
+              <div className="setting-header">
+                <h2>Account Settings</h2>
+                <button
+                  className="btn btn-save"
+                  type="submit"
+                  onClick={() => formik.handleSubmit()}
+                >
+                  Save Changes
+                </button>
+              </div>
+              <form className="form" onSubmit={formik?.handleSubmit}>
+                <div className="d-flex setting-profile-content gap-md-3 justify-content-between align-items-center">
+                  <div className="setting-profile-left w-100 order-md-1 order-2">
+                    <div className="profileInputBox">
+                      <label className="form-label">First Name</label>
+                      <input
+                        className="form-control"
+                        type="text"
+                        name="first_name"
+                        placeholder="Enter Your First Name"
+                        value={formik?.values?.first_name || ""}
+                        onChange={formik?.handleChange}
+                      ></input>
+                    </div>
+                    <div className="profileInputBox">
+                      <label className="form-label">Last Name</label>
+                      <input
+                        className="form-control"
+                        type="text"
+                        name="last_name"
+                        value={formik?.values?.last_name || ""}
+                        onChange={formik?.handleChange}
+                        placeholder="Enter Your Last Name"
+                      ></input>
+                    </div>
+                    <div className="profileInputBox">
+                      <label className="form-label">Email</label>
+                      <input
+                        className="form-control"
+                        type="email"
+                        name="email"
+                        placeholder="Enter Your Email Address"
+                        value={formik?.values?.email || ""}
+                        onChange={formik?.handleChange}
+                      ></input>
+                    </div>
+                    <div className="profileInputBox">
+                      <label className="form-label">Phone Number</label>
+                      <input
+                        className="form-control"
+                        type="text"
+                        name="phone"
+                        placeholder="Enter Your Phone Number"
+                        value={formik?.values?.phone || ""}
+                        onChange={formik?.handleChange}
+                      ></input>
+                    </div>
+                  </div>
+                  <div className="setting-profile-right w-50 mt-md-0 mb-md-0 mt-4 mb-1 order-md-2 order-1">
+                    <i className="fa-solid fa-circle-user"></i>
+                    {/* <img
+                    //   src="https://i.pravatar.cc/150"
+                      src="/img/user-icon1.svg"
+                      className="d-block img-fluid "
+                      alt="profile-img"
+                    ></img> */}
+                    {/* <button className="choose-img-btn">Choose Image</button> */}
+                  </div>
+                </div>
+                <div className="setting-billing-section ">
+                  <div className="card-header">
+                    <h2>Billing Address</h2>
+                  </div>
+                  <div className="card-body">
+                    <div className="d-md-flex d-block align-items-center gap-3">
+                      <div className="profileInputBox">
+                        <label className="form-label">GST Number</label>
+                        <input
+                          className="form-control"
+                          type="number"
+                          name="gst_number"
+                          placeholder="Enter GST Number"
+                          value={formik?.values?.gst_number || ""}
+                          onChange={formik?.handleChange}
+                        ></input>
+                      </div>
+                      <div className="profileInputBox">
+                        <label className="form-label">
+                          Company Name(optional)
+                        </label>
+                        <input
+                          className="form-control"
+                          type="text"
+                          name="company_name"
+                          placeholder="Enter company name"
+                          value={formik?.values?.company_name || ""}
+                          onChange={formik?.handleChange}
+                        ></input>
+                      </div>
+                    </div>
+                    <div className="profileInputBox">
+                      <label className="form-label">Street Address</label>
+                      <input
+                        className="form-control"
+                        type="text"
+                        placeholder="Enter Your Address"
+                        name="address"
+                        value={formik?.values?.address || ""}
+                        onChange={formik?.handleChange}
+                      ></input>
+                    </div>
+                    <div className="d-md-flex d-block align-items-center justify-content-between gap-4">
+                      <div className="profileInputBox w-100">
+                        <label className="form-label">Country / Region</label>
+                        <select
+                          className="form-select"
+                          name="country"
+                          value={formik?.values?.country || ""}
+                          onChange={formik?.handleChange}
+                        >
+                          <option value="IN">India</option>
+                        </select>
+                      </div>
+                      <div className="profileInputBox w-100">
+                        <label className="form-label">States</label>
+                        <select
+                          className="form-select"
+                          value={formik?.values?.state || ""}
+                          onChange={formik?.handleChange}
+                        >
+                          <option>Select state</option>
+                          {States?.map((state, index) => {
+                            return (
+                              <option value={state?.name} key={index}>
+                                {state?.value}
+                              </option>
+                            );
+                          })}
+                        </select>
+                      </div>
+                      <div className="profileInputBox w-100">
+                        <label className="form-label">Zipcode</label>
+                        <input
+                          className="form-control"
+                          type="text"
+                          placeholder="Enter Zipcode"
+                          name="zipcode"
+                          value={formik?.values?.zipcode || ""}
+                        ></input>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+     
+    </div>
+  );
+};

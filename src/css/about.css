@@ -1,0 +1,167 @@
+.about-section h2{
+    color:#fff;
+    line-height: 1.6;
+    font-size: 38px;
+    letter-spacing: 0.5px;
+}
+.about-section p,
+.dental-supply-info-section p,
+.trusted-section p{
+    color: rgba(160, 160, 160, 1);
+    line-height: 1.65;
+    letter-spacing: 0.5px;
+}
+.dental-supply-info-section h2,
+.trusted-section h2{
+    text-align: center;
+    color:#fff;
+    line-height: 1.7;
+    font-size: 32px;
+}
+.dental-supply-info-section{
+    margin-bottom: 45px;
+}
+.dental-supply-info-section .card{
+    border: 1.5px solid transparent;
+    border-radius: 10px;
+    background: linear-gradient(#000, #000) padding-box, linear-gradient(100.47deg, #c3942f 28.12%, #d89c27 41.31%, #e7dc96 53.42%, #dfc86f 65.82%, #d89c27 75.96%, #c99c30 84.47%) border-box;
+    /* box-shadow: 0px 0px 30px 0px rgba(195, 148, 47, 0.5); */
+    padding: 10px 15px;
+    margin-bottom: 25px;
+}
+.dental-supply-info-section .card h3{
+    text-align: center;
+    font-size: 24px;
+}
+.dental-supply-info-section .card img{
+    margin: 15px auto;
+}
+.dental-supply-info-section .card p{
+    text-transform: uppercase;
+    color: #fff;
+    font-weight: 600;
+    text-align: center;
+    font-size: 18px;
+}
+.trusted-section ul li{
+    /* color:rgb(174, 174, 174); */
+    color:rgba(160, 160, 160, 1);
+    /* color:rgba(255,255,255,0.8); */
+    margin-bottom: 15px;
+    line-height: 1.6;
+    font-weight: 500;
+}
+.contact-info-section{
+    margin: 60px auto;
+}
+.contact-info-section p,
+.contact-info-section a{
+    font-weight: 500;
+    color:rgba(160, 160, 160, 1);
+    /* color:rgba(255,255,255,0.8); */
+}
+@media(min-width:1200px){
+    .about-section .row{
+        --bs-gutter-x: 2.5rem;
+    }
+}
+@media(max-width:1200px){
+    .about-section h2{
+        font-size: 34px;
+        line-height: normal;
+    }
+    .about-section p, .dental-supply-info-section p, .trusted-section p{
+        line-height: 1.65;
+        font-size: 15px;
+        letter-spacing: 0px;
+    }
+    .dental-supply-info-section h2, .trusted-section h2{
+        font-size: 30px;
+    }
+    .dental-supply-info-section .card{
+        padding: 10px 10px;
+        margin: 15px 0px;
+        /* margin-bottom: 30px; */
+    }
+    .dental-supply-info-section .card h3{
+        font-size: 22px;
+    }
+    .dental-supply-info-section .card p{
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: 0.4px;
+        line-height: 1.7;
+        margin-bottom: 5px;
+    }
+}
+@media(max-width:991px){
+    .about-section h2{
+        text-align: center;
+        font-size: 30px;
+        margin-bottom: 12px;
+    }
+    .about-section p, .dental-supply-info-section p, .trusted-section p{
+        font-size: 16px;
+        line-height: 1.75;
+        letter-spacing: 0.5px;
+    }
+    .dental-supply-info-section{
+        margin: 15px auto;
+    }
+    .dental-supply-info-section h2, .trusted-section h2{
+        font-size: 28px;
+    }
+    .dental-supply-info-section .card{
+        padding: 15px 10px 10px;
+    }
+    .dental-supply-info-section .card h3{
+        font-size: 20px;
+    }
+    .trusted-section{
+        margin: 40px auto;
+    }
+    .contact-info-section p, .contact-info-section a{
+        padding-bottom: 10px;
+    }
+}
+@media(max-width:768px){
+    .about-section h2{
+        font-size: 26px;
+    }
+    .about-section p, .dental-supply-info-section p, .trusted-section p{
+        font-size: 14px;
+        line-height: 1.75;
+        letter-spacing: 0.5px;
+    }
+    .dental-supply-info-section .card{
+        padding: 10px 8px;
+        margin: 10px 0px;
+    }
+    .dental-supply-info-section .card h3{
+        font-size: 18px;
+    }
+    .dental-supply-info-section .card p{
+        font-size: 14px;
+        font-weight: 400;
+        letter-spacing: 0.4px;
+    }
+    .trusted-section ul li{
+        font-size: 14px;
+        letter-spacing: 0.5px;
+        line-height: 1.6;
+    }
+}
+@media(max-width:576px){
+    .about-section h2{
+        font-size: 22px;
+    }
+    .about-section p{
+        text-align: justify;
+    }
+    .dental-supply-info-section{
+        margin: 5px auto;
+    }
+    .dental-supply-info-section h2, .trusted-section h2{
+        font-size: 24px;
+    }
+}

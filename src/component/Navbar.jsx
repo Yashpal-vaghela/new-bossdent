@@ -2,21 +2,22 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import LoginDialogBox from "./LoginDialogBox";
-import { fetchCategories } from "../redux/categorySlice";
 import { useDispatch, useSelector } from "react-redux";
 import React from "react";
 import Loader1 from "./Loader1";
+import BASE_URL from "../api/config";
 
 const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchIcon, setSearchIcon] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
-  const dispatch = useDispatch();
   const { categories, loading } = useSelector((state) => state.category);
   const navigate = useNavigate();
   const cartCounter = useSelector((state)=>state.cart.cartCount);
   const cartTotal = useSelector((state)=>state.cart.cartTotal);
-
+  const wishlistCounter = useSelector((state)=>state.wishlist.wishlistCount);
+  const [token] = useState(localStorage.getItem("auth_token"));
+  
   const handleSearchChange = async (e) => {
     const query = e.target.value;
     setSearchQuery(query);
@@ -26,25 +27,21 @@ const Navbar = () => {
       setSearchIcon(false);
     }
     try {
-      const response = await axios.get(
-        `https://admin.bossdentindia.com/wp-json/custom/v1/product-search?s=${searchQuery}`
-      );
-      const filterData = response.data.filter((product) => {
-        return product.product_name
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase());
+      const response = await axios.get(`${BASE_URL}/product-suggestions?s=${query}`);
+      console.warn("response",response);
+      const filterData =  response?.data?.suggestions?.filter((product) => {
+        return product?.name.toLowerCase().includes(query.toLowerCase());
       });
+      console.log("filterData",filterData);
       const products = filterData.map((product) => ({
-        id: product.product_id,
-        title: product.product_name,
-        slug: product.product_slug,
+        id: product?.id,
+        title: product?.name,
+        slug: product?.slug,
       }));
+      console.log("response",response,"products",products);
       setSuggestions(products);
     } catch (error) {
-      console.error(
-        "Error fetching search suggestions:",
-        error.response.data.message
-      );
+      console.error("Error fetching search suggestions:",error);
       setSuggestions([]);
     }
   };
@@ -83,7 +80,7 @@ const Navbar = () => {
       // console.log("search",searchQuery,"searchIcon",searchIcon,"a",a,a.classList);
       if (window.innerWidth > 991) {
         if (window.scrollY >= 20) {
-          topNav.style.display = "none";
+          topNav !== null ? topNav.style.display = "none":<></>;
           Array.from(navbarMainElements).forEach((element) => {
             element.style.position = "fixed";
             element.style.padding = "0px 0px 5px 0px";
@@ -101,7 +98,7 @@ const Navbar = () => {
             <></>
           );
         } else {
-          topNav.style.display = "flex";
+          topNav !== undefined ? topNav.style.display = "flex" : <></>;
           navbarContactElement != null ? (
             navbarContactElement.classList.remove(
               "navbarcontact-position-sticky"
@@ -118,6 +115,7 @@ const Navbar = () => {
             // element.style.position = "relative";
             element.style.padding = "0px 0px 12px 0px";
           });
+          
           navbarlogoElements.classList.add("d-lg-none");
         }
       } else {
@@ -151,12 +149,6 @@ const Navbar = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const Promise = dispatch(fetchCategories());
-    return () => {
-      Promise.abort();
-    };
-  }, [dispatch]);
 
   return (
     <React.Fragment>
@@ -199,7 +191,8 @@ const Navbar = () => {
                       }}
                     ></img>
                   )}
-                  <Link to="/wishlist">
+                  <Link to="/wishlist" className="position-relative">
+                    <span className="navbar-wishlist-counter">{wishlistCounter}</span>
                     <img
                       src="/img/heart-icon.svg"
                       className="img-fluid heart-icon"
@@ -221,20 +214,29 @@ const Navbar = () => {
                       <span className="navbar-cart-counter">{cartCounter}</span>
                     </Link>
                   </div>
-                  <img
-                    src="/img/user-icon1.svg"
-                    className="img-fluid user-icon d-none d-lg-block"
-                    alt="user-icon"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModal"
-                  ></img>
+                  {
+                    token !== null ? 
+                      <img
+                        src="/img/user-icon1.svg"
+                        className="img-fluid user-icon d-none d-lg-block"
+                        alt="user-icon"
+                        onClick={()=>navigate("/profile")}
+                      ></img> 
+                    : <img
+                      src="/img/user-icon1.svg"
+                      className="img-fluid user-icon d-none d-lg-block"
+                      alt="user-icon"
+                      data-bs-toggle="modal"
+                      data-bs-target="#exampleModal"
+                    ></img>
+                  }
                 </div>
-                {!searchIcon || !searchQuery ? (
+                {!searchIcon || searchQuery ? (
                   <>
                     <div className="search-icon-wrapper mx-auto">
                       {searchQuery ? (
                         <i
-                          className="fa-solid fa-xmark "
+                          className="fa-solid fa-xmark"
                           onClick={handleClearSearch}
                           id="close-icon"
                         ></i>
@@ -405,7 +407,7 @@ const Navbar = () => {
                     </div>
                   </li>
                   <li className="nav-item">
-                    <Link to="/" onClick={handleOffcanvas1}>
+                    <Link to="/about" onClick={handleOffcanvas1}>
                       About Us
                     </Link>
                   </li>
@@ -454,10 +456,11 @@ const Navbar = () => {
                             value={searchQuery}
                             onChange={handleSearchChange}
                           ></input>
-                          {searchIcon ||
+                          {console.log("searchIcon",searchIcon,searchQuery)}
+                          {searchIcon &&
                             (searchQuery && (
                               <>
-                                {suggestions?.length !== 0 ? (
+                                {suggestions.length !== 0 ? (
                                   <div
                                     className="suggestion-main d-none"
                                     id="suggestion-main"
@@ -502,7 +505,8 @@ const Navbar = () => {
                         ></img>
                       )}
                     </div>
-                    <Link to="/wishlist">
+                    <Link to="/wishlist" className="position-relative">
+                     <span className="navbar-wishlist-counter d-none">{wishlistCounter}</span>
                       <img
                         src="/img/heart-icon.svg"
                         className="img-fluid heart-icon d-none"
@@ -511,15 +515,26 @@ const Navbar = () => {
                         width="28"
                         height="28"
                       ></img>
+                     <span className="navbar-wishlist-counter d-none">{wishlistCounter}</span>
                     </Link>
-                    <img
-                      className="img-fluid user-icon d-none"
-                      alt="user-icon"
-                      src="/img/user-icon1.svg"
-                      id="user-icon"
-                      data-bs-toggle="modal"
-                      data-bs-target="#exampleModal"
-                    ></img>
+                      {
+                        token !== null ? 
+                          <img
+                            className="img-fluid user-icon d-none"
+                            alt="user-icon"
+                            src="/img/user-icon1.svg"
+                            id="user-icon"
+                            onClick={()=>navigate("/profile")}
+                          ></img>
+                        : <img
+                            className="img-fluid user-icon d-none"
+                            alt="user-icon"
+                            src="/img/user-icon1.svg"
+                            id="user-icon"
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModal"
+                          ></img>
+                      }
                     <div className="d-flex justify-content-center align-items-center">
                       <a href="tel:+917698828883" className="ms-2 text-decoration-none">
                         <img
@@ -560,3 +575,4 @@ const Navbar = () => {
   );
 };
 export default Navbar;
+

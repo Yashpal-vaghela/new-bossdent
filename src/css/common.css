@@ -5,6 +5,9 @@
     -webkit-text-fill-color: transparent !important;
     color:transparent !important;
 }
+.txt-white{
+    color:#fff;
+}
 a{
     text-decoration: none;
     color: transparent;
@@ -40,6 +43,27 @@ a{
     padding: 90px 0px 0px;
     top:50%;
 } */
+.Breadcrumbs-section{
+   background: rgba(30, 30, 30, 1);
+   padding: 10px 0px;
+   color:#fff;
+   margin-bottom: 20px;
+}
+.Breadcrumbs-section .breadcrumb{
+    margin-bottom: 0px;
+}
+.Breadcrumbs-section .breadcrumb .breadcrumb-item.active a{
+    color: #fff;
+    font-weight: 600;
+}
+.breadcrumb-item+.breadcrumb-item::before{
+    content: var(--bs-breadcrumb-divider, ">");
+    /* content:var(--bs-breadcrumb-divider, " "); */
+    /* content:"";
+    background-image: url('../../public/img/arrow-left.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat; */
+}
 .cart-main,.wishlist-main{
     margin-top: 160px !important;
 }

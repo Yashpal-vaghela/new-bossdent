@@ -126,8 +126,9 @@
   }
   .footer-copyright{
     margin-bottom: 0px !important;
-    gap:8px;
+    gap:5px;
     justify-content: space-between;
+    font-size: 14px;
   }
   .footer-copyright-wrapper{
     width:100%;
@@ -142,16 +143,34 @@
   .footer-section p{
     text-align: center;
   }
+  .footer-main-content .footer-content{
+    text-align: start;
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  .footer-section h2{
+    font-size: 18px;
+  }
 }
 @media(max-width:576px){
   .footer-main-content h2{
-    font-size: 18px;
+    font-size: 16px;
   }
   .footer-main-content .footer-content{
     font-size: 14px;
     line-height: 1.8;
+    
   }
   .email-input-wrapper input,.email-input-wrapper .btn{
     border-radius: 20px;
+  }
+  .footer-copyright{
+    display: grid !important;
+    margin: auto;
+    text-align: center;
+    /* text-align: center; */
+  }
+  .footer-copyright span{
+    font-size: 14px;
   }
 }

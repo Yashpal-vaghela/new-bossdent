@@ -1,40 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../api/config";
 import Loader1 from "../component/Loader1";
-import { CartCounter, CartTotal } from "../redux/cartSlice";
+import { AddToCart, CartCounter, CartTotal } from "../redux/cartSlice";
+import useValidateUser from "../component/useValidateUser";
+import { toast } from "react-toastify";
 
 const Cart = () => {
-  const cartData = [{ id: 1 }, { id: 2 }, { id: 3 }];
-  const relatedProduct = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
-  const [CartData, setCartData] = useState([]);
   const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [loading, setLoading] = useState("");
+  const [loading, setloading] = useState("");
   const cartTotal = useSelector((state) => state.cart.cartTotal);
-
-  const fetchCartData = async (controller) => {
-    setLoading(true);
-    try {
-      const res = await axios.get(`${BASE_URL}/get-cart`, {
-        headers: {
-          Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
-          "Content-Type": "application/json",
-        },
-        signal: controller.signal,
-      });
-      dispatch(CartCounter(res.data.cart_count));
-      dispatch(CartTotal(res.data.cart_total));
-      setCartData(res.data.items);
-      setLoading(false);
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
+  const cartData = useSelector((state) => state.cart.cart);
+  const deliverydata = useSelector((state) => state.cart.deliveryCharge);
+  const validateUser = useValidateUser();
   const handleClearCart = async () => {
+    setloading(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
     await axios
       .post(
         `${BASE_URL}/delete-cart`,
@@ -47,10 +32,10 @@ const Cart = () => {
         }
       )
       .then((res) => {
+        setloading(false);
+        dispatch(AddToCart({ ...res.data, items: [] }));
         dispatch(CartCounter(res.data.cart_count));
         dispatch(CartTotal(res.data.cart_total));
-        console.log("res", res.data);
-        setCartData([]);
       })
       .catch((err) => console.log("err", err));
   };
@@ -64,20 +49,29 @@ const Cart = () => {
         },
       })
       .then((res) => {
-        const filterData = CartData.filter((item) => item.cart_id !== id);
-        setCartData(filterData);
+        const filterData = cartData?.items.filter(
+          (item) => item.cart_id !== id
+        );
+        dispatch(AddToCart({ ...res.data, items: filterData }));
         dispatch(CartCounter(res.data.cart_count));
         dispatch(CartTotal(res.data.cart_total));
       })
       .catch((err) => console.log("err", err));
   };
   const handleUpdateQty = async (e, product, action) => {
-    const cartItemUpdate = CartData.find((item) => {
-      const isSameProduct = item.product_id === product.product_id;
-      // console.log("isSameProduct", isSameProduct);
-      return isSameProduct;
+    if (!token) {
+      validateUser();
+    }
+    setloading(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    const cartItemUpdate = cartData?.items.find((item) => {
+      return item?.variation_id !== 0
+        ? item?.variation_id === product?.variation_id &&
+            item.product_id === product.product_id
+        : item.product_id === product.product_id;
+      // const isSameProduct = item.product_id === product.product_id;
+      //  isSameProduct;
     });
-    if (!cartItemUpdate) return;
     let newQuantity =
       action === "PLUS"
         ? Number(cartItemUpdate.quantity) + 1
@@ -96,18 +90,15 @@ const Cart = () => {
           "Content-Type": "application/json",
         },
       });
-      setCartData(response?.data?.items);
-      // const updateProduct = response?.data
-      console.log("res", response.data);
+      setloading(false);
+      toast.success(`${product?.product_name} quantity update successfully.`)
+      dispatch(AddToCart(response.data));
+      dispatch(CartTotal(response.data.cart_total));
     } catch (error) {
       console.error("err", error);
     }
   };
-  useEffect(() => {
-    const controller = new AbortController();
-    fetchCartData(controller);
-    return () => controller.abort();
-  }, []);
+
   return (
     <div className="home-main cart-main">
       <section className="breadcrumb-section pt-2 pt-sm-2 pb-2">
@@ -124,17 +115,21 @@ const Cart = () => {
           </nav>
         </div>
       </section>
-      {loading ? (
-        <Loader1></Loader1>
-      ) : (
-        <>
-          {CartData.length === 0 ? (
-            <div className="my-5 text-center cart-page-empty">
-              <p className="mb-3">Your Cart Is Empty !</p>
-              <Link to="/products" className="mb-2">
-                Shop Now
-              </Link>
-            </div>
+      <>
+        {loading && (
+          <div className="loader-overlay">
+          <div className="loader"></div>
+        </div> 
+        )} 
+          {cartData?.items.length === 0 ? (
+            <>
+              <div className="my-5 text-center cart-page-empty">
+                <p className="mb-3">Your Cart Is Empty !</p>
+                <Link to="/products" className="mb-2">
+                  Shop Now
+                </Link>
+              </div>
+            </>
           ) : (
             <>
               <section className="cart-section">
@@ -149,8 +144,8 @@ const Cart = () => {
                           <h2>Quantity</h2>
                           <h2>Subtotal</h2>
                         </div>
-                        {CartData.length !== 0 &&
-                          CartData?.map((item, index) => {
+                        {cartData.items !== undefined &&
+                          cartData?.items?.map((item, index) => {
                             return (
                               <div className="cart-item" key={index}>
                                 <div className="cart-item-product">
@@ -238,7 +233,7 @@ const Cart = () => {
                               </div>
                             );
                           })}
-                        {CartData.length !== 0 && (
+                        {cartData.items.length !== 0 && (
                           <div className="cart-footer d-md-flex d-none">
                             <button
                               className="return-shop"
@@ -255,7 +250,7 @@ const Cart = () => {
                           </div>
                         )}
                       </div>
-                      {CartData.length !== 0 && (
+                      {cartData.items.length !== 0 && (
                         <div className="cart-footer d-md-none d-flex ">
                           <button
                             className="return-shop"
@@ -268,10 +263,14 @@ const Cart = () => {
                       )}
                     </div>
                     <div className="col-lg-4">
-                      <div className="cart-coupon-container">
+                      {/* <div className="cart-coupon-container">
                         <div className="cart-coupon-title d-flex justify-content-between align-items-center">
                           <h2>Best Coupons For You</h2>
-                          <Link to="#" className="cart-applycoupon-btn">
+                          <Link
+                            to="#"
+                            className="cart-applycoupon-btn"
+                            onClick={handleModal}
+                          >
                             All Coupons{" "}
                             <i className="fa-solid fa-chevron-right"></i>
                           </Link>
@@ -284,85 +283,49 @@ const Cart = () => {
                         <button className="btn btn-checkout">
                           Apply Coupon Code
                         </button>
-                      </div>
+                      </div> */}
                       <div className="cart-total-container">
                         <h2 className="cart-total-title">Cart Total</h2>
                         <div className="cart-total-content">
                           <p>Subtotal:</p>
-                          <p>${cartTotal}</p>
+                          <p>₹{cartTotal}</p>
                         </div>
                         <div className="cart-total-content">
                           <p>Shipping:</p>
-                          <p>Free</p>
+                          <p>
+                            {deliverydata === 0
+                              ? "Free"
+                              : `₹${Number(deliverydata).toFixed(2)}`}{" "}
+                          </p>
                         </div>
-                        <div className="cart-total-content">
+                        {/* <div className="cart-total-content">
                           <p>Discount:</p>
                           <p>Free</p>
-                        </div>
+                        </div> */}
                         <div className="cart-total-content">
                           <p>Total:</p>
-                          <p>$84.00</p>
+                          {/* {finalTotal} */}
+                          {/* {console.log("cart", cartTotal, deliverydata)} */}
+                          <p>
+                            ₹{(Number(cartTotal) + Number(deliverydata)).toFixed(2)}
+                          </p>
                         </div>
-                        <p className="cart-applycoupon-notice">
+                        {/* <p className="cart-applycoupon-notice">
                           You’ll save <b>₹50.00</b> on this order!{" "}
-                        </p>
-                        <button className="btn btn-checkout">
-                          Proceed to checkout
-                        </button>
+                        </p> */}
+                        <Link to="/checkout">
+                          <button className="btn btn-checkout">
+                            Proceed to checkout
+                          </button>
+                        </Link>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </section>
-              <section className="related-section product-section">
-                <div className="container">
-                  <h2 className="related-product-title">Related Products</h2>
-                  <div className="row justify-content-center gap-3 gap-sm-0 mb-5">
-                    {relatedProduct?.map((product, index) => {
-                      return (
-                        <div
-                          className="col-11 col-sm-10 col-md-6 col-lg-4 col-xl-3"
-                          key={index}
-                        >
-                          <div className="card">
-                            <img
-                              src="/img/product-img3.png"
-                              className="card-img-top img-fluid"
-                              alt="product-img"
-                            ></img>
-                            <div className="card-body">
-                              <h2 className="product-title card-title">
-                                Customizable Retainer Box
-                              </h2>
-                              <div className="d-flex justify-content-between align-items-center">
-                                <div className="product-content-wrapper">
-                                  <span className="product-price card-text">
-                                    Starting at: ₹200.00
-                                  </span>
-                                  <p className="product-review mb-2 mb-md-2 mb-lg-4">
-                                    <i className="fa-solid fa-star me-2"></i>4.1
-                                  </p>
-                                </div>
-                                <div className="product-cart-wrapper">
-                                  <img
-                                    src="/img/cart-icon.svg"
-                                    className="cart-icon img-fluid"
-                                    alt="cart-icon-img"
-                                  ></img>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
                   </div>
                 </div>
               </section>
             </>
           )}
         </>
-      )}
     </div>
   );
 };

@@ -11,7 +11,7 @@ const LoginDialogBox = () => {
   const [time, setTime] = useState(60);
   const [showResend, setShowResend] = useState(false);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const handleRequestOTP = async (e, action) => {
     console.log("OTP requested",formvalue);
@@ -148,8 +148,8 @@ const LoginDialogBox = () => {
       id="exampleModal"
       tabIndex="-1"
       aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-      data-bs-backdrop="static"
+      // aria-hidden="true"
+      // data-bs-backdrop="static"
       data-bs-keyboard="false"
     >
       <div className="modal-dialog modal-dialog-centered">
@@ -270,7 +270,6 @@ const LoginDialogBox = () => {
                     Need help? <Link to="#">Connect with us</Link>
                   </p>
                 </div>
-
                 {/* <div class="timer">{`${Math.floor(time / 60)}`.padStart(2,0)}:{`${time % 60}`.padStart(2,0)}</div> */}
               </>
             )}

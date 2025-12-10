@@ -1,0 +1,686 @@
+/* =================== Terms and Conditions Policy ======================= */
+.terms-info-wrapper ul{
+    padding-left: 5rem;
+}
+.terms-info-wrapper ul:first-child{
+    padding-left: 2.2rem;
+}
+.terms-info-wrapper ul .terms-heading{
+    font-size: 32px;
+    text-transform:uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding-left: 6px;
+    color:#fff;
+    font-family: "Poppins", sans-serif;
+}
+.terms-info-wrapper p{
+    font-family: "Poppins", sans-serif;
+    margin-left: 65px;
+    color: rgba(163, 163, 163, 1);
+    margin-bottom: 12px;
+    line-height: 1.8;
+    letter-spacing: 0.4px;
+    font-weight: 400;
+}
+.terms-info-wrapper p a{
+    color:#fff;
+}
+.terms-info-wrapper ul li{
+    color: rgba(163, 163, 163, 1);
+    line-height: 1.8;
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+}
+.terms-info-wrapper h3,
+.terms-info-wrapper h4{
+    color:#fff;
+    letter-spacing: 0.5px;
+    line-height: 1.6;
+    text-transform: uppercase;
+}
+.terms-info-wrapper h4{
+    font-size: 22px;
+}
+.terms-info-wrapper h3{
+    margin-left: 32px;
+}
+@media(max-width:991px){
+    .terms-info-wrapper ul {
+        margin-bottom: 0.5rem;
+    }
+    .terms-info-wrapper ul .terms-heading{
+        font-size: 30px;
+    }
+    .terms-info-wrapper ul:first-child{
+        padding-left: 2rem;
+    }
+    .terms-info-wrapper p{
+        margin-left: 55px;
+        font-size: 15px;
+    }
+    .terms-info-wrapper h3{
+        margin-left: 30px;
+    }
+    .terms-info-wrapper ul{
+        padding-left: 4rem;
+    }
+    .terms-info-wrapper h3, .terms-info-wrapper h4{
+        font-size: 20px;
+    }
+}
+@media(max-width:768px){
+    .terms-info-wrapper ul .terms-heading{
+        font-size: 28px;
+        padding-left: 0px;
+    }
+    .terms-info-wrapper ul:first-child{
+        padding-left: 1.8rem;
+    }
+    .terms-info-wrapper p{
+        margin-left: 45px;
+    }
+    .terms-info-wrapper h3{
+        margin-left: 20px;
+    }  
+    .terms-info-wrapper h3:last-child{
+        margin-left: 15px;
+    }
+    .terms-info-wrapper h3, .terms-info-wrapper h4{
+        font-size: 18px;
+    }
+    .terms-info-wrapper ul{
+        padding-left: 3.2rem;
+    }
+}
+@media(max-width:576px){
+    .terms-info-wrapper ul .terms-heading{
+        font-size: 22px;
+    }
+    .terms-info-wrapper p{
+        /* margin-left: 45px; */
+        margin-bottom:10px;
+        font-size: 14px;
+        margin-right: 10px;
+    }
+    .terms-info-wrapper ul{
+        padding-left: 3rem;
+    }
+    .terms-info-wrapper ul:first-child {
+        padding-left: 2.5rem;
+    }
+    .terms-info-wrapper ul li{
+        line-height: 1.6;
+        font-size: 14px;
+    }
+    .terms-info-wrapper h3, .terms-info-wrapper h4{
+        font-size: 16px;
+    }
+    .terms-info-wrapper h4{
+        margin-left: 6px;
+    }
+    .terms-info-wrapper ul p{
+        margin-left: -18px !important;
+    }
+    .terms-info-wrapper ul p ~ li{
+        margin-left: 1rem;
+    }
+}
+
+/* =================== Privacy Policy ======================= */
+.privacy-policy-wrapper ul{
+    padding-left: 5.5rem;
+}
+.privacy-policy-wrapper ul:first-child{
+    padding-left: 2.2rem;
+    margin-bottom: 0px;
+}
+.privacy-policy-wrapper ul .privacy-heading{
+    font-size: 32px;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding-left: 6px;
+    color: #fff;
+    font-family: "Poppins", sans-serif;
+}
+.privacy-policy-wrapper p{
+    font-family: "Poppins", sans-serif;
+    margin-left: 65px;
+    color: rgba(163, 163, 163, 1);
+    margin-bottom: 12px;
+    line-height: 1.8;
+    letter-spacing: 0.4px;
+    font-weight: 400;
+}
+.privacy-policy-wrapper p a{
+    color:#fff;
+}
+.privacy-policy-wrapper h2{
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 22px;
+    line-height: 1.8;
+    margin-left: 25px;
+    letter-spacing: 0.2px;
+}
+.privacy-policy-wrapper h3{
+    color:#fff;
+    text-transform: uppercase;
+    font-size: 20px;
+    margin-left: 55px;
+    line-height: 1.5;
+    letter-spacing: 0.2px;
+}
+.privacy-policy-wrapper ul li{
+    color: rgba(163, 163, 163, 1);
+    line-height: 1.8;
+    margin-bottom: 0px;
+    letter-spacing: 0.3px;
+}
+@media(max-width:991px){
+    .privacy-policy-wrapper ul{
+        padding-left: 4.5rem;
+    }
+    .privacy-policy-wrapper ul .privacy-heading{
+        font-size: 30px;
+    }
+    .privacy-policy-wrapper ul:first-child{
+        padding-left: 2rem;
+    }
+    .privacy-policy-wrapper p{
+        font-size: 15px;
+        margin-left: 55px;
+    }
+    .privacy-policy-wrapper h3{
+        margin-left: 38px;
+    }
+    .privacy-policy-wrapper h2{
+        line-height: 1.6;
+        margin-bottom: 5px;
+        font-size: 22px;
+    }
+}
+@media(max-width:768px){
+    .privacy-policy-wrapper ul{
+        padding-left: 3.5rem;
+    }
+    .privacy-policy-wrapper ul .privacy-heading{
+        font-size: 28px;
+        padding-left: 0px;
+    }
+    .privacy-policy-wrapper ul:first-child{
+        padding-left: 1.8rem;
+    }
+    .privacy-policy-wrapper p{
+        margin-left: 45px;
+    }
+    .privacy-policy-wrapper h2{
+        font-size: 20px;
+        margin-left: 15px;
+    }
+    .privacy-policy-wrapper h3{
+        font-size: 18px;
+        margin-left: 30px;
+    }
+}
+@media(max-width:576px){
+    .privacy-policy-wrapper ul .privacy-heading{
+        font-size: 22px;
+    }
+    .privacy-policy-wrapper p{
+        margin-bottom:10px;
+        font-size: 14px;
+        margin-right: 10px;
+    }
+    /* .privacy-policy-wrapper ul{
+        padding-left: 3rem;
+    } */
+    .privacy-policy-wrapper ul:first-child{
+        padding-left: 2.5rem;
+        margin-bottom: 6px;
+    }
+    .privacy-policy-wrapper ul li{
+       line-height: 1.6; 
+       font-size: 14px;
+       margin-bottom: 5px;
+    }
+    .privacy-policy-wrapper h2{
+        font-size: 18px;
+    }
+    .privacy-policy-wrapper h3{
+        font-size: 16px;
+    }
+}
+
+/* =================== Refunded and Returns Policy ======================= */
+.refund-policy-wrapper ul{
+    padding-left: 5rem;
+}
+.refund-policy-wrapper ul:first-child{
+    padding-left: 2.2rem;
+    margin-bottom: 0px;
+}
+.refund-policy-wrapper ul .refund-heading{
+    font-size: 32px;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding-left: 6px;
+    color: #fff;
+    font-family: "Poppins", sans-serif;
+}
+.refund-policy-wrapper ul li{
+    color: rgba(163, 163, 163, 1);
+    line-height: 1.8;
+    margin-bottom: 0px;
+    letter-spacing: 0.3px;
+}
+.refund-policy-wrapper p{
+    font-family: "Poppins", sans-serif;
+    margin-left: 45px;
+    color: rgba(163, 163, 163, 1);
+    margin-bottom: 12px;
+    line-height: 1.8;
+    letter-spacing: 0.4px;
+    font-weight: 400;
+}
+.refund-policy-wrapper h2{
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 22px;
+    line-height: 1.8;
+    margin-left: 20px;
+    letter-spacing: 0.2px;
+}
+.refund-policy-wrapper h3{
+    color:#fff;
+    text-transform: uppercase;
+    font-size: 20px;
+    margin-left: 55px;
+    line-height: 1.5;
+    letter-spacing: 0.2px;
+}
+@media(max-width:991px){
+    .refund-policy-wrapper ul{
+        padding-left: 4.8rem;
+    }
+    .refund-policy-wrapper ul .refund-heading{
+        font-size: 30px;
+    }
+    .refund-policy-wrapper ul:first-child{
+        padding-left: 2rem;
+    }
+    .refund-policy-wrapper ul li{
+        margin-bottom: 8px;
+        line-height: 1.6;
+    }
+    .refund-policy-wrapper p{
+        font-size: 15px;
+        margin-left: 44px;
+    }
+    .refund-policy-wrapper h3{
+        margin-left: 38px;
+        font-size: 18px;
+    }
+    .refund-policy-wrapper h2{
+        line-height: 1.6;
+        margin-bottom: 5px;
+        font-size: 20px;
+    }
+}
+@media(max-width:768px){
+    .refund-policy-wrapper ul{
+        padding-left: 3.5rem;
+    }
+    .refund-policy-wrapper ul .refund-heading{
+        font-size: 28px;
+        padding-left: 0px;
+    }
+    .refund-policy-wrapper ul:first-child{
+        padding-left: 1.5rem;
+    }
+    .refund-policy-wrapper ul li{
+        font-size: 15px;
+    }
+    .refund-policy-wrapper p{
+        margin-left: 40px;
+        font-size: 15px;
+    }
+    .refund-policy-wrapper h2{
+        /* font-size: 20px; */
+        margin-left: 15px;
+    }
+    .refund-policy-wrapper h3{
+        /* font-size: 18px; */
+        margin-left: 30px;
+    }
+}
+@media(max-width:576px){
+    .refund-policy-wrapper ul .refund-heading{
+        font-size: 22px;
+    }
+    .refund-policy-wrapper ul:first-child{
+        padding-left: 2rem;
+        margin-bottom: 6px;
+    }
+    .refund-policy-wrapper ul li{
+        line-height: 1.6;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+    .refund-policy-wrapper p + ul{
+        padding-left: 4.5rem;
+    }
+    .refund-policy-wrapper p{
+        margin-bottom: 10px;
+        font-size: 14px;
+        margin-left: 38px;
+        margin-right: 10px;
+    }
+    .refund-policy-wrapper h2{
+        font-size: 18px;
+    }
+    .refund-policy-wrapper h3{
+        font-size: 16px;
+    }
+}
+
+/* =================== Return and Exchange page ======================= */
+.return-header-wrapper h1{
+    font-size: 32px;
+}
+.return-form input,
+.return-form textarea{
+    /* margin: 10px auto 10px; */
+    background: rgba(29, 29, 29, 1);
+    border: 1px solid rgba(146, 146, 146, 1);
+    /* color: rgba(93, 93, 93, 1); */
+    color:#fff;
+    font-size: 14px;
+    padding: .5rem .75rem;
+    display: block;
+}
+.return-form input:focus,
+.return-form textarea:focus,
+.return-form input:hover,
+.return-form textarea:hover{
+    background: rgba(0,0,0,1);
+    box-shadow: 0 0 0 .25rem rgba(255, 255, 255, .25);
+    border: 1px solid #fff;
+    color:#fff;
+}
+.return-form  .form-check-input{
+    margin: auto auto;
+    padding: initial;
+}
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+.return-choose-option .form-check{
+    padding-left: 0.5rem;
+    margin-bottom: 0px;
+}
+.return-choose-option .form-check-label{
+    color:#fff;
+}
+.return-form .btn-submit{
+    background: linear-gradient(100.47deg, #C3942F 28.12%, #D89C27 41.31%, #E7DC96 53.42%, #DFC86F 65.82%, #D89C27 75.96%, #C99C30 84.47%);
+    color:#000;
+    border-radius: 6px;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 0.5rem 0.75rem;
+    letter-spacing: 0.2px;
+}
+.return-header-wrapper p{
+    letter-spacing: 0.3px;
+    color: rgba(163, 163, 163, 1);
+}
+.return-form-error {
+    color: #dc3545;
+    font-size: 14px;
+    font-weight: 700;
+}
+@media(max-width:991px){
+    .return-header-wrapper h1{
+        font-size: 30px;
+        line-height: 1.6;
+    }
+}
+@media(max-width:768px){
+    .return-header-wrapper h1{
+        font-size: 26px;
+    }
+    .return-header-wrapper p{
+        font-size: 15px;
+        line-height: 1.7;
+    }
+}
+@media(max-width:576px){
+    .return-header-wrapper h1{
+        font-size: 22px;
+    }
+    .return-header-wrapper p{
+        font-size: 14px;
+    }
+    .return-exchange-section .row{
+        --bs-gutter-x: 1rem;
+    }
+}
+
+/* =================== Help and Center Policy ======================= */
+.help-center-section h1{
+    font-size: 30px;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding-left: 6px;
+    color: #fff;
+    font-family: "Poppins", sans-serif;
+}
+.help-center-section h1 a{
+    color:#fff;
+}
+.help-center-section .accordion{
+    width: 80%;
+    margin: 30px auto;
+}
+.help-center-section .accordion-item:first-of-type{
+    border-radius: 8px;
+}
+.help-center-section .help-item{
+    margin: 15px auto;
+    background-color: #000;
+    border: 0px;
+}
+.help-center-section .help-item .accordion-header{
+    border-radius: 8px;
+}
+.help-center-section .accordion-item .accordion-button{
+    color:#fff;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    background-color: #000;
+    border: 1.5px solid transparent;
+    -webkit-mask: linear-gradient(transparent 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    border-radius: 8px;
+    box-shadow: none;
+    background: linear-gradient(#000, #000) padding-box, linear-gradient(100.47deg, #c3942f 28.12%, #d89c27 41.31%, #e7dc96 53.42%, #dfc86f 65.82%, #d89c27 75.96%, #c99c30 84.47%) border-box;
+    /* border: 1px solid yellow; */
+    padding: 1rem  1.25rem 1rem 4.9rem;
+}
+.help-center-section .accordion-item .accordion-button::before{
+    content:attr(data-number);
+    position: absolute;
+    background-color: #000;
+    left:5px;
+    font-size: 40px;
+    color:#212121;
+    padding: 0px 10px;
+}
+.help-center-section .accordion-item .accordion-button::after{
+    background-image: none;
+    --fa: "\+";
+    content: var(--fa) / "";
+    font-size: 32px;
+    --_fa-family: var(--fa-family, var(--fa-style-family, "Font Awesome 7 Free"));
+    /* display: var(--fa-display, inline-block); */
+    font-family: var(--_fa-family);
+    font-weight: 900;
+    line-height: 0.65;
+    width: var(--fa-width, 0.8em);
+}
+.help-center-section .accordion-item .accordion-button:not(.collapsed)::after{
+   --fa:"\f068";    
+}
+.help-center-section .accordion-collapse{
+    color:#fff;
+    margin: 15px auto;
+    background-color: #000;
+    border: 1.5px solid transparent;
+    -webkit-mask: linear-gradient(transparent 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    border-radius: 8px;
+    box-shadow: none;
+    position: relative;
+    
+    background: linear-gradient(#000, #000) padding-box, linear-gradient(100.47deg, #c3942f 28.12%, #d89c27 41.31%, #e7dc96 53.42%, #dfc86f 65.82%, #d89c27 75.96%, #c99c30 84.47%) border-box;
+}
+
+.help-center-section .accordion-item .accordion-body{
+    height: 100%;
+}
+.help-center-section #collapseThree .accordion-body{
+    height: 180px;
+}
+.help-center-section .accordion-item .accordion-body::before{
+    content:attr(data-number);
+    position: absolute;
+    background-color: transparent;
+    font-size: 150px;
+    color:#212121;
+    padding: 0px 10px;
+    z-index: -1;
+    top:-5%;
+    display: flex;
+    align-items: start;
+    font-weight: 600;
+    justify-content: center;
+    /* height: max-content;
+    display: contents; */
+}
+.help-center-section .account-ul{
+    list-style: decimal;
+}
+.help-center-section .accordion-item .accordion-body h2{
+    font-size: 22px;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    padding-left: 6px;
+    color: #fff;
+    font-family: "Poppins", sans-serif;
+    margin-bottom: 15px;
+}
+.help-center-section .address-ul li,
+.help-center-section .account-ul li{
+    font-size: 16px;
+    letter-spacing: 0.3px;
+    line-height: 1.9;
+    font-family: "Poppins", sans-serif;
+}
+.help-center-section .address-ul li a{
+    color:#fff;
+    font-weight: 600;
+    /* text */
+}
+.help-center-section .accordion-body p{
+    letter-spacing: 0.3px;
+}
+.help-center-section .accordion-body p a{
+    color: #fff;
+    font-weight: 600;
+}
+@media(max-width:992px){
+    .help-center-section h1{
+        font-size: 28px;
+    }
+    .help-center-section .accordion{
+        width: 98%;
+    }
+    .help-center-section .accordion-item .accordion-body h2{
+        font-size: 20px;
+    }
+    .help-center-section .accordion-item .accordion-button::before{
+        padding: 0px 5px;
+    }
+    .help-center-section .accordion-item .accordion-button{
+        padding: 1rem 1rem 1rem 4.45rem;
+    }
+}
+@media(max-width:768px){
+    .help-center-section h1{
+        font-size: 24px;
+    }
+    .help-center-section .accordion{
+        margin: 25px auto;
+    }
+    .help-center-section .accordion-item .accordion-button{
+        line-height: 1.7;
+        padding: 1rem 1rem 1rem 4rem;
+    }
+    .help-center-section .accordion-item .accordion-button::before{
+        padding: 0px 5px;
+        font-size: 34px;
+    }
+    .help-center-section .address-ul li, .help-center-section .account-ul li{
+        line-height: 1.8;
+        font-size: 15px;
+    }
+    .help-center-section .accordion-body p{
+        font-size: 15px;
+    }
+    .help-center-section .accordion-item .accordion-body h2{
+        font-size: 18px;
+    }
+}
+@media(max-width:576px){
+    .help-center-section h1{
+        font-size: 22px;
+    }
+    .help-center-section .accordion{
+        margin: 20px auto;
+    }
+    .help-center-section .accordion-item .accordion-button::before{
+        padding: 0px 0px 0px 3px;
+        font-size: 32px;
+    }
+    .help-center-section .accordion-item .accordion-button::after{
+        font-size: 30px;
+    }
+    .help-center-section .accordion-body p{
+        font-size: 14px;
+    }
+    .help-center-section .address-ul li, .help-center-section .account-ul li{
+        line-height: 1.7;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+    .help-center-section .accordion-item .accordion-body{
+        padding: 1rem 0.5rem;
+    }
+    .help-center-section .accordion-item .accordion-button{
+        padding: 1rem 0.6rem 1rem 4rem;
+    }
+    .help-center-section .accordion-item .accordion-body h2{
+        line-height: 1.6;
+    }
+}

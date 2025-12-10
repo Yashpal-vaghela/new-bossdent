@@ -91,28 +91,40 @@ const Footer = () => {
                 <h2>Categories</h2>
                 <ul className="footer-social-link">
                   <li>
-                    <Link to="#">Gloves</Link>
+                    <Link to="/products?category=all-gloves">Gloves</Link>
                   </li>
                   <li>
-                    <Link to="#">Masks</Link>
+                    <Link to="/products?category=all-mask">Masks</Link>
                   </li>
                   <li>
                     <Link to="#">Airotor</Link>
                   </li>
                 </ul>
               </div>
-              <div className="col-lg-2 col-md-3 col-4">
+              <div className="col-lg-2 col-md-3 col-sm-4 col-6">
                 <h2>Support</h2>
                 <ul className="footer-social-link">
-                  <li>
+                  {/* <li>
                     <Link to="#">FAQs</Link>
+                  </li> */}
+                  <li>
+                    <Link to="/help-center">Help Center</Link>
                   </li>
                   <li>
-                    <Link to="#">Returns & Refunds</Link>
+                    <Link to="/refund-and-returns-policy">Returns & Refunds</Link>
                   </li>
                   <li>
+                    <Link to="/return-exchange">Return & Exchange</Link>
+                  </li>
+                  <li>
+                    <Link to="/privacy-policy">Privacy Policy</Link>
+                  </li>
+                  <li>
+                    <Link to="/terms-and-conditions">Terms & Conditions</Link>
+                  </li>
+                  {/* <li>
                     <Link to="#">Track Your Order</Link>
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </div>

@@ -74,7 +74,7 @@ const HomeBanner = () => {
             return (
               <SwiperSlide key={index}>
                 <Link
-                  to={item.link}
+                  to={item?.link}
                   className={`banner-${index}-main`}
                   onMouseDown={handleHoldStart}
                   onMouseUp={handleHoldEnd}
@@ -88,7 +88,7 @@ const HomeBanner = () => {
                 >
                   <div className="banner-img-main">
                     <img
-                      src={item.img}
+                      src={item?.img}
                       className="banner-img img-fluid"
                       alt="home-banner-img"
                     ></img>
