@@ -5,37 +5,37 @@ export const About = () => {
   const DentalProduct = [
     {
       id: 1,
-      img: "/img/product-img.png",
+      img: "/img/about-img1.png",
       title: "Impression Trays",
       description: "durable and precise for accurate results",
     },
     {
       id: 2,
-      img: "/img/product-img.png",
+      img: "/img/about-img2.png",
       title: "Face Masks",
       description: "a reliable barrier for hygiene and safety",
     },
     {
       id: 3,
-      img: "/img/product-img.png",
+      img: "/img/about-img3.png",
       title: "Gloves",
       description: "comfortable protection for safe dental procedures",
     },
     {
       id: 4,
-      img: "/img/product-img.png",
+      img: "/img/about-img4.png",
       title: "Patient Bibs",
       description: "disposable protection for clean, stress-free treatment",
     },
     {
       id: 5,
-      img: "/img/product-img.png",
+      img: "/img/about-img5.png",
       title: "Surgeon Caps",
       description: "lightweight, hygienic coverage for professionals",
     },
     {
       id: 6,
-      img: "/img/product-img.png",
+      img: "/img/about-img6.png",
       title: "Drapes & Sleeves",
       description: "disposable solutions for a sterile environment",
     },
@@ -68,13 +68,14 @@ export const About = () => {
                 <p>That’s why we combine quality assurance, consistency, and trust to deliver solutions that help dental professionals focus on what matters most — their patients.</p>
                 <p>We began our journey in 2022 with a clear mission: to make professional-grade dental supplies easily accessible to dentists across India. Today, we are a trusted partner for clinics, hospitals, and dental professionals across the nation</p>
             </div>
-            <div className="col-lg-6 mt-xl-5 mt-lg-4 order-2 order-lg-2">
-                <h2>Our Values: Quality, Trust & Long term Partnership</h2>
+            <div className="col-lg-6 mt-xl-5 mt-lg-4 order-2 order-lg-1">
+                <h2 className="d-none d-lg-block">Our Values: Quality, Trust & Long term Partnership</h2>
                 <p>At Bossdent, we stand for quality, trust, and long-term partnerships. Driven by excellence, we continue to grow as a brand dentists can rely on — building trust with every delivery.</p>
-                <p>What started as a local initiative has now grown into a nationwide presence, serving clinics and professionals who count on us every day. Our story is shaped by one simple belief: dentists deserve supplies they never have to think twice about — and that’s exactly what we deliver.</p>
+                <p className="mb-2 mb-lg-3">What started as a local initiative has now grown into a nationwide presence, serving clinics and professionals who count on us every day. Our story is shaped by one simple belief: dentists deserve supplies they never have to think twice about — and that’s exactly what we deliver.</p>
             </div>
-            <div className="col-lg-6 mt-xl-5 mt-lg-0 order-1 order-lg-1">
-                <img src="/img/about-content-Img2.png" className="d-block mx-auto my-4 my-lg-0 mx-lg-0 img-fluid" alt="about-content-img"></img>
+            <div className="col-lg-6 mt-xl-5 mt-lg-0 order-1 order-lg-2">
+                <h2 className="d-block d-lg-none  mt-3 mt-lg-0">Our Values: Quality, Trust & Long term Partnership</h2>
+                <img src="/img/about-content-Img2.png" className="d-block mx-auto mt-2 mb-4 my-lg-0 mx-lg-0 img-fluid" alt="about-content-img"></img>
             </div>
           </div>
         </div>

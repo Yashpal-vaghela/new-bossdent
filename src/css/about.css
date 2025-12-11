@@ -140,6 +140,9 @@
     .dental-supply-info-section .card h3{
         font-size: 18px;
     }
+    .dental-supply-info-section h2, .trusted-section h2{
+        font-size: 26px;
+    }
     .dental-supply-info-section .card p{
         font-size: 14px;
         font-weight: 400;
@@ -149,6 +152,9 @@
         font-size: 14px;
         letter-spacing: 0.5px;
         line-height: 1.6;
+    }
+    .contact-info-section{
+        margin: 40px auto 60px;
     }
 }
 @media(max-width:576px){
@@ -163,5 +169,17 @@
     }
     .dental-supply-info-section h2, .trusted-section h2{
         font-size: 24px;
+    }
+}
+@media(max-width:480px){
+    .dental-supply-info-section .card{
+        height: 100%;
+        padding: 10px 5px;
+    }
+    .dental-supply-info-section .card h3{
+        font-size: 16px;
+    }
+    .dental-supply-info-section .card p{
+        font-size: 12px;
     }
 }

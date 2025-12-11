@@ -21,7 +21,6 @@ import { fetchCart } from "./redux/cartSlice";
 import { fetchWishList } from "./redux/wishlistSlice";
 import { fetchUser } from "./redux/userSlice";
 import { fetchCategories } from "./redux/categorySlice";
-// import { RouterLoader } from "./component/RouterLoader";
 
 function App() {
   const dispatch = useDispatch();
@@ -36,13 +35,12 @@ function App() {
     return () => {
       controller.abort(); // cleanup on unmount
     };
-  }, [dispatch]);
+  }, []);
   
   return (
     <React.Fragment>
        <BrowserRouter>
           <ToastContainer></ToastContainer>
-          {/* <RouterLoader></RouterLoader> */}
             <Navbar></Navbar>
             <Allrouters></Allrouters>
             <Footer></Footer>

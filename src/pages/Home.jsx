@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect,  useState } from "react";
 import HomeBanner from "../component/HomeBanner";
 import { Link } from "react-router-dom";
 
@@ -27,7 +27,7 @@ const Home = () => {
   //for fetching product
   const [dentalProducts, setDentalProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
-  const [errorProducts, setErrorProducts] = useState(null);
+  // const [errorProducts, setErrorProducts] = useState(null);
   // const visibleCategories = showAll ? categories : categories.slice(0, 5);
   const visibleCategories = categories;
  
