@@ -167,7 +167,7 @@ export const Checkout = () => {
                 <Link to="/">Home</Link>
               </li>
               <li className="breadcrumb-item active">
-                <Link to="/products">Checkout page</Link>
+                <Link to="/checkout">Checkout page</Link>
               </li>
             </ol>
           </nav>

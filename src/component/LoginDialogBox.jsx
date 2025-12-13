@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import BASE_URL from "../api/config";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
 
@@ -11,34 +11,46 @@ const LoginDialogBox = () => {
   const [time, setTime] = useState(60);
   const [showResend, setShowResend] = useState(false);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  // const navigate = useNavigate();
+  const location  = useLocation();
+  const navigate = useNavigate();
 
   const handleRequestOTP = async (e, action) => {
-    console.log("OTP requested",formvalue);
-    const modal = document.getElementById("exampleModal");
-    const isModalOpen = modal && modal.classList.contains("show");
+    // console.log("OTP requested",formvalue);
+    // const modal = document.getElementById("exampleModal");
+    // const isModalOpen = modal && modal.classList.contains("show");
 
-    console.log("isModalOpen",isModalOpen);
+    // console.log("isModalOpen",isModalOpen);
     
-  // if (!isModalOpen) {
-  //   toast.error("Please enter phone number");
-  // }
+    // if (!isModalOpen) {
+    //   toast.error("Please enter phone number");
+    // }
 
     if (formvalue?.phone_number || formvalue !== "") {
       if (action === "login") {
-        console.log("login api");
+        // console.log("login api");
         setStep(2);
         setTime(60);
         setShowResend(false);
-        await axios
-          .post(`${BASE_URL}/login/request-otp`, formvalue)
-          .then((response) => console.log("response", response))
+        await axios.post(`${BASE_URL}/login/request-otp`, formvalue,{
+            headers:{
+              "Content-Type":"application/json",
+              "Authorization":"Basic ODA3M2FiM2JjODo3ZTlmNTFlZDc5YjIxMTlmYTJmZA=="
+            }
+          })
+          .then((response) =>{
+            console.log("response", response);
+          })
           .catch((err) => console.log("err", err));
       } else {
-        console.log("resend api");
-        // await axios.post(`${BASE_URL}/login/resend-otp`,formvalue)
-        // .then((res)=>console.log("res",res))
-        // .catch((err)=>console.error("error",err))
+        // console.log("resend api");
+        await axios.post(`${BASE_URL}/login/resend-otp`,formvalue,{
+          headers:{
+            "Content-Type":"application/json",
+            "Authorization":"Basic ODA3M2FiM2JjODo3ZTlmNTFlZDc5YjIxMTlmYTJmZA=="
+          }
+        })
+        .then((res)=>console.log("res",res))
+        .catch((err)=>console.error("error",err))
       }
     } else{
       toast.error("please enter phone number");
@@ -115,7 +127,7 @@ const LoginDialogBox = () => {
     // If all boxes are filled → Verify OTP
     if (newOtp.every((digit) => digit !== "")) {
       const finalOtp = newOtp.join("");
-      console.log("Full OTP entered:", finalOtp);
+      // console.log("Full OTP entered:", finalOtp);
 
       try {
         const res = await axios.post(`${BASE_URL}/login/verify-otp`, {
@@ -130,9 +142,19 @@ const LoginDialogBox = () => {
           setTime(60);
           setShowResend(false);
           setOtp(["", "", "", "", "", ""]);
-        }, 200);
-        const modalElement = document.querySelectorAll(".modal");
-        console.log("modalElement",modalElement.classList);
+          const redirectPath = location.pathname || "/";
+          navigate(redirectPath);
+        }, 2000);
+        // const modalElement = document.querySelectorAll(".modal");
+        const modal = document.getElementById("exampleModal");
+        const isModalOpen = modal && modal.classList.contains("show");
+        if(isModalOpen){
+          modal.classList.remove("show");
+          document.querySelector(".modal-backdrop")?.remove();
+          document.body.classList.remove("modal-open");
+          document.body.style.overflow = "";
+          document.body.style.paddingRight = "";
+        }
         // navigate("/profile");
         toast.success("OTP verified successfully!");
         // console.log("✅ OTP Verified Successfully:", res.data);
@@ -246,7 +268,6 @@ const LoginDialogBox = () => {
                     <input type="text" maxlength="1" />
                     <input type="text" maxlength="1" />
                 </div> */}
-                {/* {console.log("formatted",formattedTime,showResend)} */}
                 <div className="text-center my-5 resend-wrapper">
                   {!showResend ? (
                     <div className="timer">{formattedTime}</div>

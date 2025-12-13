@@ -5,37 +5,37 @@ export const About = () => {
   const DentalProduct = [
     {
       id: 1,
-      img: "/img/about-img1.png",
+      img: "/img/about-img1.webp",
       title: "Impression Trays",
       description: "durable and precise for accurate results",
     },
     {
       id: 2,
-      img: "/img/about-img2.png",
+      img: "/img/about-img2.webp",
       title: "Face Masks",
       description: "a reliable barrier for hygiene and safety",
     },
     {
       id: 3,
-      img: "/img/about-img3.png",
+      img: "/img/about-img3.webp",
       title: "Gloves",
       description: "comfortable protection for safe dental procedures",
     },
     {
       id: 4,
-      img: "/img/about-img4.png",
+      img: "/img/about-img4.webp",
       title: "Patient Bibs",
       description: "disposable protection for clean, stress-free treatment",
     },
     {
       id: 5,
-      img: "/img/about-img5.png",
+      img: "/img/about-img5.webp",
       title: "Surgeon Caps",
       description: "lightweight, hygienic coverage for professionals",
     },
     {
       id: 6,
-      img: "/img/about-img6.png",
+      img: "/img/about-img6.webp",
       title: "Drapes & Sleeves",
       description: "disposable solutions for a sterile environment",
     },
@@ -60,7 +60,7 @@ export const About = () => {
         <div className="container">
           <div className="row align-items-center justify-content-center">
             <div className="col-lg-6">
-                <img src="/img/about-content-Img1.png" className="d-block mx-auto mb-3 mb-lg-0 mx-lg-0 img-fluid" alt="about-contentImg"></img>
+                <img src="/img/about-content-Img1.webp" className="d-block mx-auto mb-3 mb-lg-0 mx-lg-0 img-fluid" alt="about-contentImg"></img>
             </div>
             <div className="col-lg-6">
                 <h2>We are a Trusted Dental Supplier for Every Dentist</h2>
@@ -75,7 +75,7 @@ export const About = () => {
             </div>
             <div className="col-lg-6 mt-xl-5 mt-lg-0 order-1 order-lg-2">
                 <h2 className="d-block d-lg-none  mt-3 mt-lg-0">Our Values: Quality, Trust & Long term Partnership</h2>
-                <img src="/img/about-content-Img2.png" className="d-block mx-auto mt-2 mb-4 my-lg-0 mx-lg-0 img-fluid" alt="about-content-img"></img>
+                <img src="/img/about-content-Img2.webp" className="d-block mx-auto mt-2 mb-4 my-lg-0 mx-lg-0 img-fluid" alt="about-content-img"></img>
             </div>
           </div>
         </div>
@@ -123,7 +123,7 @@ export const About = () => {
             </ul>
             <div className="row align-items-center justify-content-between contact-info-section">
                 <div className="col-lg-6 mb-3 col-md-6">
-                    <img src="/img/contact-info-img.png" className="img-fluid" alt="contact-info-img"></img>
+                    <img src="/img/contact-info-img.webp" className="img-fluid" alt="contact-info-img"></img>
                 </div>
                 <div className="col-lg-6 col-md-6">
                     <p>Connect with us today to explore our full catalogue of professional-quality dental supplies and build a foundation of confident care for your practice</p>

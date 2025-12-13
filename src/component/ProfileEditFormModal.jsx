@@ -1,6 +1,5 @@
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import React, { useState } from 'react';
 import BASE_URL from '../api/config';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
@@ -22,7 +21,6 @@ export const ProfileEditFormModal = ({States,user,token}) => {
             state: Object.keys(user).length !== 0 ? user?.state : "",
             zipcode: Object.keys(user).length !== 0 ? user?.zipcode : "",
     };
-    console.log("user----",user);
     const dispatch = useDispatch();
     const formik = useFormik({
         initialValues: originalValues,
@@ -31,13 +29,12 @@ export const ProfileEditFormModal = ({States,user,token}) => {
         validateOnChange:true,
         validateOnBlur:false,
         onSubmit:async ()=>{
-            console.log("submit",formik?.values);
             const isSame = JSON.stringify(formik?.values) === JSON.stringify(originalValues);
             if(isSame){
                 console.log("No Changes found - API Not Called");
                 return;
             }
-            console.log("Changes detected — calling API...", formik.values);
+            // console.log("Changes detected — calling API...", formik.values);
             await axios.post(`${BASE_URL}/save-user-data`,(formik?.values),{
                 headers:{
                     Authorization:`Bearer ${token}`,
@@ -58,7 +55,6 @@ export const ProfileEditFormModal = ({States,user,token}) => {
             .catch((err)=>console.log("err",err))
         }
     })
-    // console.log("user----------",user,formik?.values)
     return (
         <div className="modal fade" id="EditformModal" tabIndex="-1" aria-labelledby="EditformModalLabel" aria-hidden="true">
           <div className="modal-dialog">

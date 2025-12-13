@@ -2,11 +2,10 @@ import React from "react";
 import { Link, useLocation, useNavigate} from "react-router-dom";
 
 export const ProfileSideBar = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  console.log("location", location);
+    const location = useLocation();
+    const navigate = useNavigate();
     const handleLogout = () => {
-      localStorage.removeItem("token");
+      localStorage.removeItem("auth_token");
       navigate("/");
     };
   return (

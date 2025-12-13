@@ -4,8 +4,9 @@ body {
 }
 .navbar-wrapper {
   background-color: #000;
-  padding: 0px 0px 22px 0px;
+  /* padding: 0px 0px 22px 0px; */
   /* position: relative; */
+  padding: 0px 0px 12px 0px;
   top: 0px;
   z-index: 1001;
   width: 100%;

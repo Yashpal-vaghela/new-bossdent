@@ -32,13 +32,11 @@ const Navbar = () => {
       const filterData =  response?.data?.suggestions?.filter((product) => {
         return product?.name.toLowerCase().includes(query.toLowerCase());
       });
-      console.log("filterData",filterData);
       const products = filterData.map((product) => ({
         id: product?.id,
         title: product?.name,
         slug: product?.slug,
       }));
-      console.log("response",response,"products",products);
       setSuggestions(products);
     } catch (error) {
       console.error("Error fetching search suggestions:",error);
@@ -58,9 +56,6 @@ const Navbar = () => {
   };
   const handleOffcanvas1 = () => {
     var x = document.getElementById("close");
-    // const y = document.getElementsByClassName("show");
-
-    // console.log("x", x);
     if (window.innerWidth <= 991) {
       if (x?.display !== "none") {
         return x.click();
@@ -77,7 +72,6 @@ const Navbar = () => {
       const navbarContactElement = document.querySelector(".navbar-contact-wrapper");
       const searchInputMobile = document.getElementById("searchInputMobile");
 
-      // console.log("search",searchQuery,"searchIcon",searchIcon,"a",a,a.classList);
       if (window.innerWidth > 991) {
         if (window.scrollY >= 20) {
           topNav !== null ? topNav.style.display = "none":<></>;
@@ -377,11 +371,33 @@ const Navbar = () => {
                     </Link>
                   </li>
                   <li className="nav-item dropdown">
-                    <div
+                    <Link className="nav-link dropdown-toggle" to="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Categories{" "}
+                      <img
+                        src="/img/arrow-down-img.svg"
+                        className="arrow-down-img img-fluid"
+                        alt="arrow-down-img"
+                      ></img>
+                    </Link>
+                    <ul className="dropdown-menu">
+                      {categories?.map((category, index) => (
+                        <li key={index}>
+                          <Link
+                            to={`/products?category=${category?.slug}`}
+                            className="dropdown-item"
+                            onClick={(e) => {
+                              handleOffcanvas1(); 
+                            }}
+                          >
+                            {category?.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                    {/* <div
                       className="nav-link dropdown-toggle"
                       role="button"
                       data-bs-toggle="dropdown"
-                      aria-expanded="false"
                     >
                       Categories{" "}
                       <img
@@ -394,9 +410,13 @@ const Navbar = () => {
                           return (
                             <li key={index}>
                               <Link
-                                to={category?.slug}
+                                to={`/products?category=${category?.slug}`}
                                 className="dropdown-item"
-                                onClick={handleOffcanvas1}
+                                onClick={(e) => {
+                                  e.stopPropagation();   
+                                  handleOffcanvas1();
+                                }}
+                                // onClick={handleOffcanvas1}
                               >
                                 {category?.name}
                               </Link>
@@ -404,7 +424,7 @@ const Navbar = () => {
                           );
                         })}
                       </ul>
-                    </div>
+                    </div> */}
                   </li>
                   <li className="nav-item">
                     <Link to="/about" onClick={handleOffcanvas1}>
@@ -456,7 +476,6 @@ const Navbar = () => {
                             value={searchQuery}
                             onChange={handleSearchChange}
                           ></input>
-                          {console.log("searchIcon",searchIcon,searchQuery)}
                           {searchIcon &&
                             (searchQuery && (
                               <>

@@ -20,6 +20,8 @@ export const Product = () => {
   const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
   const [showVariationModal, setShowVariationModal] = useState(false);
   const [selectedProductForModal, setSelectedProductForModal] = useState(null);
+  const [sortOrder,setSortOrder] = useState("");
+  const [selectCategory,setSelectCategory] = useState("");
   const [itemsPerPage] = useState(() => {
     if (window.innerWidth >= 1400) {
       return 12;
@@ -49,12 +51,19 @@ export const Product = () => {
         apiUrl += `${BASE_URL}/products`
       }
       const res = await axios.get(apiUrl,{signal: controller.signal});
-      const allProducts = res.data.data ? res.data.data : res.data || [];
+      let allProducts = res.data.data ? res.data.data : res.data || [];
+      if(sortOrder === "high-low"){
+        allProducts = allProducts.sort((a,b)=>getFinalPrice(b) - getFinalPrice(a));
+      }
+      if(sortOrder === "low-high"){
+        allProducts = allProducts.sort((a,b)=>getFinalPrice(a) - getFinalPrice(b));
+      }
+     
       const indexOfLastProduct = currentPage * itemsPerPage;
       const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
       const currentsProducts = allProducts.slice(indexOfFirstProduct, indexOfLastProduct);
       const totalPages = Math.ceil(allProducts.length / itemsPerPage);
-     
+      // console.log("allProducts",allProducts,currentsProducts,)
       setTotalPages(totalPages);
       setProducts(currentsProducts);
       // setFinalProducts(currentsProducts);
@@ -66,6 +75,14 @@ export const Product = () => {
     }
   };
 
+  const handleFilterPriceProduct = (e) =>{
+    setSortOrder(e.target.value);
+  }
+  
+  const getFinalPrice = (p) =>{
+    return Number(p.sale_price || p.price || p.regular_price || 0);
+  }
+
   const handlePageChange = (pageNumber) => {
     if (pageNumber < 1 || pageNumber > totalPages) return;
     setcurrentPage(pageNumber);
@@ -76,16 +93,18 @@ export const Product = () => {
     const controller = new AbortController();
     fetchProductData(controller);
     return () => controller.abort();
-  }, [currentPage]);
+  }, [currentPage,searchParams,sortOrder]);
  
   const handleFilterProduct = async (e, slug) => {
     if (slug === "all-products") {
       navigate("/products");
       const controller = new AbortController();
       fetchProductData(controller);
+      setSelectCategory("");
       return () =>controller.abort();
     } else {
       setloading(true);
+      setSelectCategory(e.target.value);
       navigate(`?category=${slug}`)
       try {
         const res = await axios.get(`${BASE_URL}/category/${slug}`);
@@ -263,8 +282,17 @@ export const Product = () => {
                   <Link to="/">Home</Link>
                 </li>
                 <li className="breadcrumb-item active">
-                  <Link to="/products">Products</Link>
+                  {
+                    searchParams.size !== 0 ? <Link to="#">Category</Link> : <Link to="/products">Products</Link>
+                  }
                 </li>
+                {
+                  searchParams.size !== 0 && (
+                    <li className="breadcrumb-item active">
+                      <Link to={`/products?category=${searchParams.get("category")}`}>{searchParams.get("category")?.replace("all-","")}</Link>
+                    </li>
+                  )
+                }
               </ol>
             </nav>
           </div>
@@ -287,6 +315,7 @@ export const Product = () => {
                     className="form-select w-auto"
                     aria-label="Default select example"
                     onChange={(e) => handleFilterProduct(e, e.target.value)}
+                    value={selectCategory || ""}
                   >
                     <option>Category</option>
                     <option value="all-products">All Products</option>
@@ -301,10 +330,12 @@ export const Product = () => {
                   <select
                     className="form-select w-auto"
                     aria-label="Default select example"
+                    onChange={(e)=>handleFilterPriceProduct(e)}
+                    value={sortOrder || ""}
                   >
-                    <option>Price</option>
-                    <option>100</option>
-                    <option>200</option>
+                    <option value="">Price</option>
+                    <option value="high-low">High to low</option>
+                    <option value="low-high">low to high</option>
                   </select>
                 </div>
                 <div className="row justify-content-lg-start justify-content-md-center gap-3 gap-sm-0 mb-5">

@@ -46,7 +46,7 @@ const Footer = () => {
         </div>
         <div className="container pt-4 pb-0">
           <div className="footer-main-content mb-2 mb-sm-3 mb-md-4">
-            <div className="row mt-lg-3">
+            <div className="row mt-lg-3 justify-content-between">
               <div className="col-lg-4">
                 <img
                   src="/img/logo2.svg"
@@ -66,28 +66,35 @@ const Footer = () => {
                     <Link to="/aboutus">About Us</Link>
                   </li>
                   <li>
-                    <Link to="#">Social Media</Link>
+                    <Link to="/contact">Contact Us</Link>
                   </li>
                   <li>
-                    <Link to="/contactus">Contact Us</Link>
+                    <Link to="/products">Products</Link>
                   </li>
+                  <li>
+                    <Link to="#">Gallery</Link>
+                  </li>
+                
                 </ul>
               </div>
-              <div className="col-lg-2 col-md-3 col-4">
-                <h2>Shop</h2>
+              <div className="col-lg-3 col-md-3 col-4">
+                <h2>Policy</h2>
                 <ul className="footer-social-link">
                   <li>
-                    <Link to="/products">All Products</Link>
+                    <Link to="/refund-and-returns-policy">Refunds & Returns Policy</Link>
                   </li>
                   <li>
-                    <Link to="#">New Arrivals</Link>
+                    <Link to="/privacy-policy">Privacy Policy</Link>
                   </li>
                   <li>
-                    <Link to="#">Best Sellers</Link>
+                    <Link to="/terms-and-conditions">Terms & Conditions</Link>
+                  </li>
+                  <li>
+                    <Link to="#">Sitemap</Link>
                   </li>
                 </ul>
               </div>
-              <div className="col-lg-2 col-md-3 col-4">
+              {/* <div className="col-lg-2 col-md-3 col-4">
                 <h2>Categories</h2>
                 <ul className="footer-social-link">
                   <li>
@@ -100,20 +107,26 @@ const Footer = () => {
                     <Link to="#">Airotor</Link>
                   </li>
                 </ul>
-              </div>
+              </div> */}
               <div className="col-lg-2 col-md-3 col-sm-4 col-6">
-                <h2>Support</h2>
+                <h2>Help</h2>
                 <ul className="footer-social-link">
-                  {/* <li>
-                    <Link to="#">FAQs</Link>
-                  </li> */}
+                  <li>
+                    <Link to="#">Payment</Link>
+                  </li>
+                  <li>
+                    <Link to="/return-exchange">Return Order</Link>
+                  </li>
+                  <li>
+                    <Link to="#">Cancel Order</Link>
+                  </li>
                   <li>
                     <Link to="/help-center">Help Center</Link>
                   </li>
                   <li>
-                    <Link to="/refund-and-returns-policy">Returns & Refunds</Link>
+                    <Link to="/refund-and-returns-policy">Contact for Bulk</Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link to="/return-exchange">Return & Exchange</Link>
                   </li>
                   <li>
@@ -121,7 +134,7 @@ const Footer = () => {
                   </li>
                   <li>
                     <Link to="/terms-and-conditions">Terms & Conditions</Link>
-                  </li>
+                  </li> */}
                   {/* <li>
                     <Link to="#">Track Your Order</Link>
                   </li> */}

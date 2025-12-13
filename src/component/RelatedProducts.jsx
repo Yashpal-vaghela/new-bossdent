@@ -62,13 +62,13 @@ export const RelatedProducts = ({relatedproducts,handleWishlist,wishlistId1,hand
                       <div className="d-block">
                         <h4 className="related-product-title">{item?.name}</h4>
                         <p className="related-product-price">Starting at: ₹{Number(item?.price).toFixed(2)}</p>
-                        <div className="rating-stars">
+                        {/* <div className="rating-stars">
                           <i className="fa-solid fa-star"></i>
                           <i className="fa-solid fa-star"></i>
                           <i className="fa-solid fa-star"></i>
                           <i className="fa-solid fa-star"></i>
                           <i className="fa-solid fa-star"></i>
-                        </div>
+                        </div> */}
                       </div>
                       <img src="/img/addTocart-icon.svg" className="img-fluid" alt="addToCart-icon" onClick={(e)=>handleAddToCartModal(e,item,0,1,item.variations,item.type)}></img> 
                     </div>

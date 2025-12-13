@@ -6,7 +6,8 @@ import * as yup from "yup";
 
 const ReturnExchangeSchema = yup.object().shape({
   first_name: yup.string().required("First Name field is required"),
-  phone_number: yup
+  last_name:yup.string().required("Last Name field is required"),
+  contact_number: yup
     .number()
     .min(10, "The phone number must be a vaild number.")
     .required("Phone field is required"),
@@ -21,7 +22,8 @@ const ReturnExchangeSchema = yup.object().shape({
 export const ReturnExchange = () => {
   const initialValues = {
     first_name: "",
-    phone_number: "",
+    last_name:"",
+    contact_number: "",
     order_number: "",
     query: "",
     return_or_replace: "",
@@ -41,7 +43,8 @@ export const ReturnExchange = () => {
             `https://admin.bossdentindia.com/wp-json/custom/v1/return-exchange`,
             {
               first_name: formik?.values.first_name,
-              phone_number: formik?.values.phone_number,
+              last_name: formik?.values.last_name,
+              contact_number: formik?.values.contact_number,
               order_number: formik?.values.order_number,
               query: formik?.values.query,
               return_or_replace: formik?.values.return_or_replace,
@@ -93,7 +96,7 @@ export const ReturnExchange = () => {
                 >
                   <input
                     className="form-control"
-                    placeholder="Enter a Name"
+                    placeholder="Enter First Name"
                     name="first_name"
                     type="text"
                     value={formik?.values?.first_name || ""}
@@ -106,23 +109,29 @@ export const ReturnExchange = () => {
                     </span>
                   )}
                 </div>
+                <div className={`${formik?.errors?.last_name ? "my-3" : "mb-4"}`}>
+                  <input className="form-control" placeholder="Enter Last Name" name="last_name" type="text" value={formik?.values.last_name || ""} onChange={formik?.handleChange} onBlur={formik?.handleBlur}></input>
+                  {formik?.errors?.last_name && (
+                    <span className="return-form-error">{formik?.errors?.last_name}</span>
+                  )}
+                </div>
                 <div
                   className={`${
-                    formik?.errors?.phone_number ? "my-3" : "mb-4"
+                    formik?.errors?.contact_number ? "my-3" : "mb-4"
                   }`}
                 >
                   <input
                     className="form-control"
                     placeholder="Phone Number"
-                    name="phone_number"
+                    name="contact_number"
                     type="number"
-                    value={formik?.values?.phone_number || ""}
+                    value={formik?.values?.contact_number || ""}
                     onChange={formik?.handleChange}
                     onBlur={formik?.handleBlur}
                   ></input>
-                  {formik?.errors?.phone_number && (
+                  {formik?.errors?.contact_number && (
                     <span className="return-form-error">
-                      {formik?.errors?.phone_number}
+                      {formik?.errors?.contact_number}
                     </span>
                   )}
                 </div>
@@ -207,7 +216,7 @@ export const ReturnExchange = () => {
             </div>
             <div className="col-lg-6 col-md-12 order-lg-2 order-1">
               <img
-                src="/img/refund-exchange-img.png"
+                src="/img/refund-exchange-img.webp"
                 alt="refund-exchange-img"
                 className="img-fluid"
               ></img>

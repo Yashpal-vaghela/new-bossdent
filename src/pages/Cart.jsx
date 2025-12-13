@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../api/config";
-import Loader1 from "../component/Loader1";
+// import Loader1 from "../component/Loader1";
 import { AddToCart, CartCounter, CartTotal } from "../redux/cartSlice";
 import useValidateUser from "../component/useValidateUser";
 import { toast } from "react-toastify";
@@ -101,15 +101,15 @@ const Cart = () => {
 
   return (
     <div className="home-main cart-main">
-      <section className="breadcrumb-section pt-2 pt-sm-2 pb-2">
+      <section className="Breadcrumbs-section pt-2 pt-sm-2 pb-2">
         <div className="container">
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
-                <Link to="#">Home</Link>
+                <Link to="/">Home</Link>
               </li>
-              <li className="breadcrumb-item active" aria-current="page">
-                Cart
+              <li className="breadcrumb-item active">
+                <Link to="/cart">Cart</Link>
               </li>
             </ol>
           </nav>

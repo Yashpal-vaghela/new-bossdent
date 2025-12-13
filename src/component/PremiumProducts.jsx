@@ -6,11 +6,9 @@ const PremiumProducts = () => {
     const [premiumProducts, setPremiumProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
-    useEffect(()=>{
-        const fetchPremiumProducts = async () => {
+    const fetchPremiumProducts = async (controller) => {
             try{
-                const response = await axios.get(`${BASE_URL}/category/premium-product`);
+                const response = await axios.get(`${BASE_URL}/category/premium-product`,{signal:controller.signal});
                 const product = response.data?.data || [];
                 setPremiumProducts(product);
             }catch (error){
@@ -20,7 +18,12 @@ const PremiumProducts = () => {
                 setLoading(false);
             }
         };
-        fetchPremiumProducts();
+    useEffect(()=>{
+       const controller = new AbortController();
+        fetchPremiumProducts(controller);
+        return () =>{
+            controller.abort();
+        }
     },[]);
   return (
     <section className='premium-products-section'>

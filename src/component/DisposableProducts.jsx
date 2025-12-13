@@ -11,21 +11,24 @@ const DisposableProducts = () => {
     const [disposableProduct, SetDisposableProduct] = useState([]);
     const[loading, setLoading] = useState(true);
     const[error, setError] = useState(null);
-
-    useEffect(() =>{
-        const fetchDisposableProducts = async () =>{
-            try{
-                const response = await axios.get(`${BASE_URL}/category/disposable`);
+    const fetchDisposableProducts = async (controller) =>{
+        try{
+                const response = await axios.get(`${BASE_URL}/category/disposable`,{signal:controller.signal});
                 const product = response.data?.data ||[];
                 SetDisposableProduct(product)
-            } catch (error){
+        } catch (error){
                 console.error("Error fetching the Disposable Products:", error);
                 setError("Failed to load Disposable Product.");
-            } finally {
+        } finally {
                 setLoading(false);
-            }
         }
-        fetchDisposableProducts();
+    }
+    useEffect(() =>{
+      const controller = new AbortController();
+      fetchDisposableProducts(controller);
+      return () =>{
+        controller.abort();
+      }
     },[]);
   return (
     <section className="RecentSearch-section">
@@ -43,7 +46,8 @@ const DisposableProducts = () => {
             spaceBetween={0}
             slidesPerView={2}
             pagination={{ clickable: true }}
-            autoplay={{ delay: 3000, disableOnInteraction: false }}
+            autoplay="false"
+            // autoplay={{ delay: 3000, disableOnInteraction: false }}
             loop={true}
             breakpoints={{
               576: { slidesPerView: 2 },
@@ -67,9 +71,9 @@ const DisposableProducts = () => {
                         alt={item.name}
                         className="card-img-top img-fluid"
                       ></img>
-                      <div className="card-body d-flex align-items-center justify-content-between px-0 px-lg-3 px-md-0 py-2">
+                      <div className="card-body d-flex align-items-center justify-content-between px-2 px-lg-3 px-md-2 py-2">
                         <div className="d-block">
-                          <h2 className="product-card-title mb-0">
+                          <h2 className="product-card-title mb-1">
                             {item.name}
                           </h2>
                           <p className="product-price mb-0">

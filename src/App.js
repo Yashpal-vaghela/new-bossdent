@@ -16,19 +16,20 @@ import "./css/contact.css";
 import "./css/about.css";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchCart } from "./redux/cartSlice";
 import { fetchWishList } from "./redux/wishlistSlice";
 import { fetchUser } from "./redux/userSlice";
 import { fetchCategories } from "./redux/categorySlice";
+import Loader1 from "./component/Loader1";
 
 function App() {
   const dispatch = useDispatch();
-
+  const loading = useSelector((state) => state.category.loading);
   useEffect(() => {
     const controller = new AbortController();
     // console.log("controller",controller.signal);
-    dispatch(fetchUser(undefined,{ signal: controller.signal }));
+    dispatch(fetchUser(undefined, { signal: controller.signal }));
     dispatch(fetchCart(undefined, { signal: controller.signal }));
     dispatch(fetchWishList(undefined, { signal: controller.signal }));
     dispatch(fetchCategories(undefined, { signal: controller.signal }));
@@ -36,15 +37,15 @@ function App() {
       controller.abort(); // cleanup on unmount
     };
   }, []);
-  
+
   return (
     <React.Fragment>
-       <BrowserRouter>
-          <ToastContainer></ToastContainer>
-            <Navbar></Navbar>
-            <Allrouters></Allrouters>
-            <Footer></Footer>
-        </BrowserRouter>
+      <BrowserRouter>
+        <ToastContainer></ToastContainer>
+        <Navbar></Navbar>
+        {loading === true ? <Loader1></Loader1> : <Allrouters></Allrouters>}
+        <Footer></Footer>
+      </BrowserRouter>
     </React.Fragment>
   );
 }

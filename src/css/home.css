@@ -271,6 +271,12 @@
 .disposable-swiper .card {
   border: 1px solid #fff !important;
 }
+.disposable-swiper .card .card-body .d-block{
+  height: 70px;
+}
+.disposable-swiper .swiper-pagination .swiper-pagination-bullet{
+  background:  #fff;
+}
 
 .product-filter-category-list {
   display: flex;
@@ -411,6 +417,9 @@
     width: 23%;
     padding: 9px;
   }
+  .card .discount-badge{
+    top:3px !important
+  }
   /* .dental-product-section h2{
         margin-bottom: 0px;
     } */
@@ -446,6 +455,9 @@
   .RecentSearch-section .card-body .shopping-bag-icon {
     padding: 9px;
     width: 25%;
+  }
+  .disposable-swiper .card-body .shopping-bag-icon{
+    width: 18% !important;
   }
   .Otherbanner-section .col-lg-4 {
     margin-bottom: 25px;
@@ -492,6 +504,7 @@
     width: 20%;
     padding: 12px;
   }
+ 
   .dental-product-section {
     padding: 5px 0px 20px;
   }
@@ -569,6 +582,9 @@
   }
   .category-subtitle{
     font-size: 20px;
+  }
+   .disposable-swiper .card-body .shopping-bag-icon{
+    padding: 5px;
   }
 }
 @media(min-width:992px){

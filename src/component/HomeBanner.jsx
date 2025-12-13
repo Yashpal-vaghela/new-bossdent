@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 const HomeBanner = () => {
   const swiperRef = useRef(null);
   const bannerImages = [
-    { img: "/img/Discount-banner.webp", link: "/products" },
+    // { img: "/img/Discount-banner.webp", link: "/products" },
     {
       img: "/img/Patient-Drape-premuim.webp",
       link: "/products?category=119",

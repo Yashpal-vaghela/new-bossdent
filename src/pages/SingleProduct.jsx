@@ -4,9 +4,9 @@ import BASE_URL from "../api/config";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "../css/singleproduct.css";
-import { Swiper, SwiperSlide } from "swiper/react";
+// import { Swiper, SwiperSlide } from "swiper/react";
 import { toast } from "react-toastify";
-import { Autoplay, Navigation, Pagination, Thumbs,} from "swiper/modules";
+// import { Autoplay, Navigation, Pagination, Thumbs,} from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
@@ -22,11 +22,11 @@ import useValidateUser from "../component/useValidateUser";
 const SingleProduct = () => {
   const { slug } = useParams();
   const [singleProduct, setSingleProduct] = useState([]);
-  const [rating, setRating] = useState(0);
+  // const [rating, setRating] = useState(0);
   const [loadMore, setLoadMore] = useState(false);
   const [showQuantity, setShowQuantity] = useState([]);
-  const swiperRef = useRef(null);
-  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  // const swiperRef = useRef(null);
+  // const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [quantity, setQuantity] = useState({});
   const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
   const cartData = useSelector((state) => state?.cart?.cart);
@@ -480,7 +480,15 @@ const SingleProduct = () => {
                     ></img>
                   )}
                 </div>
-                <Swiper
+                 <div className="singleProduct-img-wrapper d-flex  d-lg-none h-100 mb-2 align-items-center">
+                          <img
+                            // src={item?.img}
+                            src={singleProduct?.image}
+                            className="singleProduct-img  m-auto img-fluid"
+                            alt="singleProduct-img"
+                          ></img>
+                        </div>
+                {/* <Swiper
                   ref={swiperRef}
                   spaceBetween={30}
                   centeredSlides={true}
@@ -506,7 +514,7 @@ const SingleProduct = () => {
                       </SwiperSlide>
                     );
                   })}
-                </Swiper>
+                </Swiper> */}
                 {/* <Swiper
                   onSwiper={(swiper) => setThumbsSwiper(swiper || [])}
                   loop={productImages.length }
@@ -575,7 +583,15 @@ const SingleProduct = () => {
                           )}
                         </div>
                         <div className="card-body">
-                          <Swiper
+                            <div className="singleProduct-img-wrapper d-none d-lg-flex h-100 mb-5 align-items-center">
+                          <img
+                            // src={item?.img}
+                            src={singleProduct?.image}
+                            className="singleProduct-img  m-auto img-fluid"
+                            alt="singleProduct-img"
+                          ></img>
+                        </div>
+                          {/* <Swiper
                             ref={swiperRef || null}
                             spaceBetween={30}
                             centeredSlides={true}
@@ -601,7 +617,7 @@ const SingleProduct = () => {
                                 </SwiperSlide>
                               );
                             })}
-                          </Swiper>
+                          </Swiper> */}
                           {/* <Swiper
                             // onSwiper={setThumbsSwiper}
                             onSwiper={(swiper) => setThumbsSwiper(swiper || [])}
@@ -639,7 +655,7 @@ const SingleProduct = () => {
                                 <option>300</option>
                                 <option>400</option>
                               </select>
-                              <h3 className="review-title">
+                              {/* <h3 className="review-title">
                                 Ratings & Reviews
                               </h3>
                               <div className="review-box d-flex  align-items-center">
@@ -673,10 +689,10 @@ const SingleProduct = () => {
                                 <button className="btn btn-submit-review mt-3">
                                   Submit Review
                                 </button>
-                              </form>
+                              </form> */}
                             </div>
                             <button
-                              className="btn btn-buyNow mt-5 w-100"
+                              className="btn btn-buyNow mt-3 w-100"
                               onClick={handleAddToCart}
                             >
                               Buy Now
