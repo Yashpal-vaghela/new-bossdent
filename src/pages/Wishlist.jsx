@@ -11,7 +11,7 @@ import {
   WishlistCounter,
   wishlistId,
 } from "../redux/wishlistSlice";
-import { AddToCart, CartCounter, CartTotal } from "../redux/cartSlice";
+import { AddToCart,  CartTotal } from "../redux/cartSlice";
 import Loader1 from "../component/Loader1";
 import useValidateUser from "../component/useValidateUser";
 
@@ -204,7 +204,7 @@ const Wishlist = () => {
                 setShowVariationModal((prev) => !prev);
               }
               dispatch(CartTotal(res.data.cart_total));
-              dispatch(CartCounter(res.data.cart_count));
+              // dispatch(CartCounter(res.data.cart_count));
               dispatch(
                 AddToCart({
                   ...res.data,

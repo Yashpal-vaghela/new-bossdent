@@ -6,11 +6,20 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { toast } from "react-toastify";
+import { Link } from 'react-router-dom';
+import useValidateUser from "./useValidateUser";
+import { AddToCart } from '../redux/cartSlice';
+import { AddToCartModal } from './AddToCartModal';
 
-const DisposableProducts = () => {
+const DisposableProducts = ({token,getCartData,dispatch}) => {
     const [disposableProduct, SetDisposableProduct] = useState([]);
     const[loading, setLoading] = useState(true);
     const[error, setError] = useState(null);
+    const [showVariationModal,setShowVariationModal] = useState(false);
+    const [selectedProductForModal,setSelectedProductForModal] = useState(null);
+    
+    const validateUser = useValidateUser();
     const fetchDisposableProducts = async (controller) =>{
         try{
                 const response = await axios.get(`${BASE_URL}/category/disposable`,{signal:controller.signal});
@@ -23,6 +32,104 @@ const DisposableProducts = () => {
                 setLoading(false);
         }
     }
+    const handleAddToCart = async (e,product,selectedAttributes,quantity,slug) =>{
+      if(!token){
+        validateUser();
+      }
+      const AlreadyExistsData = getCartData?.items?.filter((i)=>{
+        return i?.variation_id !== 0 ? 
+        i?.variation_id === selectedAttributes?.id
+        : true && i?.product_id === product?.id;
+      })
+        if(AlreadyExistsData.length > 0){
+      if(product?.variations && product?.variations.length !== 0 && selectedAttributes === 0){
+         console.warn("open modal ProductVariationsData Edit api call");
+         setShowVariationModal((prev)=>!prev);
+         setSelectedProductForModal(product);
+      }else{
+        if(selectedAttributes === null && selectedAttributes !== undefined){
+          // console.log("please select attributes");
+          toast.error(`Please select ${product?.variations?.map((i,index)=>Object.keys(i?.attributes)[index])[0]}`)
+        }else{
+          if(selectedAttributes === undefined){
+            // console.log("please select attributes")
+            toast.error(`please select ${product?.variations?.map((i,index)=>Object.keys(i?.attributes)[index])[1]}`)
+          }else{  
+            const payload = {
+              cart_id:AlreadyExistsData[0]?.cart_id,
+              quantity:AlreadyExistsData[0]?.quantity + quantity,
+            }
+            console.log("EditCartData api call")
+            try{
+              const res = await axios.post(`${BASE_URL}/update-cart`,payload,{
+                headers:{
+                  Authorization:`Bearer ${token}`.replace(/\s+/g, " ").trim(),
+                  "Content-Type": "application/json",
+                }
+              });
+              toast.success("Product updated in cart successfully!");
+              if(showVariationModal === true){
+                setShowVariationModal((prev)=>!prev);
+              }
+              dispatch(AddToCart({...res.data,items:res.data.items}));
+            }catch(err){
+              console.log("error",err)
+            }
+          }
+        }
+      }
+      // console.log("open modal and select value");
+    }else{
+      if(product?.variations && product?.variations.length !== 0 && selectedAttributes === 0){
+        setShowVariationModal((prev)=>!prev);
+        setSelectedProductForModal(product);
+        console.log("open modal")
+      }else{
+        if(selectedAttributes === null && selectedAttributes !== undefined){
+          console.log("please select variations");
+          toast.error(`please select ${product?.variations?.map((i,index)=>Object.keys(i?.attributes)[index])[0]}`)
+        }else{
+          if(selectedAttributes === undefined){
+            console.log("please select variations");
+            toast.error(`please select ${
+                            product?.variations?.map(
+                              (i, index) => Object.keys(i?.attributes)[index]
+                            )[1]
+                          }`
+                        );
+          }else{
+            const payload = {
+              product_id: product?.id,
+              variation_id:
+                selectedAttributes === 0
+                  ? selectedAttributes
+                  : selectedAttributes?.id,
+              quantity: quantity,
+            };
+            console.log("AddtoCartData api call",payload);
+            try{
+              const res = await axios.post(`${BASE_URL}/new-add-to-cart`,payload,{
+                headers:{
+                  Authorization:`Bearer ${token}`.replace(/\s+/g, " ").trim(),
+                  "Content-Type":"application/json",
+                }
+              });
+              if(showVariationModal === true){
+                setShowVariationModal((prev)=>!prev);
+              }
+              toast.success("Product added to cart successfully!");
+              dispatch(AddToCart({
+                ...res.data,
+                items:[...getCartData.items,res.data?.data],
+              }))
+            } catch(err){
+              console.log("error",err)
+            }
+          }
+        }
+      }
+    }
+    }
     useEffect(() =>{
       const controller = new AbortController();
       fetchDisposableProducts(controller);
@@ -32,22 +139,21 @@ const DisposableProducts = () => {
     },[]);
   return (
     <section className="RecentSearch-section">
+      <AddToCartModal isOpen={showVariationModal} onClose={()=>setShowVariationModal(false)} product={selectedProductForModal} onAddToCart={handleAddToCart} variations={selectedProductForModal?.variation}></AddToCartModal>
         <div className="container">
           <h2 className="text-white fs-2 text-center section-title">
             Disposable Products
           </h2>
           { loading ? (
             <p className="text-light text-center mt-4">Loading disposable products...</p>
-          ) : error ? (
-            <p className="text-danger text-center mt-4">{error}</p>
           ) : (
           <Swiper
             modules={[Navigation, Pagination, Autoplay]}
             spaceBetween={0}
             slidesPerView={2}
             pagination={{ clickable: true }}
-            autoplay="false"
-            // autoplay={{ delay: 3000, disableOnInteraction: false }}
+            // autoplay="false"
+            autoplay={{ delay: 3000, disableOnInteraction: false }}
             loop={true}
             breakpoints={{
               576: { slidesPerView: 2 },
@@ -66,11 +172,14 @@ const DisposableProducts = () => {
                           Sale {Math.round(((item.regular_price - item.sale_price) / item.regular_price) * 100)}%
                         </span>
                       )}
-                      <img
-                        src={item.image}
-                        alt={item.name}
-                        className="card-img-top img-fluid"
-                      ></img>
+                      <Link to={`/products/${item?.slug}`}>
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="card-img-top img-fluid"
+                        ></img>
+                      </Link>
+                      
                       <div className="card-body d-flex align-items-center justify-content-between px-2 px-lg-3 px-md-2 py-2">
                         <div className="d-block">
                           <h2 className="product-card-title mb-1">
@@ -97,6 +206,7 @@ const DisposableProducts = () => {
                           className="shopping-bag-icon img-fluid"
                           alt="shopping-bages"
                           src="/img/lightShopping-bag-icon.svg"
+                          onClick={(e)=>handleAddToCart(e,item,0,1)}
                         ></img>
                       </div>
                     </div>

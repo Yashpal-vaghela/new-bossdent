@@ -58,10 +58,10 @@ const cartSlice = createSlice({
         DeleteCart:(state,action)=>{
           return state;
         },
-        CartCounter:(state,action)=>{
-            state.cartCount = action.payload;
-            return state;
-        },
+        // CartCounter:(state,action)=>{
+        //     state.cartCount = action.payload;
+        //     return state;
+        // },
         CartTotal:(state,action)=>{
             state.cartTotal = action.payload;
             return state;
@@ -103,5 +103,5 @@ const cartSlice = createSlice({
   },
 })
 
-export const {AddToCart,DeleteCart,CartCounter,CartTotal,DeliveryCharge} = cartSlice.actions;
+export const {AddToCart,DeleteCart,CartTotal,DeliveryCharge} = cartSlice.actions;
 export const addToCartReducer = cartSlice.reducer;

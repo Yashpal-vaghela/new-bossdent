@@ -18,17 +18,19 @@ const checkoutSchema = yup.object().shape({
     city:yup.string().required("City Field is required"),
     phone: yup.string().matches(/^[0-9]{10}$/, "Phone number must be 10 digits").required("Phone Number Field is required"),
     state: yup.string().required("State Field is required."),
-    zipcode: yup.string().matches(/^[0-9]{6}$/, "Zipcode must be 6 digits").required("Zipcode Field is required.")
+    zipcode: yup.string().matches(/^[0-9]{6}$/, "Zipcode must be 6 digits").required("Zipcode Field is required."),
+    payment_method:yup.string().required("Please choose payment method is required")
 })
 
 export const Checkout = () => {
-    const [paymentMethod] = useState("PhonePe");
+    const [paymentMethod,setPaymentMethod] = useState({});
     const [paymentSuccess,setPaymentSuccess] = useState(false);
     const [paymentStatus,setPaymentStatus] = useState(false);
     const [orderId,setOrderId] = useState("");
     const [Loading,setLoading] = useState(false);
     const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
     const [States,setStates] = useState([]);
+    const [codoption,setcodOption] = useState(false);
     const user = useSelector((state)=>state.user.user);
     const cartData = useSelector((state)=>state.cart.cart);
     const deliverydata = useSelector((state)=>state.cart.deliveryCharge);
@@ -44,6 +46,7 @@ export const Checkout = () => {
         phone:Object.keys(user).length !== 0 ? user?.phone_number.slice(2) : "",
         state:Object.keys(user).length !== 0 ? user?.state : "",
         zipcode:Object.keys(user).length !== 0 ? user?.zipcode : "",
+        payment_method:""
     }
     const formik = useFormik({
         initialValues,
@@ -52,7 +55,8 @@ export const Checkout = () => {
         validateOnChange:true,
         validateOnBlur:false,
         onSubmit: async ()=>{
-            if(paymentMethod && formik?.values){
+          console.log("formik",formik?.values);
+            if(formik?.values.payment_method && formik?.values){
               try{
                 setLoading(true);                  
                 const orderResponse = await axios.post(`${BASE_URL}/create-order`,formik.values,{
@@ -64,7 +68,7 @@ export const Checkout = () => {
                   const newOrderId = res.data.order_id.toString();
                   setOrderId(newOrderId);
 
-                  if(paymentMethod === "PhonePe"){
+                  if(formik?.values.payment_method === "PhonePe"){
                     setLoading(true);
                     const paymentResponse = await fetch(`${BASE_URL}/phonepe/new-initiate`,{
                           method: "POST",
@@ -97,6 +101,9 @@ export const Checkout = () => {
                       },10000);
                       DeletCartItems();
                     }
+                  }else{
+                    DeletCartItems();
+                    navigate("/payment/success");
                   }
                 });
               }catch(err){
@@ -155,6 +162,10 @@ export const Checkout = () => {
     }
     useEffect(()=>{
       setStates(Indian_states_cities_list?.STATES_OBJECT);
+      console.log("cartData",cartData);
+      if(Number(cartData?.cart_total) <= 10000){
+        setcodOption(true);
+      }
     },[user])
 
   return (
@@ -353,7 +364,21 @@ export const Checkout = () => {
                     <p>Total:</p>
                     <p>₹{(Number(cartData?.cart_total) + Number(deliverydata)).toFixed(2)}</p>
                 </div>
-                
+                <div className="form-check my-2">
+                  <input type="radio" className="form-check-input" name="payment_method" value="PhonePe" onChange={formik?.handleChange}></input>
+                  <label className="form-check-label d-flex gap-2 align-items-center justify-content-center"><img src="./img/payment_option1.svg" className="img-fluid" alt="Phone-pe-svg-icon"></img>UPI, Credit or Debit Card, Net Banking, Buy Now Pay later</label>
+                </div>
+                {
+                  codoption && (
+                    <div className="form-check my-2">
+                      <input type="radio" className="form-check-input" name="payment_method" value="COD" onChange={formik?.handleChange}></input>
+                      <label className="form-check-label d-flex  align-items-center justify-content-between"><img src="./img/payment_option2.svg" className="img-fluid" alt="Phone-pe-svg-icon"></img>Cash On Delivery <b>Pay Extra ₹25 on COD</b></label>
+                    </div>
+                  )
+                }
+                {formik?.errors?.payment_method && (
+                    <p className="text-danger my-1 my-lg-0 my-xl-1">{formik?.errors?.payment_method}</p>
+                )}
                 {/* <p className="cart-applycoupon-notice d-none">
                   You’ll save <b>₹50.00</b> on this order!{" "}
                 </p> */}

@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import BASE_URL from "../api/config";
 import Loader1 from "../component/Loader1";
-import { CartCounter } from "../redux/cartSlice";
+// import { CartCounter } from "../redux/cartSlice";
 import { AddToCartModal } from "../component/AddToCartModal";
 import { toast } from "react-toastify";
-import { AddToWishlist, WishlistCounter,wishlistId} from "../redux/wishlistSlice";
-import { AddToCart,CartTotal } from "../redux/cartSlice";
+import {
+  AddToWishlist,
+  WishlistCounter,
+  wishlistId,
+} from "../redux/wishlistSlice";
+import { AddToCart, CartTotal } from "../redux/cartSlice";
 import useValidateUser from "../component/useValidateUser";
 
 export const Product = () => {
@@ -16,12 +25,12 @@ export const Product = () => {
   const [currentPage, setcurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setloading] = useState(false);
-  const [Loading,setLoading] = useState(false);
+  const [Loading, setLoading] = useState(false);
   const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
   const [showVariationModal, setShowVariationModal] = useState(false);
   const [selectedProductForModal, setSelectedProductForModal] = useState(null);
-  const [sortOrder,setSortOrder] = useState("");
-  const [selectCategory,setSelectCategory] = useState("");
+  const [sortOrder, setSortOrder] = useState("");
+  const [selectCategory, setSelectCategory] = useState("");
   const [itemsPerPage] = useState(() => {
     if (window.innerWidth >= 1400) {
       return 12;
@@ -32,9 +41,9 @@ export const Product = () => {
     }
   });
   const { categories } = useSelector((state) => state.category);
-  const {cart} = useSelector((state)=>state.cart);
-  const wishlistData = useSelector((state)=>state?.wishlist?.wishlist)
-  const wishlistId1 = useSelector((state)=>state.wishlist?.wishlistId);
+  const { cart } = useSelector((state) => state.cart);
+  const wishlistData = useSelector((state) => state?.wishlist?.wishlist);
+  const wishlistId1 = useSelector((state) => state.wishlist?.wishlistId);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -45,23 +54,30 @@ export const Product = () => {
     setloading(true);
     try {
       let apiUrl = "";
-      if(category){
-        apiUrl += `${BASE_URL}/category/${category}`
-      }else{
-        apiUrl += `${BASE_URL}/products`
+      if (category) {
+        apiUrl += `${BASE_URL}/category/${category}`;
+      } else {
+        apiUrl += `${BASE_URL}/products`;
       }
-      const res = await axios.get(apiUrl,{signal: controller.signal});
+      const res = await axios.get(apiUrl, { signal: controller.signal });
       let allProducts = res.data.data ? res.data.data : res.data || [];
-      if(sortOrder === "high-low"){
-        allProducts = allProducts.sort((a,b)=>getFinalPrice(b) - getFinalPrice(a));
+      if (sortOrder === "high-low") {
+        allProducts = allProducts.sort(
+          (a, b) => getFinalPrice(b) - getFinalPrice(a)
+        );
       }
-      if(sortOrder === "low-high"){
-        allProducts = allProducts.sort((a,b)=>getFinalPrice(a) - getFinalPrice(b));
+      if (sortOrder === "low-high") {
+        allProducts = allProducts.sort(
+          (a, b) => getFinalPrice(a) - getFinalPrice(b)
+        );
       }
-     
+
       const indexOfLastProduct = currentPage * itemsPerPage;
       const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
-      const currentsProducts = allProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+      const currentsProducts = allProducts.slice(
+        indexOfFirstProduct,
+        indexOfLastProduct
+      );
       const totalPages = Math.ceil(allProducts.length / itemsPerPage);
       // console.log("allProducts",allProducts,currentsProducts,)
       setTotalPages(totalPages);
@@ -75,13 +91,13 @@ export const Product = () => {
     }
   };
 
-  const handleFilterPriceProduct = (e) =>{
+  const handleFilterPriceProduct = (e) => {
     setSortOrder(e.target.value);
-  }
-  
-  const getFinalPrice = (p) =>{
+  };
+
+  const getFinalPrice = (p) => {
     return Number(p.sale_price || p.price || p.regular_price || 0);
-  }
+  };
 
   const handlePageChange = (pageNumber) => {
     if (pageNumber < 1 || pageNumber > totalPages) return;
@@ -93,19 +109,19 @@ export const Product = () => {
     const controller = new AbortController();
     fetchProductData(controller);
     return () => controller.abort();
-  }, [currentPage,searchParams,sortOrder]);
- 
+  }, [currentPage, searchParams, sortOrder]);
+
   const handleFilterProduct = async (e, slug) => {
     if (slug === "all-products") {
       navigate("/products");
       const controller = new AbortController();
       fetchProductData(controller);
       setSelectCategory("");
-      return () =>controller.abort();
+      return () => controller.abort();
     } else {
       setloading(true);
       setSelectCategory(e.target.value);
-      navigate(`?category=${slug}`)
+      navigate(`?category=${slug}`);
       try {
         const res = await axios.get(`${BASE_URL}/category/${slug}`);
         if (res.data) {
@@ -149,128 +165,219 @@ export const Product = () => {
     }
     return buttons;
   };
-  
-  const handleAddToCartFromModal = async ( e, product, selectedAttributes, quantity, slug ) => {
-    if (!token) { validateUser() }
-    const AlreadyExistsData = cart?.items?.filter((i)=>{ return( i?.variation_id !== 0 ? i?.variation_id === selectedAttributes?.id : true && i?.product_id === product?.id )});
+
+  const handleAddToCartFromModal = async (
+    e,
+    product,
+    selectedAttributes,
+    quantity,
+    slug
+  ) => {
+    if (!token) {
+      validateUser();
+    }
+    const AlreadyExistsData = cart?.items?.filter((i) => {
+      return i?.variation_id !== 0
+        ? i?.variation_id === selectedAttributes?.id
+        : true && i?.product_id === product?.id;
+    });
     // console.log("slug",slug);
-   
-    if(AlreadyExistsData.length > 0 ){
-        if(product?.variations && product.variations.length !== 0 && selectedAttributes === 0){
-          console.warn("ProductVariationsData Edit api call");
-          setShowVariationModal((prev)=>!prev);
-          setSelectedProductForModal(product);
-        }else{
-          if(selectedAttributes === null && selectedAttributes !== undefined){
-            toast.error(`please select ${product?.variations?.map((i,index)=>Object.keys(i?.attributes)[index])[0]}`)
-          }else{
-            if(selectedAttributes === undefined){
-              toast.error(`please select ${product?.variations?.map((i,index)=>Object.keys(i?.attributes)[index])[1]}`)
-            }else{
-              const payload = {cart_id:AlreadyExistsData[0]?.cart_id,quantity:AlreadyExistsData[0]?.quantity + quantity}
-              console.warn("EditCartData api call",payload);
-               setLoading(true);
-               try{
-                  const res = await axios.post(`${BASE_URL}/update-cart`,payload,{
-                    headers:{
-                      Authorization:`Bearer ${token}`.replace(/\s+/g," ").trim(),
-                      "Content-Type": "application/json",
-                    }
-                  });
-                  setLoading(false);
-                  toast.success("Product updated in cart!")
-                  if(showVariationModal === true){
-                    setShowVariationModal((prev)=>!prev);
-                  }
-                  dispatch(CartTotal(res.data.cart_total));
-                  dispatch(CartCounter(res.data.cart_count));
-                  dispatch(AddToCart({...res.data,items:res.data.items}))
-                  if(slug){
-                    navigate(slug)
-                  }
-                } catch(error){
-                  console.log("error",error)
-                }
+
+    if (AlreadyExistsData.length > 0) {
+      if (
+        product?.variations &&
+        product.variations.length !== 0 &&
+        selectedAttributes === 0
+      ) {
+        console.warn("ProductVariationsData Edit api call");
+        setShowVariationModal((prev) => !prev);
+        setSelectedProductForModal(product);
+      } else {
+        if (selectedAttributes === null && selectedAttributes !== undefined) {
+          toast.error(
+            `please select ${
+              product?.variations?.map(
+                (i, index) => Object.keys(i?.attributes)[index]
+              )[0]
+            }`
+          );
+        } else {
+          if (selectedAttributes === undefined) {
+            toast.error(
+              `please select ${
+                product?.variations?.map(
+                  (i, index) => Object.keys(i?.attributes)[index]
+                )[1]
+              }`
+            );
+          } else {
+            const payload = {
+              cart_id: AlreadyExistsData[0]?.cart_id,
+              quantity: AlreadyExistsData[0]?.quantity + quantity,
+            };
+            console.warn("EditCartData api call", payload);
+            setLoading(true);
+            try {
+              const res = await axios.post(`${BASE_URL}/update-cart`, payload, {
+                headers: {
+                  Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
+                  "Content-Type": "application/json",
+                },
+              });
+              setLoading(false);
+              toast.success("Product updated in cart successfully!");
+              if (showVariationModal === true) {
+                setShowVariationModal((prev) => !prev);
+              }
+              dispatch(CartTotal(res.data.cart_total));
+              // dispatch(CartCounter(res.data.cart_count));
+              dispatch(AddToCart({ ...res.data, items: res.data.items }));
+              if (slug) {
+                navigate(slug);
+              }
+            } catch (error) {
+              console.log("error", error);
             }
           }
         }
-    }else{
-        if(product?.variations && product.variations.length !== 0 && selectedAttributes === 0){
-          // console.warn("ProductVariationsData api call");
-          setShowVariationModal((prev)=>!prev);
-          setSelectedProductForModal(product);
-        } else{
-          if(selectedAttributes === null && selectedAttributes !== undefined){
-            toast.error(`please select ${product?.variations?.map((i,index)=>Object.keys(i?.attributes)[index])[0]}`)
-          }else{
-              if(selectedAttributes === undefined){
-                toast.error(`please select ${product?.variations?.map((i,index)=>Object.keys(i?.attributes)[index])[1]}`)
-              }else{
-                const payload = {product_id:product?.id,variation_id:selectedAttributes === 0 ? selectedAttributes : selectedAttributes?.id,quantity:quantity}
-                console.warn("addtocartData api call",payload,"select",selectedAttributes,product?.variations);
-                setLoading(true);
-                try{
-                  const res = await axios.post(`${BASE_URL}/new-add-to-cart`,payload,{
-                    headers:{
-                      Authorization:`Bearer ${token}`.replace(/\s+/g," ").trim(),
-                      "Content-Type": "application/json",
-                    }
-                  });
-                  if(showVariationModal === true){
-                    setShowVariationModal((prev)=>!prev);
-                  }
-                  setLoading(false);
-                  res !== undefined && dispatch(CartTotal(res.data.cart_total)); dispatch(CartCounter(res.data.cart_count)); dispatch(AddToCart({...res.data,items:[...cart.items,res.data?.data]}));
-                  if(slug){
-                    navigate(slug);
-                  }
-                } catch(error){
-                  console.log("error",error)
+      }
+    } else {
+      if (
+        product?.variations &&
+        product.variations.length !== 0 &&
+        selectedAttributes === 0
+      ) {
+        // console.warn("ProductVariationsData api call");
+        setShowVariationModal((prev) => !prev);
+        setSelectedProductForModal(product);
+      } else {
+        if (selectedAttributes === null && selectedAttributes !== undefined) {
+          toast.error(
+            `please select ${
+              product?.variations?.map(
+                (i, index) => Object.keys(i?.attributes)[index]
+              )[0]
+            }`
+          );
+        } else {
+          if (selectedAttributes === undefined) {
+            toast.error(
+              `please select ${
+                product?.variations?.map(
+                  (i, index) => Object.keys(i?.attributes)[index]
+                )[1]
+              }`
+            );
+          } else {
+            const payload = {
+              product_id: product?.id,
+              variation_id:
+                selectedAttributes === 0
+                  ? selectedAttributes
+                  : selectedAttributes?.id,
+              quantity: quantity,
+            };
+            console.warn(
+              "addtocartData api call",
+              payload,
+              "select",
+              selectedAttributes,
+              product?.variations
+            );
+            setLoading(true);
+            try {
+              const res = await axios.post(
+                `${BASE_URL}/new-add-to-cart`,
+                payload,
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`
+                      .replace(/\s+/g, " ")
+                      .trim(),
+                    "Content-Type": "application/json",
+                  },
                 }
+              );
+              if (showVariationModal === true) {
+                setShowVariationModal((prev) => !prev);
               }
+              setLoading(false);
+              toast.success("Product added to cart successfully!");
+              res !== undefined && dispatch(CartTotal(res.data.cart_total));
+              // dispatch(CartCounter(res.data.cart_count));
+              dispatch(
+                AddToCart({
+                  ...res.data,
+                  items: [...cart.items, res.data?.data],
+                })
+              );
+              if (slug) {
+                navigate(slug);
+              }
+            } catch (error) {
+              console.log("error", error);
+            }
           }
         }
+      }
     }
   };
 
-  const handleAddToWishList = async (e,product) =>{
-    if (!token) { validateUser() }
-    const FilterCartdata = wishlistData?.filter((i)=> i?.product_id === product?.id);
-    const filterwishlistId = wishlistId1.includes(product?.id);
-    if(filterwishlistId){
-      console.warn("update wishlist and remove wishlist data");
-      await axios.post(`${BASE_URL}/delete-wishlist`,{"wishlist_id":FilterCartdata[0]?.wishlist_id},{
-        headers:{
-          Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
-          "Content-Type": "application/json",
-        }
-      })
-      .then((res)=>{
-        // const a = wishlistId.filter((i)=>i !== product?.id);
-        toast.success("Product removed from watchlist.");
-        const updatedWishlist = wishlistId1.filter(id => id !== product?.id);
-        dispatch(wishlistId(updatedWishlist));
-        dispatch(WishlistCounter(res.data.wishlist_count));
-      })
-      .catch((err)=>console.log("err",err))
-    }else{
-      console.warn("add wishlist data");
-      await axios.post(`${BASE_URL}/add-wishlist`,{"product_id":product?.id},{
-        headers:{
-            Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
-            "Content-Type": "application/json",
-        },
-      })
-      .then((response)=>{
-        toast.success("Product added to wishlist!");
-        const updatedWishlist = [...wishlistId1, product?.id];
-        dispatch(AddToWishlist(response?.data.wishlist));
-        dispatch(wishlistId(updatedWishlist));
-        dispatch(WishlistCounter(response?.data?.wishlist_count));
-      }).catch((error)=>console.log("err",error));
+  const handleAddToWishList = async (e, product) => {
+    if (!token) {
+      validateUser();
     }
-  }
-  
+    const FilterCartdata = wishlistData?.filter(
+      (i) => i?.product_id === product?.id
+    );
+    const filterwishlistId = wishlistId1.includes(product?.id);
+    if (filterwishlistId) {
+      console.warn("update wishlist and remove wishlist data");
+      await axios
+        .post(
+          `${BASE_URL}/delete-wishlist`,
+          { wishlist_id: FilterCartdata[0]?.wishlist_id },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          // const a = wishlistId.filter((i)=>i !== product?.id);
+          toast.success("Product removed from wishlist.");
+          const updatedWishlist = wishlistId1.filter(
+            (id) => id !== product?.id
+          );
+          dispatch(wishlistId(updatedWishlist));
+          dispatch(WishlistCounter(res.data.wishlist_count));
+        })
+        .catch((err) => console.log("err", err));
+    } else {
+      console.warn("add wishlist data");
+      await axios
+        .post(
+          `${BASE_URL}/add-wishlist`,
+          { product_id: product?.id },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((response) => {
+          toast.success("Product added to wishlist!");
+          const updatedWishlist = [...wishlistId1, product?.id];
+          dispatch(AddToWishlist(response?.data.wishlist));
+          dispatch(wishlistId(updatedWishlist));
+          dispatch(WishlistCounter(response?.data?.wishlist_count));
+        })
+        .catch((error) => console.log("err", error));
+    }
+  };
+
   return (
     <React.Fragment>
       <div className="home-main pt-3 pt-sm-4 pt-lg-0">
@@ -282,17 +389,21 @@ export const Product = () => {
                   <Link to="/">Home</Link>
                 </li>
                 <li className="breadcrumb-item active">
-                  {
-                    searchParams.size !== 0 ? <Link to="#">Category</Link> : <Link to="/products">Products</Link>
-                  }
+                  {searchParams.size !== 0 ? (
+                    <Link to="#">Category</Link>
+                  ) : (
+                    <Link to="/products">Products</Link>
+                  )}
                 </li>
-                {
-                  searchParams.size !== 0 && (
-                    <li className="breadcrumb-item active">
-                      <Link to={`/products?category=${searchParams.get("category")}`}>{searchParams.get("category")?.replace("all-","")}</Link>
-                    </li>
-                  )
-                }
+                {searchParams.size !== 0 && (
+                  <li className="breadcrumb-item active">
+                    <Link
+                      to={`/products?category=${searchParams.get("category")}`}
+                    >
+                      {searchParams.get("category")?.replace("all-", "")}
+                    </Link>
+                  </li>
+                )}
               </ol>
             </nav>
           </div>
@@ -308,7 +419,7 @@ export const Product = () => {
                 product={selectedProductForModal}
                 onAddToCart={handleAddToCartFromModal}
                 variations={selectedProductForModal?.variation}
-              ></AddToCartModal> 
+              ></AddToCartModal>
               <div className="container">
                 <div className="product-category-content d-flex gap-5 my-4">
                   <select
@@ -321,7 +432,7 @@ export const Product = () => {
                     <option value="all-products">All Products</option>
                     {categories?.map((category, index) => {
                       return (
-                        <option value={category?.slug} key={index} >
+                        <option value={category?.slug} key={index}>
                           {category?.name}
                         </option>
                       );
@@ -330,7 +441,7 @@ export const Product = () => {
                   <select
                     className="form-select w-auto"
                     aria-label="Default select example"
-                    onChange={(e)=>handleFilterPriceProduct(e)}
+                    onChange={(e) => handleFilterPriceProduct(e)}
                     value={sortOrder || ""}
                   >
                     <option value="">Price</option>
@@ -350,35 +461,49 @@ export const Product = () => {
                     );
                     return (
                       <div
-                        className="col-11 col-sm-10 col-md-6 col-lg-4 col-xl-3 p-0"
+                        className="col-11 col-sm-10 col-md-6 col-lg-4 col-xl-3 px-2"
                         key={index}
                       >
-                    
-                       <div className={`card ${product.stock}`}>
+                        <div className={`card ${product.stock}`}>
                           <div className="card-header">
-                            {product?.regular_price && product?.sale_price && (
+                            <div className="d-flex align-items-center justify-content-between">
+                              {product?.regular_price && product?.sale_price && (
                               <span className="sale-title">
-                                Sale <b>{Math.round(((product?.regular_price - product?.sale_price) / product?.regular_price) * 100)}%</b>
+                                Sale{" "}
+                                <b>
+                                  {Math.round(
+                                    ((product?.regular_price -
+                                      product?.sale_price) /
+                                      product?.regular_price) *
+                                      100
+                                  )}
+                                  %
+                                </b>
                               </span>
                             )}
-                            <div className={`${product.stock}`}>
-                              {product.stock !== "instock" && product.stock}
-                            </div>
-                            {
-                              wishlistId1.includes(product?.id) ? 
-                              <img className="heart-icon img-fluid" src="/img/heart-fill-icon.svg" alt="heart-fill-icon" onClick={(e)=>handleAddToWishList(e,product)}></img> :
+                             {wishlistId1.includes(product?.id) ? (
                               <img
                                 className="heart-icon img-fluid"
-                                src="/img/heart-icon.svg"
+                                src="/img/heart-fill-icon1.svg"
+                                alt="heart-fill-icon"
+                                onClick={(e) => handleAddToWishList(e, product)}
+                              ></img>
+                            ) : (
+                              <img
+                                className="heart-icon img-fluid"
+                                src="/img/heart-icon1.svg"
                                 alt="heart-icon"
-                                onClick={(e)=>handleAddToWishList(e,product)}
-                              ></img> 
-                            }
-                            <img
-                              src={product?.image}
-                              className="card-img-top img-fluid"
-                              alt="product-img"
-                            ></img>
+                                onClick={(e) => handleAddToWishList(e, product)}
+                              ></img>
+                            )}
+                            </div>
+                            <Link to={`/products/${product.slug}`} className="product-img-url">
+                              <img
+                                src={product?.image}
+                                className="card-img-top img-fluid"
+                                alt="product-img"
+                              ></img>
+                            </Link>
                           </div>
                           <div className="card-body">
                             <h2 className="product-title card-title">
@@ -399,9 +524,9 @@ export const Product = () => {
                                   )}
                                 </span>
 
-                                <p className="product-review">
+                                {/* <p className="product-review">
                                   <i className="fa-solid fa-star me-2"></i>4.1
-                                </p>
+                                </p> */}
                               </div>
                               <div
                                 className="product-cart-wrapper"
@@ -409,7 +534,9 @@ export const Product = () => {
                                 // data-bs-toggle={product?.variations && product?.variations.length !== 0 ? "modal" : undefined}
                                 // data-bs-target={product?.variations && product?.variations.length !== 0 ? "#cartModal" : undefined}
                                 // disabled={showVariationModal}
-                                onClick={(e)=>handleAddToCartFromModal(e,product,0,1)}
+                                onClick={(e) =>
+                                  handleAddToCartFromModal(e, product, 0, 1)
+                                }
                                 // onClick={(e) => handleAddToCart(e, product)}
                               >
                                 <img
@@ -421,7 +548,10 @@ export const Product = () => {
                             </div>
                           </div>
                           <div className="card-footer p-0">
-                            <Link to={`/products/${product?.slug}`} className="card-link">
+                            <Link
+                              to={`/products/${product?.slug}`}
+                              className="card-link"
+                            >
                               <button className="btn btn-viewMore mt-3 py-2">
                                 view Product
                               </button>
@@ -431,28 +561,39 @@ export const Product = () => {
                       </div>
                     );
                   })}
-                  <nav className="d-flex justify-content-center mt-5" aria-label="Page navigation">
-                      <ul className="pagination product-pagination">
-                        <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
-                          <button
-                            className="page-link"
-                            onClick={() => handlePageChange(currentPage - 1)}
-                          >
-                            &laquo;
-                          </button>
-                        </li>
+                  <nav
+                    className="d-flex justify-content-center mt-5"
+                    aria-label="Page navigation"
+                  >
+                    <ul className="pagination product-pagination">
+                      <li
+                        className={`page-item ${
+                          currentPage === 1 ? "disabled" : ""
+                        }`}
+                      >
+                        <button
+                          className="page-link"
+                          onClick={() => handlePageChange(currentPage - 1)}
+                        >
+                          &laquo;
+                        </button>
+                      </li>
 
-                        {renderPagination()}
+                      {renderPagination()}
 
-                        <li className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}>
-                          <button
-                            className="page-link"
-                            onClick={() => handlePageChange(currentPage + 1)}
-                          >
-                            &raquo;
-                          </button>
-                        </li>
-                      </ul>
+                      <li
+                        className={`page-item ${
+                          currentPage === totalPages ? "disabled" : ""
+                        }`}
+                      >
+                        <button
+                          className="page-link"
+                          onClick={() => handlePageChange(currentPage + 1)}
+                        >
+                          &raquo;
+                        </button>
+                      </li>
+                    </ul>
                   </nav>
                 </div>
               </div>

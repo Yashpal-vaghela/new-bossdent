@@ -85,7 +85,7 @@ export const AddToCartModal = ({
 
   if (!isOpen || !product) return null;
   return (
-    <div className={`modal fade ${isOpen ? "show d-block" : ""}`} ref={modalRef}>
+    <div className={`modal fade product-variation-modal ${isOpen ? "show d-block" : ""}`} ref={modalRef}>
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">

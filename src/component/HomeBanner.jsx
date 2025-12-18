@@ -12,12 +12,12 @@ const HomeBanner = () => {
     // { img: "/img/Discount-banner.webp", link: "/products" },
     {
       img: "/img/Patient-Drape-premuim.webp",
-      link: "/products?category=119",
+      link: "/products?category=all-drapes",
     },
-    { img: "/img/Mask-banner.webp", link: "/products?category=118" },
+    { img: "/img/Mask-banner.webp", link: "/products?category=all-masks" },
     {
       img: "/img/Cheek-Reatractors.webp",
-      link: "/products?category=125",
+      link: "/products?category=retractors",
     },
     {
       img: "/img/Patient-bibs-banner.webp",
