@@ -13,7 +13,8 @@ import useValidateUser from "../component/useValidateUser";
 const Profile = () => {
   // const loginData1 = useSelector((state)=>state.user);
   const { user, error } = useSelector((s) => s.user);
-  const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
+  const token = useSelector((state)=>state.auth.token);
+  // const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
   const [orderData, setOrderData] = useState([]);
   const [States, setStates] = useState([]);
   const [loadMore, setLoadMore] = useState(false);
@@ -26,9 +27,9 @@ const Profile = () => {
   const handlefetchOrderData = async (controller) => {
     setloading(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
-    if (!token) {
-      validateUser();
-    }
+    // if (!token) {
+    //   validateUser();
+    // }
     await axios
       .get(`${BASE_URL}/get-all-orders`, {
         headers: {
@@ -63,6 +64,9 @@ const Profile = () => {
     // }
     handlefetchOrderData(controller);
     setStates(Indian_states_cities_list?.STATES_OBJECT);
+    return ()=>{
+      controller.abort();
+    }
   }, []);
   return (
     <div className="home-main pt-4">
@@ -137,10 +141,10 @@ const Profile = () => {
                             {user?.last_name}
                           </h3>
                           <p className="mb-2">
-                            {user?.address}, {user.city}, {user.state}{" "}
+                            {user?.address}, {user?.city}, {user?.state}{" "}
                             {user.zipcode}.
                           </p>
-                          <Link to="#">{user?.email}</Link>
+                          <Link to={`email:${user.email}`}>{user?.email}</Link>
                           <p className="billing-contact-number">
                             {user?.phone_number?.slice(2)}
                           </p>
@@ -208,7 +212,6 @@ const Profile = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {/* {console.log("visible", visibleOrderData)} */}
                           {orderData.length !== 0 ? (
                             visibleOrderData?.map((i, index) => {
                               return (
@@ -227,7 +230,7 @@ const Profile = () => {
                             })
                           ) : (
                             <tr>
-                              <td> No Order Data found!</td>
+                              <td colSpan="5" className="text-center"> No Order Data found!</td>
                             </tr>
                           )}
                         </tbody>

@@ -153,6 +153,9 @@
     font-size: 12px;
     padding: 4px .5rem;
 }
+.single-variation-info .btn-addToCart.outofstock{
+    opacity: 0.7;
+}
 .single-variation-info .singleProduct-quantity{
     display: flex;
     justify-content: end;

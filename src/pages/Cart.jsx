@@ -3,22 +3,29 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../api/config";
-// import Loader1 from "../component/Loader1";
-import { AddToCart, CartCounter, CartTotal } from "../redux/cartSlice";
+import Loader2 from "../component/Loader2";
+import { AddToCart, CartTotal } from "../redux/cartSlice";
 import useValidateUser from "../component/useValidateUser";
 import { toast } from "react-toastify";
+import { ConfirmationDialog } from "../component/ConfirmationDialog";
 
 const Cart = () => {
-  const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
+  const token = useSelector((state) => state.auth.token);
+  // const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [apiloading, setApiLoading] = useState(false);
   const [loading, setloading] = useState("");
   const cartTotal = useSelector((state) => state.cart.cartTotal);
   const cartData = useSelector((state) => state.cart.cart);
   const deliverydata = useSelector((state) => state.cart.deliveryCharge);
+  const [showDialogBox, setShowDialogBox] = useState(false);
+  const [selectProductModal, setSelectProductModal] = useState(false);
   const validateUser = useValidateUser();
+
   const handleClearCart = async () => {
     setloading(true);
+    setApiLoading(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
     await axios
       .post(
@@ -32,15 +39,28 @@ const Cart = () => {
         }
       )
       .then((res) => {
+        setApiLoading(false);
         setloading(false);
         dispatch(AddToCart({ ...res.data, items: [] }));
-        dispatch(CartCounter(res.data.cart_count));
+        // dispatch(CartCounter(res.data.cart_count));
         dispatch(CartTotal(res.data.cart_total));
       })
       .catch((err) => console.log("err", err));
   };
-  const handledeleteCart = async (e, id) => {
-    const payload = { cart_id: id };
+  const confirmDelete = (e, product) => {
+    setShowDialogBox(true);
+    setSelectProductModal(product);
+  };
+  const handleConfirmRemove = (e, product) => {
+    handledeleteCart(e, product);
+    setShowDialogBox(false);
+  };
+  const handleCancel = () => {
+    setShowDialogBox(false);
+  };
+  const handledeleteCart = async (e, product) => {
+    const payload = { cart_id: product?.cart_id };
+    setApiLoading(true);
     await axios
       .post(`${BASE_URL}/delete-cart`, payload, {
         headers: {
@@ -49,53 +69,58 @@ const Cart = () => {
         },
       })
       .then((res) => {
+        setApiLoading(false);
         const filterData = cartData?.items.filter(
-          (item) => item.cart_id !== id
+          (item) => item.cart_id !== product?.cart_id
         );
         dispatch(AddToCart({ ...res.data, items: filterData }));
-        dispatch(CartCounter(res.data.cart_count));
+        // dispatch(CartCounter(res.data.cart_count));
         dispatch(CartTotal(res.data.cart_total));
       })
       .catch((err) => console.log("err", err));
   };
   const handleUpdateQty = async (e, product, action) => {
-    if (!token) {
+    if (token === "null" || !token) {
       validateUser();
-    }
-    setloading(true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    const cartItemUpdate = cartData?.items.find((item) => {
-      return item?.variation_id !== 0
-        ? item?.variation_id === product?.variation_id &&
-            item.product_id === product.product_id
-        : item.product_id === product.product_id;
-      // const isSameProduct = item.product_id === product.product_id;
-      //  isSameProduct;
-    });
-    let newQuantity =
-      action === "PLUS"
-        ? Number(cartItemUpdate.quantity) + 1
-        : Number(cartItemUpdate.quantity) - 1;
+    } else {
+      setloading(true);
 
-    if (newQuantity <= 0) return;
-
-    try {
-      const payload = {
-        cart_id: product.cart_id,
-        quantity: newQuantity,
-      };
-      const response = await axios.post(`${BASE_URL}/update-cart`, payload, {
-        headers: {
-          Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
-          "Content-Type": "application/json",
-        },
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      const cartItemUpdate = cartData?.items.find((item) => {
+        return item?.variation_id !== 0
+          ? item?.variation_id === product?.variation_id &&
+              item.product_id === product.product_id
+          : item.product_id === product.product_id;
+        // const isSameProduct = item.product_id === product.product_id;
+        //  isSameProduct;
       });
-      setloading(false);
-      toast.success(`${product?.product_name} quantity update successfully.`)
-      dispatch(AddToCart(response.data));
-      dispatch(CartTotal(response.data.cart_total));
-    } catch (error) {
-      console.error("err", error);
+      let newQuantity =
+        action === "PLUS"
+          ? Number(cartItemUpdate.quantity) + 1
+          : Number(cartItemUpdate.quantity) - 1;
+
+      if (newQuantity <= 0) return;
+
+      try {
+        const payload = {
+          cart_id: product.cart_id,
+          quantity: newQuantity,
+        };
+        setApiLoading(true);
+        const response = await axios.post(`${BASE_URL}/update-cart`, payload, {
+          headers: {
+            Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
+            "Content-Type": "application/json",
+          },
+        });
+        setApiLoading(false);
+        setloading(false);
+        toast.success(`${product?.product_name} quantity update successfully.`);
+        dispatch(AddToCart(response.data));
+        dispatch(CartTotal(response.data.cart_total));
+      } catch (error) {
+        console.error("err", error);
+      }
     }
   };
 
@@ -116,38 +141,47 @@ const Cart = () => {
         </div>
       </section>
       <>
-        {loading && (
-          <div className="loader-overlay">
-          <div className="loader"></div>
-        </div> 
-        )} 
-          {cartData?.items.length === 0 ? (
-            <>
-              <div className="my-5 text-center cart-page-empty">
-                <p className="mb-3">Your Cart Is Empty !</p>
-                <Link to="/products" className="mb-2">
-                  Shop Now
-                </Link>
-              </div>
-            </>
-          ) : (
-            <>
-              <section className="cart-section">
-                <div className="container">
-                  <div className="row my-4 my-sm-5 text-white">
-                    <div className="col-lg-8">
-                      <div className="cart-container">
-                        <div className="cart-header">
-                          <h2>Img</h2>
-                          <h2>Product Title</h2>
-                          <h2>Pack Size</h2>
-                          <h2>Quantity</h2>
-                          <h2>Subtotal</h2>
-                        </div>
-                        {cartData.items !== undefined &&
-                          cartData?.items?.map((item, index) => {
-                            return (
-                              <div className="cart-item" key={index}>
+        {apiloading && <Loader2></Loader2>}
+        {cartData?.items.length === 0 ? (
+          <>
+            <div className="my-5 text-center cart-page-empty">
+              <p className="mb-3">Your Cart Is Empty !</p>
+              <Link to="/products" className="mb-2">
+                Shop Now
+              </Link>
+            </div>
+          </>
+        ) : (
+          <>
+            <section className="cart-section">
+              <div className="container">
+                <div className="row my-4 my-sm-5 text-white">
+                  <div className="col-lg-8">
+                    <div className="cart-container">
+                      <div className="cart-header">
+                        <h2>Img</h2>
+                        <h2>Product Title</h2>
+                        <h2>Pack Size</h2>
+                        <h2>Quantity</h2>
+                        <h2>Subtotal</h2>
+                      </div>
+                      {cartData.items !== undefined &&
+                        cartData?.items?.map((item, index) => {
+                          return (
+                            <React.Fragment key={index}>
+                              {showDialogBox && (
+                                <ConfirmationDialog
+                                  onConfirm={(e) =>
+                                    handleConfirmRemove(e, selectProductModal)
+                                  }
+                                  onCancel={handleCancel}
+                                  title={item?.product_name}
+                                  selectProductModal={selectProductModal}
+                                ></ConfirmationDialog>
+                              )}
+                              <div
+                                className={`cart-item ${item?.stock_status}`}
+                              >
                                 <div className="cart-item-product">
                                   <img
                                     src={item?.image}
@@ -216,9 +250,10 @@ const Cart = () => {
                                 </button> */}
                                 <button
                                   className="cart-item-remove"
-                                  onClick={(e) =>
-                                    handledeleteCart(e, item?.cart_id)
-                                  }
+                                  onClick={(e) => confirmDelete(e, item)}
+                                  // onClick={(e) =>
+                                  //   handledeleteCart(e, item?.cart_id)
+                                  // }
                                 >
                                   <p className="d-flex mb-0 align-items-center justify-content-center d-md-none">
                                     Remove{" "}
@@ -231,39 +266,40 @@ const Cart = () => {
                                   <p className="d-md-block d-none">✕</p>
                                 </button>
                               </div>
-                            );
-                          })}
-                        {cartData.items.length !== 0 && (
-                          <div className="cart-footer d-md-flex d-none">
-                            <button
-                              className="return-shop"
-                              onClick={() => navigate("/products")}
-                            >
-                              Return to shop
-                            </button>
-                            <button
-                              className="clear-cart"
-                              onClick={() => handleClearCart()}
-                            >
-                              Clear cart
-                            </button>
-                          </div>
-                        )}
-                      </div>
+                            </React.Fragment>
+                          );
+                        })}
                       {cartData.items.length !== 0 && (
-                        <div className="cart-footer d-md-none d-flex ">
+                        <div className="cart-footer d-md-flex d-none">
                           <button
                             className="return-shop"
                             onClick={() => navigate("/products")}
                           >
                             Return to shop
                           </button>
-                          <button className="clear-cart">Clear cart</button>
+                          <button
+                            className="clear-cart"
+                            onClick={() => handleClearCart()}
+                          >
+                            Clear cart
+                          </button>
                         </div>
                       )}
                     </div>
-                    <div className="col-lg-4">
-                      {/* <div className="cart-coupon-container">
+                    {cartData.items.length !== 0 && (
+                      <div className="cart-footer d-md-none d-flex ">
+                        <button
+                          className="return-shop"
+                          onClick={() => navigate("/products")}
+                        >
+                          Return to shop
+                        </button>
+                        <button className="clear-cart">Clear cart</button>
+                      </div>
+                    )}
+                  </div>
+                  <div className="col-lg-4">
+                    {/* <div className="cart-coupon-container">
                         <div className="cart-coupon-title d-flex justify-content-between align-items-center">
                           <h2>Best Coupons For You</h2>
                           <Link
@@ -284,48 +320,50 @@ const Cart = () => {
                           Apply Coupon Code
                         </button>
                       </div> */}
-                      <div className="cart-total-container">
-                        <h2 className="cart-total-title">Cart Total</h2>
-                        <div className="cart-total-content">
-                          <p>Subtotal:</p>
-                          <p>₹{cartTotal}</p>
-                        </div>
-                        <div className="cart-total-content">
-                          <p>Shipping:</p>
-                          <p>
-                            {deliverydata === 0
-                              ? "Free"
-                              : `₹${Number(deliverydata).toFixed(2)}`}{" "}
-                          </p>
-                        </div>
-                        {/* <div className="cart-total-content">
+                    <div className="cart-total-container">
+                      <h2 className="cart-total-title">Cart Total</h2>
+                      <div className="cart-total-content">
+                        <p>Subtotal:</p>
+                        <p>₹{cartTotal}</p>
+                      </div>
+                      <div className="cart-total-content">
+                        <p>Shipping:</p>
+                        <p>
+                          {deliverydata === 0
+                            ? "Free"
+                            : `₹${Number(deliverydata).toFixed(2)}`}{" "}
+                        </p>
+                      </div>
+                      {/* <div className="cart-total-content">
                           <p>Discount:</p>
                           <p>Free</p>
                         </div> */}
-                        <div className="cart-total-content">
-                          <p>Total:</p>
-                          {/* {finalTotal} */}
-                          {/* {console.log("cart", cartTotal, deliverydata)} */}
-                          <p>
-                            ₹{(Number(cartTotal) + Number(deliverydata)).toFixed(2)}
-                          </p>
-                        </div>
-                        {/* <p className="cart-applycoupon-notice">
+                      <div className="cart-total-content">
+                        <p>Total:</p>
+                        {/* {finalTotal} */}
+                        <p>
+                          ₹
+                          {(Number(cartTotal) + Number(deliverydata)).toFixed(
+                            2
+                          )}
+                        </p>
+                      </div>
+                      {/* <p className="cart-applycoupon-notice">
                           You’ll save <b>₹50.00</b> on this order!{" "}
                         </p> */}
-                        <Link to="/checkout">
-                          <button className="btn btn-checkout">
-                            Proceed to checkout
-                          </button>
-                        </Link>
-                      </div>
+                      <Link to="/checkout">
+                        <button className="btn btn-checkout">
+                          Proceed to checkout
+                        </button>
+                      </Link>
                     </div>
                   </div>
                 </div>
-              </section>
-            </>
-          )}
-        </>
+              </div>
+            </section>
+          </>
+        )}
+      </>
     </div>
   );
 };

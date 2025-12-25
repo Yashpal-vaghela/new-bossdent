@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import BASE_URL from "../api/config";
 import { AddToOrder } from "../redux/orderSlice";
 import { ProfileSideBar } from "../component/ProfileSideBar";
 import Loader1 from "../component/Loader1";
+import Loader2 from "../component/Loader2";
 
 export const OrderHistory = () => {
   const [orderData, setOrderData] = useState([]);
   const [orderDetails, setOrderDetails] = useState([]);
-  const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
-  const [loading, setloading] = useState(true);
+  const token = useSelector((state) => state.auth.token);
+  // const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
+  // const [loading, setloading] = useState(true);
+  const [apiloading, setApiLoading] = useState(false);
   const [page, setPage] = useState(1);
   const rowsPerPage = 5;
   const start = (page - 1) * rowsPerPage;
@@ -21,7 +24,8 @@ export const OrderHistory = () => {
   const params = useParams();
 
   const handlefetchOrderData = async (controller) => {
-    setloading(true);
+    // setloading(true);
+    setApiLoading(true);
     await axios
       .get(`${BASE_URL}/get-all-orders`, {
         headers: {
@@ -31,7 +35,8 @@ export const OrderHistory = () => {
         signal: controller.signal,
       })
       .then((res) => {
-        setloading(false);
+        setApiLoading(false);
+        // setloading(false);
         setOrderData(res?.data?.orders);
         dispatch(AddToOrder(res?.data?.orders));
       })
@@ -41,7 +46,7 @@ export const OrderHistory = () => {
       });
   };
   const handlefetchOrderDetails = async (controller) => {
-    setloading(true);
+    setApiLoading(true);
     await axios
       .get(`${BASE_URL}/get-order-details/${params?.id}`, {
         headers: {
@@ -51,7 +56,7 @@ export const OrderHistory = () => {
         signal: controller.signal,
       })
       .then((res) => {
-        setloading(false);
+        setApiLoading(false);
         console.log("res", res.data);
         setOrderDetails(res?.data?.order);
       })
@@ -124,328 +129,326 @@ export const OrderHistory = () => {
           </nav>
         </div>
       </section>
-
+      {apiloading && <Loader2></Loader2>}
       <section className="profile-section order-history-section">
         <div className="container">
           <div className="row">
-            {loading ? (
-              <Loader1></Loader1>
-            ) : (
-              <>
-                <div className="col-lg-3 order-history-content-wrapper profile-content-wrapper align-items-start justify-content-between">
-                  <button
-                    className="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="offcanvas"
-                    href="#offcanvasExample1"
-                    aria-controls="offcanvasExample1"
-                  >
-                    <span className="navbar-toggler-icon"></span>
-                  </button>
-                  <ProfileSideBar></ProfileSideBar>
-                </div>
-                {Object.keys(params)[0] === undefined ? (
-                  <div className="col-lg-9 order-details-container">
-                    <h2>Order History</h2>
-                    <React.Fragment>
+            <>
+              <div className="col-lg-3 order-history-content-wrapper profile-content-wrapper align-items-start justify-content-between">
+                <button
+                  className="navbar-toggler"
+                  type="button"
+                  data-bs-toggle="offcanvas"
+                  href="#offcanvasExample1"
+                  aria-controls="offcanvasExample1"
+                >
+                  <span className="navbar-toggler-icon"></span>
+                </button>
+                <ProfileSideBar></ProfileSideBar>
+              </div>
+              {Object.keys(params)[0] === undefined ? (
+                <div className="col-lg-9 order-details-container">
+                  <h2>Order History</h2>
+                  <React.Fragment>
+                    {orderData.length !== 0 ? (
+                      visibleData?.map((i, index) => {
+                        return (
+                          <div className="order-card" key={index}>
+                            <div className="row1">
+                              <span>
+                                <b>ORDER ID :</b> #{i?.order_id}
+                              </span>
+                              <span>
+                                <b>DATE :</b> {formatDate(i?.order_date)}
+                              </span>
+                              <span>
+                                <b>STATUS :</b> {i?.status}
+                              </span>
+                            </div>
+
+                            <div className="row2">
+                              <span>
+                                <b>TOTAL :</b> ₹{Number(i?.order_total)} (
+                                {Number(i?.item_count)} Products)
+                              </span>
+                              <button className="details-btn">
+                                <Link to={`/order-history/${i?.order_id}`}>
+                                  <i className="fa-regular fa-eye"></i>
+                                </Link>
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="order-card">
+                        <p className="mb-0">No Order Data found!</p>
+                      </div>
+                    )}
+                    <nav className="order-card py-4">
+                      <ul className="order-table-pagination pagination justify-content-center m-0">
+                        <li
+                          className={`page-item ${
+                            page === 1 ? "disabled" : ""
+                          }`}
+                        >
+                          <button
+                            className="page-link"
+                            onClick={() => handlePageChange(page - 1)}
+                          >
+                            <i className="fa-solid fa-angles-left"></i>
+                          </button>
+                        </li>
+                        {renderPagination()}
+                        <li
+                          className={`page-item ${
+                            page === totalPages ? "disabled" : ""
+                          }`}
+                        >
+                          <button
+                            className="page-link"
+                            onClick={() => handlePageChange(page + 1)}
+                          >
+                            <i className="fa-solid fa-angles-right"></i>
+                          </button>
+                        </li>
+                      </ul>
+                    </nav>
+                  </React.Fragment>
+
+                  <table className="table order-detail-table ">
+                    <thead>
+                      <tr>
+                        <td>Order id</td>
+                        <td>Date</td>
+                        <td>Total</td>
+                        <td>Status</td>
+                        <td></td>
+                      </tr>
+                    </thead>
+                    <tbody>
                       {orderData.length !== 0 ? (
                         visibleData?.map((i, index) => {
                           return (
-                            <div className="order-card" key={index}>
-                              <div className="row1">
-                                <span>
-                                  <b>ORDER ID :</b> #{i?.order_id}
-                                </span>
-                                <span>
-                                  <b>DATE :</b> {formatDate(i?.order_date)}
-                                </span>
-                                <span>
-                                  <b>STATUS :</b> {i?.status}
-                                </span>
-                              </div>
-
-                              <div className="row2">
-                                <span>
-                                  <b>TOTAL :</b> ₹{Number(i?.order_total)} (
-                                  {Number(i?.item_count)} Products)
-                                </span>
-                                <button className="details-btn">
-                                  <Link to={`/order-history/${i?.order_id}`}>
-                                    <i className="fa-regular fa-eye"></i>
-                                  </Link>
-                                </button>
-                              </div>
-                            </div>
+                            <tr key={index}>
+                              <td>#{i?.order_id}</td>
+                              <td>{formatDate(i?.order_date)}</td>
+                              <td>
+                                ₹{Number(i?.order_total).toFixed(2)} (
+                                {Number(i?.item_count)} products)
+                              </td>
+                              <td>{i?.status}</td>
+                              <td>
+                                <Link to={`/order-history/${i?.order_id}`}>
+                                  <i className="fa-regular fa-eye"></i>
+                                </Link>
+                              </td>
+                            </tr>
                           );
                         })
                       ) : (
-                        <div className="order-card">
-                          <p className="mb-0">No Order Data found!</p>
-                        </div>
-                      )}
-                      <nav className="order-card py-4">
-                        <ul className="order-table-pagination pagination justify-content-center m-0">
-                          <li
-                            className={`page-item ${
-                              page === 1 ? "disabled" : ""
-                            }`}
-                          >
-                            <button
-                              className="page-link"
-                              onClick={() => handlePageChange(page - 1)}
-                            >
-                              <i className="fa-solid fa-angles-left"></i>
-                            </button>
-                          </li>
-                          {renderPagination()}
-                          <li
-                            className={`page-item ${
-                              page === totalPages ? "disabled" : ""
-                            }`}
-                          >
-                            <button
-                              className="page-link"
-                              onClick={() => handlePageChange(page + 1)}
-                            >
-                              <i className="fa-solid fa-angles-right"></i>
-                            </button>
-                          </li>
-                        </ul>
-                      </nav>
-                    </React.Fragment>
-
-                    <table className="table order-detail-table ">
-                      <thead>
                         <tr>
-                          <td>Order id</td>
-                          <td>Date</td>
-                          <td>Total</td>
-                          <td>Status</td>
-                          <td></td>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {orderData.length !== 0 ? (
-                          visibleData?.map((i, index) => {
-                            return (
-                              <tr key={index}>
-                                <td>#{i?.order_id}</td>
-                                <td>{formatDate(i?.order_date)}</td>
-                                <td>
-                                  ₹{Number(i?.order_total).toFixed(2)} (
-                                  {Number(i?.item_count)} products)
-                                </td>
-                                <td>{i?.status}</td>
-                                <td>
-                                  <Link to={`/order-history/${i?.order_id}`}>
-                                    <i className="fa-regular fa-eye"></i>
-                                  </Link>
-                                </td>
-                              </tr>
-                            );
-                          })
-                        ) : (
-                          <></>
-                        )}
-                      </tbody>
-                      <tfoot>
-                        <tr>
-                          <td colSpan="5">
-                            <nav>
-                              <ul className="order-table-pagination pagination justify-content-center m-0">
-                                <li
-                                  className={`page-item ${
-                                    page === 1 ? "disabled" : ""
-                                  }`}
-                                >
-                                  <button
-                                    className="page-link"
-                                    onClick={() => setPage(page - 1)}
-                                  >
-                                    <i className="fa-solid fa-angles-left"></i>
-                                  </button>
-                                </li>
-                                {renderPagination()}
-                                <li
-                                  className={`page-item ${
-                                    page === totalPages ? "disabled" : ""
-                                  }`}
-                                >
-                                  <button
-                                    className="page-link"
-                                    onClick={() => setPage(page + 1)}
-                                  >
-                                    <i className="fa-solid fa-angles-right"></i>
-                                  </button>
-                                </li>
-                              </ul>
-                            </nav>
+                          <td colSpan="5" className="p-5 text-center">
+                            No Order Data found!
                           </td>
                         </tr>
-                      </tfoot>
-                    </table>
-                  </div>
-                ) : (
-                  <div className="col-lg-9 order-details-container">
-                    {loading ? (
-                      <Loader1></Loader1>
-                    ) : (
-                      <>
-                        {orderDetails?.length !== 0 ? (
-                          <>
-                            <div className="order-header">
-                              <h2 className="mb-0">Order Details</h2>
-                              <span className="status">
-                                {orderDetails?.status === "Processing"
-                                  ? "Success"
-                                  : orderDetails?.status}
-                              </span>
-                            </div>
-                            <div className="row order-view-details-row">
-                              <div className="col-lg-8 billing-address-section d-flex">
-                                <div className="billing-address-card card">
-                                  <div className="card-header">
-                                    <h3 className="mb-0">Billing Address</h3>
+                        // <p>No Order Data found!</p>
+                      )}
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colSpan="5">
+                          <nav>
+                            <ul className="order-table-pagination pagination justify-content-center m-0">
+                              <li
+                                className={`page-item ${
+                                  page === 1 ? "disabled" : ""
+                                }`}
+                              >
+                                <button
+                                  className="page-link"
+                                  onClick={() => setPage(page - 1)}
+                                >
+                                  <i className="fa-solid fa-angles-left"></i>
+                                </button>
+                              </li>
+                              {renderPagination()}
+                              <li
+                                className={`page-item ${
+                                  page === totalPages ? "disabled" : ""
+                                }`}
+                              >
+                                <button
+                                  className="page-link"
+                                  onClick={() => setPage(page + 1)}
+                                >
+                                  <i className="fa-solid fa-angles-right"></i>
+                                </button>
+                              </li>
+                            </ul>
+                          </nav>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              ) : (
+                <div className="col-lg-9 order-details-container">
+                  {apiloading ? (
+                    <Loader2></Loader2>
+                  ) : (
+                    <>
+                      {orderDetails?.length !== 0 ? (
+                        <>
+                          <div className="order-header">
+                            <h2 className="mb-0">Order Details</h2>
+                            <span className="status">
+                              {orderDetails?.status === "Processing"
+                                ? "Success"
+                                : orderDetails?.status}
+                            </span>
+                          </div>
+                          <div className="row order-view-details-row">
+                            <div className="col-lg-8 billing-address-section d-flex">
+                              <div className="billing-address-card card">
+                                <div className="card-header">
+                                  <h3 className="mb-0">Billing Address</h3>
+                                </div>
+                                <div className="card-body">
+                                  <div className="username-wrapper">
+                                    <p className="mb-0">
+                                      {orderDetails?.billing?.first_name}
+                                      {orderDetails?.billing?.last_name}
+                                    </p>
+                                    <span>
+                                      {orderDetails?.billing?.address}{" "}
+                                      {orderDetails?.billing?.city},
+                                      {orderDetails?.billing?.state} -{" "}
+                                      {orderDetails?.billing?.zipcode}.
+                                    </span>
                                   </div>
-                                  <div className="card-body">
-                                    <div className="username-wrapper">
-                                      <p className="mb-0">
-                                        {orderDetails?.billing?.first_name}
-                                        {orderDetails?.billing?.last_name}
-                                      </p>
-                                      <span>
-                                        {orderDetails?.billing?.address}{" "}
-                                        {orderDetails?.billing?.city},
-                                        {orderDetails?.billing?.state} -{" "}
-                                        {orderDetails?.billing?.zipcode}.
-                                      </span>
-                                    </div>
 
-                                    <div className="email-wrapper mb-2">
-                                      <label className="form-label mb-0">
-                                        Email
-                                      </label>
-                                      <p>{orderDetails?.billing?.email}</p>
-                                    </div>
-                                    <div className="phone-wrapper">
-                                      <label className="form-label mb-0">
-                                        Phone
-                                      </label>
-                                      <p className="mb-1">
-                                        {orderDetails?.billing?.phone?.slice(2)}
-                                      </p>
-                                    </div>
+                                  <div className="email-wrapper mb-2">
+                                    <label className="form-label mb-0">
+                                      Email
+                                    </label>
+                                    <p>{orderDetails?.billing?.email}</p>
                                   </div>
-                                </div>
-                                <div className="billing-address-card">
-                                  <div className="card-header">
-                                    <h3 className="mb-0">Shipping Address</h3>
-                                  </div>
-                                  <div className="card-body">
-                                    <div className="username-wrapper">
-                                      <p className="mb-0">
-                                        {orderDetails?.billing?.first_name}
-                                        {orderDetails?.billing?.last_name}
-                                      </p>
-                                      <span>
-                                        {orderDetails?.billing?.address}{" "}
-                                        {orderDetails?.billing?.city},
-                                        {orderDetails?.billing?.state} -{" "}
-                                        {orderDetails?.billing?.zipcode}.
-                                      </span>
-                                    </div>
-                                    <div className="email-wrapper mb-2">
-                                      <label className="form-label mb-0">
-                                        Email
-                                      </label>
-                                      <p>{orderDetails?.billing?.email}</p>
-                                    </div>
-                                    <div className="phone-wrapper">
-                                      <label className="form-label mb-0">
-                                        Phone
-                                      </label>
-                                      <p className="mb-1">
-                                        {orderDetails?.billing?.phone?.slice(2)}
-                                      </p>
-                                    </div>
+                                  <div className="phone-wrapper">
+                                    <label className="form-label mb-0">
+                                      Phone
+                                    </label>
+                                    <p className="mb-1">
+                                      {orderDetails?.billing?.phone?.slice(2)}
+                                    </p>
                                   </div>
                                 </div>
                               </div>
-                              <div className="col-lg-4">
-                                <div className="summary-card-section card">
-                                  <div className="card-header d-xl-flex d-lg-lock d-flex align-items-center justify-content-between">
-                                    <div className="summary-row d-block">
-                                      <h2>Order Id:</h2>
-                                      <p className="mb-0">
-                                        #{orderDetails?.order_id}
-                                      </p>
-                                    </div>
-                                    <div className="line1"></div>
-                                    <div className="summary-row d-block">
-                                      <h2>Payment Method:</h2>
-                                      <p className="mb-0">
-                                        {orderDetails?.payment_method}
-                                      </p>
-                                    </div>
+                              <div className="billing-address-card">
+                                <div className="card-header">
+                                  <h3 className="mb-0">Shipping Address</h3>
+                                </div>
+                                <div className="card-body">
+                                  <div className="username-wrapper">
+                                    <p className="mb-0">
+                                      {orderDetails?.billing?.first_name}
+                                      {orderDetails?.billing?.last_name}
+                                    </p>
+                                    <span>
+                                      {orderDetails?.billing?.address}{" "}
+                                      {orderDetails?.billing?.city},
+                                      {orderDetails?.billing?.state} -{" "}
+                                      {orderDetails?.billing?.zipcode}.
+                                    </span>
                                   </div>
-                                  <div className="card-body">
-                                    <div className="summary-total-row">
-                                      <span>Subtotal</span>
-                                      <p>₹{orderDetails?.subtotal}</p>
-                                    </div>
-                                    <div className="summary-total-row">
-                                      <span>Shipping</span>
-                                      <p>
-                                        {orderDetails?.shipping_charge ===
-                                        "0.00"
-                                          ? "Free"
-                                          : orderDetails?.shipping_charge}
-                                      </p>
-                                    </div>
-                                    <div className="summary-total-row total align-items-center">
-                                      <span>Total</span>
-                                      <p>₹{orderDetails?.total}</p>
-                                    </div>
+                                  <div className="email-wrapper mb-2">
+                                    <label className="form-label mb-0">
+                                      Email
+                                    </label>
+                                    <p>{orderDetails?.billing?.email}</p>
+                                  </div>
+                                  <div className="phone-wrapper">
+                                    <label className="form-label mb-0">
+                                      Phone
+                                    </label>
+                                    <p className="mb-1">
+                                      {orderDetails?.billing?.phone?.slice(2)}
+                                    </p>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                            <table className="product-order-table table w-100">
-                              <thead>
-                                <tr>
-                                  <td>Product</td>
-                                  <td>price</td>
-                                  <td className="text-center">Quantity</td>
-                                  <td className="text-center">subtotal</td>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {orderDetails?.items.map((i, index) => {
-                                  return (
-                                    <tr key={index}>
-                                      <td>{i?.product_name}</td>
-                                      <td>₹{i?.product_price}</td>
-                                      <td className="text-center">
-                                        x {i?.quantity}
-                                      </td>
-                                      <td className="text-center">
-                                        {i?.total}
-                                      </td>
-                                    </tr>
-                                  );
-                                })}
-                              </tbody>
-                            </table>
-                          </>
-                        ) : (
-                          <></>
-                        )}
-                      </>
-                    )}
-                  </div>
-                )}
-              </>
-            )}
+                            <div className="col-lg-4">
+                              <div className="summary-card-section card">
+                                <div className="card-header d-xl-flex d-lg-lock d-flex align-items-center justify-content-between">
+                                  <div className="summary-row d-block">
+                                    <h2>Order Id:</h2>
+                                    <p className="mb-0">
+                                      #{orderDetails?.order_id}
+                                    </p>
+                                  </div>
+                                  <div className="line1"></div>
+                                  <div className="summary-row d-block">
+                                    <h2>Payment Method:</h2>
+                                    <p className="mb-0">
+                                      {orderDetails?.payment_method}
+                                    </p>
+                                  </div>
+                                </div>
+                                <div className="card-body">
+                                  <div className="summary-total-row">
+                                    <span>Subtotal</span>
+                                    <p>₹{orderDetails?.subtotal}</p>
+                                  </div>
+                                  <div className="summary-total-row">
+                                    <span>Shipping</span>
+                                    <p>
+                                      {orderDetails?.shipping_charge === "0.00"
+                                        ? "Free"
+                                        : orderDetails?.shipping_charge}
+                                    </p>
+                                  </div>
+                                  <div className="summary-total-row total align-items-center">
+                                    <span>Total</span>
+                                    <p>₹{orderDetails?.total}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <table className="product-order-table table w-100">
+                            <thead>
+                              <tr>
+                                <td>Product</td>
+                                <td>price</td>
+                                <td className="text-center">Quantity</td>
+                                <td className="text-center">subtotal</td>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {orderDetails?.items.map((i, index) => {
+                                return (
+                                  <tr key={index}>
+                                    <td>{i?.product_name}</td>
+                                    <td>₹{i?.product_price}</td>
+                                    <td className="text-center">
+                                      x {i?.quantity}
+                                    </td>
+                                    <td className="text-center">{i?.total}</td>
+                                  </tr>
+                                );
+                              })}
+                            </tbody>
+                          </table>
+                        </>
+                      ) : (
+                        <></>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+            </>
           </div>
         </div>
       </section>

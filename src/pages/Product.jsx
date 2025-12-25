@@ -19,14 +19,18 @@ import {
 } from "../redux/wishlistSlice";
 import { AddToCart, CartTotal } from "../redux/cartSlice";
 import useValidateUser from "../component/useValidateUser";
+import Loader2 from "../component/Loader2";
 
 export const Product = () => {
   const [products, setProducts] = useState([]);
   const [currentPage, setcurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setloading] = useState(false);
-  const [Loading, setLoading] = useState(false);
-  const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
+  const [apiloading, setApiLoading] = useState(false);
+  // const [token] = useSelector((state)=>state.auth.token);
+  const token = useSelector((state) => state.auth.token);
+  // console.log("token",token);
+  // const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
   const [showVariationModal, setShowVariationModal] = useState(false);
   const [selectedProductForModal, setSelectedProductForModal] = useState(null);
   const [sortOrder, setSortOrder] = useState("");
@@ -44,6 +48,7 @@ export const Product = () => {
   const { cart } = useSelector((state) => state.cart);
   const wishlistData = useSelector((state) => state?.wishlist?.wishlist);
   const wishlistId1 = useSelector((state) => state.wishlist?.wishlistId);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -173,149 +178,160 @@ export const Product = () => {
     quantity,
     slug
   ) => {
-    if (!token) {
+    if (token === "null" || !token) {
       validateUser();
-    }
-    const AlreadyExistsData = cart?.items?.filter((i) => {
-      return i?.variation_id !== 0
-        ? i?.variation_id === selectedAttributes?.id
-        : true && i?.product_id === product?.id;
-    });
-    // console.log("slug",slug);
+    } else {
+      const AlreadyExistsData = cart?.items?.filter((i) => {
+        return i?.variation_id !== 0
+          ? i?.variation_id === selectedAttributes?.id
+          : true && i?.product_id === product?.id;
+      });
+      console.log("slug", AlreadyExistsData);
 
-    if (AlreadyExistsData.length > 0) {
-      if (
-        product?.variations &&
-        product.variations.length !== 0 &&
-        selectedAttributes === 0
-      ) {
-        console.warn("ProductVariationsData Edit api call");
-        setShowVariationModal((prev) => !prev);
-        setSelectedProductForModal(product);
-      } else {
-        if (selectedAttributes === null && selectedAttributes !== undefined) {
-          toast.error(
-            `please select ${
-              product?.variations?.map(
-                (i, index) => Object.keys(i?.attributes)[index]
-              )[0]
-            }`
-          );
+      if (AlreadyExistsData.length > 0) {
+        if (
+          product?.variations &&
+          product.variations.length !== 0 &&
+          selectedAttributes === 0
+        ) {
+          console.warn("ProductVariationsData Edit api call");
+          setShowVariationModal((prev) => !prev);
+          setSelectedProductForModal(product);
         } else {
-          if (selectedAttributes === undefined) {
+          if (selectedAttributes === null && selectedAttributes !== undefined) {
             toast.error(
               `please select ${
                 product?.variations?.map(
                   (i, index) => Object.keys(i?.attributes)[index]
-                )[1]
+                )[0]
               }`
             );
           } else {
-            const payload = {
-              cart_id: AlreadyExistsData[0]?.cart_id,
-              quantity: AlreadyExistsData[0]?.quantity + quantity,
-            };
-            console.warn("EditCartData api call", payload);
-            setLoading(true);
-            try {
-              const res = await axios.post(`${BASE_URL}/update-cart`, payload, {
-                headers: {
-                  Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
-                  "Content-Type": "application/json",
-                },
-              });
-              setLoading(false);
-              toast.success("Product updated in cart successfully!");
-              if (showVariationModal === true) {
-                setShowVariationModal((prev) => !prev);
+            if (selectedAttributes === undefined) {
+              toast.error(
+                `please select ${
+                  product?.variations?.map(
+                    (i, index) => Object.keys(i?.attributes)[index]
+                  )[1]
+                }`
+              );
+            } else {
+              const payload = {
+                cart_id: AlreadyExistsData[0]?.cart_id,
+                quantity: AlreadyExistsData[0]?.quantity + quantity,
+              };
+              console.warn("EditCartData api call", payload);
+              setApiLoading(true);
+              // setLoading(true);
+              try {
+                const res = await axios.post(
+                  `${BASE_URL}/update-cart`,
+                  payload,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${token}`
+                        .replace(/\s+/g, " ")
+                        .trim(),
+                      "Content-Type": "application/json",
+                    },
+                  }
+                );
+                setApiLoading(false);
+                // setLoading(false);
+                toast.success("Product updated in cart successfully!");
+                if (showVariationModal === true) {
+                  setShowVariationModal((prev) => !prev);
+                }
+                dispatch(CartTotal(res.data.cart_total));
+                // dispatch(CartCounter(res.data.cart_count));
+                dispatch(AddToCart({ ...res.data, items: res.data.items }));
+                if (slug) {
+                  navigate(slug);
+                }
+              } catch (error) {
+                console.log("error", error);
               }
-              dispatch(CartTotal(res.data.cart_total));
-              // dispatch(CartCounter(res.data.cart_count));
-              dispatch(AddToCart({ ...res.data, items: res.data.items }));
-              if (slug) {
-                navigate(slug);
-              }
-            } catch (error) {
-              console.log("error", error);
             }
           }
         }
-      }
-    } else {
-      if (
-        product?.variations &&
-        product.variations.length !== 0 &&
-        selectedAttributes === 0
-      ) {
-        // console.warn("ProductVariationsData api call");
-        setShowVariationModal((prev) => !prev);
-        setSelectedProductForModal(product);
       } else {
-        if (selectedAttributes === null && selectedAttributes !== undefined) {
-          toast.error(
-            `please select ${
-              product?.variations?.map(
-                (i, index) => Object.keys(i?.attributes)[index]
-              )[0]
-            }`
-          );
+        if (
+          product?.variations &&
+          product.variations.length !== 0 &&
+          selectedAttributes === 0
+        ) {
+          // console.warn("ProductVariationsData api call");
+          setShowVariationModal((prev) => !prev);
+          setSelectedProductForModal(product);
         } else {
-          if (selectedAttributes === undefined) {
+          if (selectedAttributes === null && selectedAttributes !== undefined) {
             toast.error(
               `please select ${
                 product?.variations?.map(
                   (i, index) => Object.keys(i?.attributes)[index]
-                )[1]
+                )[0]
               }`
             );
           } else {
-            const payload = {
-              product_id: product?.id,
-              variation_id:
-                selectedAttributes === 0
-                  ? selectedAttributes
-                  : selectedAttributes?.id,
-              quantity: quantity,
-            };
-            console.warn(
-              "addtocartData api call",
-              payload,
-              "select",
-              selectedAttributes,
-              product?.variations
-            );
-            setLoading(true);
-            try {
-              const res = await axios.post(
-                `${BASE_URL}/new-add-to-cart`,
+            if (selectedAttributes === undefined) {
+              toast.error(
+                `please select ${
+                  product?.variations?.map(
+                    (i, index) => Object.keys(i?.attributes)[index]
+                  )[1]
+                }`
+              );
+            } else {
+              const payload = {
+                product_id: product?.id,
+                variation_id:
+                  selectedAttributes === 0
+                    ? selectedAttributes
+                    : selectedAttributes?.id,
+                quantity: quantity,
+              };
+              console.warn(
+                "addtocartData api call",
                 payload,
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`
-                      .replace(/\s+/g, " ")
-                      .trim(),
-                    "Content-Type": "application/json",
-                  },
+                "select",
+                selectedAttributes,
+                product?.variations
+              );
+              setApiLoading(true);
+              // setLoading(true);
+              try {
+                const res = await axios.post(
+                  `${BASE_URL}/new-add-to-cart`,
+                  payload,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${token}`
+                        .replace(/\s+/g, " ")
+                        .trim(),
+                      "Content-Type": "application/json",
+                    },
+                  }
+                );
+                if (showVariationModal === true) {
+                  setShowVariationModal((prev) => !prev);
                 }
-              );
-              if (showVariationModal === true) {
-                setShowVariationModal((prev) => !prev);
+                setApiLoading(false);
+                // setLoading(false);
+                toast.success("Product added to cart successfully!");
+                res !== undefined && dispatch(CartTotal(res.data.cart_total));
+                // dispatch(CartCounter(res.data.cart_count));
+                dispatch(
+                  AddToCart({
+                    ...res.data,
+                    items: [...cart.items, res.data?.data],
+                  })
+                );
+                if (slug) {
+                  navigate(slug);
+                }
+              } catch (error) {
+                console.log("error", error);
               }
-              setLoading(false);
-              toast.success("Product added to cart successfully!");
-              res !== undefined && dispatch(CartTotal(res.data.cart_total));
-              // dispatch(CartCounter(res.data.cart_count));
-              dispatch(
-                AddToCart({
-                  ...res.data,
-                  items: [...cart.items, res.data?.data],
-                })
-              );
-              if (slug) {
-                navigate(slug);
-              }
-            } catch (error) {
-              console.log("error", error);
             }
           }
         }
@@ -324,57 +340,62 @@ export const Product = () => {
   };
 
   const handleAddToWishList = async (e, product) => {
-    if (!token) {
+    if (token === "null" || !token) {
       validateUser();
-    }
-    const FilterCartdata = wishlistData?.filter(
-      (i) => i?.product_id === product?.id
-    );
-    const filterwishlistId = wishlistId1.includes(product?.id);
-    if (filterwishlistId) {
-      console.warn("update wishlist and remove wishlist data");
-      await axios
-        .post(
-          `${BASE_URL}/delete-wishlist`,
-          { wishlist_id: FilterCartdata[0]?.wishlist_id },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((res) => {
-          // const a = wishlistId.filter((i)=>i !== product?.id);
-          toast.success("Product removed from wishlist.");
-          const updatedWishlist = wishlistId1.filter(
-            (id) => id !== product?.id
-          );
-          dispatch(wishlistId(updatedWishlist));
-          dispatch(WishlistCounter(res.data.wishlist_count));
-        })
-        .catch((err) => console.log("err", err));
     } else {
-      console.warn("add wishlist data");
-      await axios
-        .post(
-          `${BASE_URL}/add-wishlist`,
-          { product_id: product?.id },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((response) => {
-          toast.success("Product added to wishlist!");
-          const updatedWishlist = [...wishlistId1, product?.id];
-          dispatch(AddToWishlist(response?.data.wishlist));
-          dispatch(wishlistId(updatedWishlist));
-          dispatch(WishlistCounter(response?.data?.wishlist_count));
-        })
-        .catch((error) => console.log("err", error));
+      const FilterCartdata = wishlistData?.filter(
+        (i) => i?.product_id === product?.id
+      );
+      const filterwishlistId = wishlistId1.includes(product?.id);
+      if (filterwishlistId) {
+        console.warn("update wishlist and remove wishlist data");
+        setApiLoading(true);
+        await axios
+          .post(
+            `${BASE_URL}/delete-wishlist`,
+            { wishlist_id: FilterCartdata[0]?.wishlist_id },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .then((res) => {
+            // const a = wishlistId.filter((i)=>i !== product?.id);
+            toast.success("Product removed from wishlist.");
+            const updatedWishlist = wishlistId1.filter(
+              (id) => id !== product?.id
+            );
+            dispatch(wishlistId(updatedWishlist));
+            dispatch(WishlistCounter(res.data.wishlist_count));
+            setApiLoading(false);
+          })
+          .catch((err) => console.log("err", err));
+      } else {
+        console.warn("add wishlist data");
+        setApiLoading(true);
+        await axios
+          .post(
+            `${BASE_URL}/add-wishlist`,
+            { product_id: product?.id },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .then((response) => {
+            toast.success("Product added to wishlist!");
+            const updatedWishlist = [...wishlistId1, product?.id];
+            dispatch(AddToWishlist(response?.data.wishlist));
+            dispatch(wishlistId(updatedWishlist));
+            dispatch(WishlistCounter(response?.data?.wishlist_count));
+            setApiLoading(false);
+          })
+          .catch((error) => console.log("err", error));
+      }
     }
   };
 
@@ -408,8 +429,9 @@ export const Product = () => {
             </nav>
           </div>
         </section>
+        {apiloading && <Loader2></Loader2>}
         {loading ? (
-          <Loader1></Loader1>
+          <Loader2></Loader2>
         ) : (
           <>
             <section className="product-section">
@@ -465,39 +487,54 @@ export const Product = () => {
                         key={index}
                       >
                         <div className={`card ${product.stock}`}>
+                          {product.stock !== "instock" ? (
+                            <div className="out-of-stock-label">
+                              Out of Stock
+                            </div>
+                          ) : (
+                            <></>
+                          )}
                           <div className="card-header">
                             <div className="d-flex align-items-center justify-content-between">
-                              {product?.regular_price && product?.sale_price && (
-                              <span className="sale-title">
-                                Sale{" "}
-                                <b>
-                                  {Math.round(
-                                    ((product?.regular_price -
-                                      product?.sale_price) /
-                                      product?.regular_price) *
-                                      100
-                                  )}
-                                  %
-                                </b>
-                              </span>
-                            )}
-                             {wishlistId1.includes(product?.id) ? (
-                              <img
-                                className="heart-icon img-fluid"
-                                src="/img/heart-fill-icon1.svg"
-                                alt="heart-fill-icon"
-                                onClick={(e) => handleAddToWishList(e, product)}
-                              ></img>
-                            ) : (
-                              <img
-                                className="heart-icon img-fluid"
-                                src="/img/heart-icon1.svg"
-                                alt="heart-icon"
-                                onClick={(e) => handleAddToWishList(e, product)}
-                              ></img>
-                            )}
+                              {product?.regular_price &&
+                                product?.sale_price && (
+                                  <span className="sale-title">
+                                    Sale{" "}
+                                    <b>
+                                      {Math.round(
+                                        ((product?.regular_price -
+                                          product?.sale_price) /
+                                          product?.regular_price) *
+                                          100
+                                      )}
+                                      %
+                                    </b>
+                                  </span>
+                                )}
+                              {wishlistId1.includes(product?.id) ? (
+                                <img
+                                  className="heart-icon img-fluid"
+                                  src="/img/heart-fill-icon3.svg"
+                                  alt="heart-fill-icon"
+                                  onClick={(e) =>
+                                    handleAddToWishList(e, product)
+                                  }
+                                ></img>
+                              ) : (
+                                <img
+                                  className="heart-icon img-fluid"
+                                  src="/img/heart-icon1.svg"
+                                  alt="heart-icon"
+                                  onClick={(e) =>
+                                    handleAddToWishList(e, product)
+                                  }
+                                ></img>
+                              )}
                             </div>
-                            <Link to={`/products/${product.slug}`} className="product-img-url">
+                            <Link
+                              to={`/products/${product.slug}`}
+                              className="product-img-url"
+                            >
                               <img
                                 src={product?.image}
                                 className="card-img-top img-fluid"
@@ -514,13 +551,13 @@ export const Product = () => {
                                 <span className="product-price card-text">
                                   ₹&nbsp;
                                   {product?.regular_price !== null &&
-                                  product.regular_price !== product.price ? (
+                                  product?.regular_price !== product?.price ? (
                                     <>
                                       <b>{`${greaterPrice}.00`}</b>
                                       {`${lowerPrice}.00`}
                                     </>
                                   ) : (
-                                    <>{`${Number(product.price)}.00`}</>
+                                    <>{`${Number(product?.price)}.00`}</>
                                   )}
                                 </span>
 
@@ -534,8 +571,14 @@ export const Product = () => {
                                 // data-bs-toggle={product?.variations && product?.variations.length !== 0 ? "modal" : undefined}
                                 // data-bs-target={product?.variations && product?.variations.length !== 0 ? "#cartModal" : undefined}
                                 // disabled={showVariationModal}
+                                // disabled={product?.stock == "outofstock" ? true :false }
+                                disabled="true"
                                 onClick={(e) =>
-                                  handleAddToCartFromModal(e, product, 0, 1)
+                                  product.stock === "instock" ? (
+                                    handleAddToCartFromModal(e, product, 0, 1)
+                                  ) : (
+                                    <></>
+                                  )
                                 }
                                 // onClick={(e) => handleAddToCart(e, product)}
                               >

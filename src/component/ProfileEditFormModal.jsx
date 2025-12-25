@@ -7,7 +7,7 @@ import { AddToUser } from '../redux/userSlice';
 
 const editSchema = yup.object().shape({
     email:yup.string().email("Email is not valid"),
-    phone: yup.string().matches(/^[0-9]{10}$/, "Phone number must be 10 digits"),
+    // phone_number: yup.string().matches(/^[0-9]{10}$/, "Phone number must be 10 digits"),
     zipcode: yup.string().matches(/^[0-9]{6}$/, "Zipcode must be 6 digits"),
 })
 export const ProfileEditFormModal = ({States,user,token}) => {
@@ -17,7 +17,7 @@ export const ProfileEditFormModal = ({States,user,token}) => {
             address: Object.keys(user).length !== 0 ? user?.address : "",
             email: Object.keys(user).length !== 0 ? user?.email : "",
             city: Object.keys(user).length !== 0 ? user?.city : "",
-            phone: Object.keys(user).length !== 0 ? user?.phone_number?.slice(2) : "",
+            phone_number: Object.keys(user).length !== 0 ? user?.phone_number?.slice(2) : "",
             state: Object.keys(user).length !== 0 ? user?.state : "",
             zipcode: Object.keys(user).length !== 0 ? user?.zipcode : "",
     };
@@ -41,11 +41,10 @@ export const ProfileEditFormModal = ({States,user,token}) => {
                     "Content-Type": "application/json",                
                 }
             }).then((res)=>{
-                console.log("res",res.data);
+                // console.log("res",res.data);
                 // setUser1({user:res.data.user_data});
                 dispatch(AddToUser(res?.data?.user_data));
                 // const modalEl = document.getElementById("EditformModal");
-                // const modal =
                 document.getElementById("EditformModal")?.classList.remove("show");
                 document.querySelector(".modal-backdrop")?.remove();
                 document.body.classList.remove("modal-open");
@@ -100,10 +99,10 @@ export const ProfileEditFormModal = ({States,user,token}) => {
                   <div className="d-block align-items-xl-center align-items-start gap-2 gap-xl-3 d-lg-flex">
                     <div className="editInputBox">
                         <label className="form-label">Phone</label>
-                        <input type="text" className="form-control" placeholder="Enter Phone Number" name="phone" maxLength={10} value={formik.values?.phone || ""} onChange={formik?.handleChange}></input>
-                        {formik?.errors?.phone && (
+                        <input type="text" className="form-control" placeholder="Enter Phone Number" name="phone_number" maxLength={10} value={formik.values?.phone_number}></input>
+                        {/* {formik?.errors?.phone && (
                             <p className="text-danger my-1 my-lg-0 my-xl-1">{formik?.errors?.phone}</p>
-                        )}
+                        )} */}
                     </div>
                     <div className="editInputBox">
                       <label className="form-label">State</label>

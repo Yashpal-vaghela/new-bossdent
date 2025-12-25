@@ -1,8 +1,9 @@
-// import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const useValidateUser = () => {
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const validateUser = () =>{
         toast.error("Please login to add product to wishlist!");

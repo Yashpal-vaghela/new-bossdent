@@ -1,6 +1,6 @@
 
 .home-main{
-  margin-top: 150px;
+  margin-top: 180px;
 }
 .banner-section .swiper-pagination-bullet {
   width: var(
@@ -231,7 +231,8 @@
 @media (max-width: 1200px) {
   .dental-product-section .card-body .shopping-bag-icon,
   .search-product-card .card-body .shopping-bag-icon {
-    width: 22%;
+    width: 40px;
+    height: 40px;
     padding: 10px;
   }
 }
@@ -329,8 +330,8 @@
   padding: 4px 8px !important;
 }
 .dental-product-section .card .discount-badge{
-  left: -4%;
-  top: 4px !important;
+  left: -6%;
+  top: 3px !important;
 }
 .contact-content-wrapper {
   padding: 15px 0px;
@@ -431,6 +432,9 @@
   /* .dental-product-section h2{
         margin-bottom: 0px;
     } */
+  .RecentSearch-section .swiper-pagination{
+    display: none !important;
+  }
 }
 @media (max-width: 1200px) {
   .category-title {
@@ -591,8 +595,11 @@
   .category-subtitle{
     font-size: 20px;
   }
-   .disposable-swiper .card-body .shopping-bag-icon{
+  .disposable-swiper .card-body .shopping-bag-icon{
     padding: 5px;
+  }
+  .disposable-swiper .card-body .shopping-bag-icon{
+    width: 21% !important;
   }
 }
 @media(min-width:992px){
@@ -633,7 +640,11 @@
     padding: 15px 5px 5px;
   }
   .home-main{
-    margin-top: 100px;
+    /* margin-top: 100px; */
+    margin-top: 146px;
+  }
+  .navbar-bottom-highlight{
+    margin: 12px 0px 0px;
   }
   /* .banner-section{
     margin-top: 13.5%;
@@ -646,7 +657,7 @@
 } */
 @media(max-width:768px){
   .home-main{
-    margin-top: 110px;
+    margin-top: 147px;
   }
 }
 @media(max-width:576px){
@@ -694,9 +705,9 @@
   /* .banner-section{
     margin-top: 25%;
   } */
-   .home-main{
-    margin-top: 135px;
-   }
+  .home-main{
+    margin-top: 145px;
+  }
 }
 /* @media(max-width:480px){
   .banner-section{

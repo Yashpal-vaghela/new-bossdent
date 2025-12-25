@@ -1,23 +1,29 @@
 import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import Indian_states_cities_list from "indian-states-cities-list";
 import { ProfileSideBar } from "../component/ProfileSideBar";
+import axios from "axios";
+import BASE_URL from "../api/config";
+import { AddToUser } from "../redux/userSlice";
 
 export const Settings = () => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user.user);
+  const token = useSelector((state)=>state.auth.token);
+  // const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
   const [States, setStates] = useState([]);
+  const dispatch = useDispatch();
   const originalValues = {
     first_name: Object.keys(user).length !== 0 ? user?.first_name : "",
     last_name: Object.keys(user).length !== 0 ? user?.last_name : "",
     address: Object.keys(user).length !== 0 ? user?.address : "",
     email: Object.keys(user).length !== 0 ? user?.email : "",
     city: Object.keys(user).length !== 0 ? user?.city : "",
-    phone: Object.keys(user).length !== 0 ? user?.phone_number.slice(2) : "",
+    phone_number: Object.keys(user).length !== 0 ? user?.phone_number.slice(2) : "",
     state: Object.keys(user).length !== 0 ? user?.state : "",
-    zip: Object.keys(user).length !== 0 ? user?.zipcode : "",
+    zipcode: Object.keys(user).length !== 0 ? user?.zipcode : "",
     country: "In" || "",
     gst_number: "",
     company_name: "",
@@ -28,7 +34,7 @@ export const Settings = () => {
     // validationSchema:false,
     validateOnChange: true,
     validateOnBlur: false,
-    onSubmit: () => {
+    onSubmit: async () => {
       // console.log("formik submit",formik?.values);
       const isSame =
         JSON.stringify(formik?.values) === JSON.stringify(originalValues);
@@ -36,6 +42,14 @@ export const Settings = () => {
         console.log("No Changes found - API Not Called");
         return;
       }
+      await axios.post(`${BASE_URL}/save-user-data`,(formik?.values),{
+        headers:{
+          Authorization:`Bearer ${token}`,
+          "Content-Type":"application/json",
+        }
+      }).then((res)=>{
+        dispatch(AddToUser(res?.data?.user_data));
+      }).catch((err)=>console.log("err",err));
       console.warn("save user data api calling");
       navigate("/profile");
     },
@@ -127,10 +141,10 @@ export const Settings = () => {
                       <input
                         className="form-control"
                         type="text"
-                        name="phone"
+                        name="phone_number"
                         placeholder="Enter Your Phone Number"
-                        value={formik?.values?.phone || ""}
-                        onChange={formik?.handleChange}
+                        value={formik?.values?.phone_number}
+                        // onChange={formik?.handleChange}
                       ></input>
                     </div>
                   </div>
@@ -188,7 +202,7 @@ export const Settings = () => {
                       ></input>
                     </div>
                     <div className="d-md-flex d-block align-items-center justify-content-between gap-4">
-                      <div className="profileInputBox w-100">
+                      {/* <div className="profileInputBox w-100">
                         <label className="form-label">Country / Region</label>
                         <select
                           className="form-select"
@@ -198,11 +212,12 @@ export const Settings = () => {
                         >
                           <option value="IN">India</option>
                         </select>
-                      </div>
+                      </div> */}
                       <div className="profileInputBox w-100">
                         <label className="form-label">States</label>
                         <select
                           className="form-select"
+                          name="state"
                           value={formik?.values?.state || ""}
                           onChange={formik?.handleChange}
                         >
@@ -215,6 +230,13 @@ export const Settings = () => {
                             );
                           })}
                         </select>
+                      </div>
+                      <div className="profileInputBox w-100">
+                        <label className="form-label">City</label>
+                        <input type="text" className="form-control" placeholder="Enter City" name="city" value={formik?.values.city || ""} onChange={formik?.handleChange}></input>
+                        {
+                          formik?.errors?.city && <p className="text-danger my-1 my-lg-0 my-xl-1">{formik?.errors?.city}</p>
+                        }
                       </div>
                       <div className="profileInputBox w-100">
                         <label className="form-label">Zipcode</label>
@@ -234,7 +256,6 @@ export const Settings = () => {
           </div>
         </div>
       </section>
-     
     </div>
   );
 };

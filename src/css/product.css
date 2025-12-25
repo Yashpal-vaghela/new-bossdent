@@ -14,9 +14,10 @@
 }
 
 .product-section .card.outofstock {
-  opacity: 0.7;
-    /* background-color: rgba(255, 255, 255, 0.3); */
-  /* position: relative; */
+ 
+  /* background-color: rgba(0, 0, 0, 0.3); */
+  position: relative;
+  z-index: 0;
 }
 .product-section .card-header{
   padding:8px 8px 11px;
@@ -43,6 +44,9 @@
 }
 .product-section .card .card-body {
   padding: 10px 10px;
+}
+.product-section .card.outofstock .card-body{
+   opacity: 0.6;
 }
 .product-section .card .sale-title{
   /* background: rgba(24, 156, 52, 1); */
@@ -196,6 +200,23 @@
   width: 32%;
   border-radius: 6px;
   margin: 8px 8px 0px;
+}
+.out-of-stock-label{
+    position: absolute;
+    top: 35%;
+    left: 50%;
+    width: 100%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.6);
+    color: red;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    z-index: 20;
+    text-transform: uppercase;
+    pointer-events: none;
+    text-align: center;
+    white-space: nowrap;
 }
 .product-content-wrapper .product-price {
   line-height: 1.6;

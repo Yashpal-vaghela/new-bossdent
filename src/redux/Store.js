@@ -4,7 +4,7 @@ import { addToCartReducer } from './cartSlice';
 import { addToWishlistReducer } from './wishlistSlice';
 import { addToUserReducer } from './userSlice';
 import { addToOrderReducer } from './orderSlice';
-// import { addToAuthReducer } from './authSlice';
+import { addToAuthReducer } from './authSlice';
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +13,6 @@ export const store = configureStore({
     wishlist:addToWishlistReducer,
     user:addToUserReducer,
     order:addToOrderReducer,
-    // auth:addToAuthReducer,
+    auth:addToAuthReducer,
   },
 });

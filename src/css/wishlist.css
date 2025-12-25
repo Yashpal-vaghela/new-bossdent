@@ -69,11 +69,13 @@
     color: #fff;
     text-transform: capitalize;
 }
-.wishlist-item-stock.outstock{
+.wishlist-item-stock.outstock,
+.wishlist-item-stock.outofstock{
     background: rgba(234, 75, 72, 1);
     color:#fff;
     text-transform: capitalize;
 }
+
 .wishlist-addTocart{
     background: rgba(32, 32, 32, 1);
     color:#fff;
@@ -85,6 +87,15 @@
 .wishlist-addTocart:hover{
     border: 1.5px solid #fff;
     background: #000;
+}
+.wishlist-addTocart.outstock, .wishlist-addTocart.outofstock{
+    opacity: 0.6;
+}
+.wishlist-addTocart.outstock:hover, .wishlist-addTocart.outofstock:hover,
+.wishlist-addTocart.outstock:focus, .wishlist-addTocart.outofstock:focus{
+    opacity: 0.6;
+    border: 0px;
+    background: rgba(32, 32, 32, 1);
 }
 .wishlist-item-remove {
   background: none;

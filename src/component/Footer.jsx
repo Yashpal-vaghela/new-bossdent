@@ -26,16 +26,16 @@ const Footer = () => {
                 </div>
               </div>
               <div className="col-lg-2 px-2">
-                <div className="social-link-icon-wrapper d-flex justify-content-between">
+                <div className="social-link-icon-wrapper d-flex justify-content-center gap-1">
                   <Link to="https://www.facebook.com/share/FgTSjonfbbaGDbNo/?mibextid=qi2Omg">
                     <i className="fa-brands fa-facebook-f social-link-icon"></i>
                   </Link>
-                  <Link to="#">
+                  {/* <Link to="#">
                     <i className="fa-brands fa-twitter social-link-icon"></i>
                   </Link>
                   <Link to="#">
                     <i className="fa-brands fa-pinterest-p social-link-icon"></i>
-                  </Link>
+                  </Link> */}
                   <Link to="https://www.instagram.com/_bossdent_?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw%3D%3D">
                     <i className="fa-brands fa-instagram social-link-icon"></i>
                   </Link>
@@ -63,7 +63,7 @@ const Footer = () => {
                 <h2>Company</h2>
                 <ul className="footer-social-link">
                   <li>
-                    <Link to="/aboutus">About Us</Link>
+                    <Link to="/about">About Us</Link>
                   </li>
                   <li>
                     <Link to="/contact">Contact Us</Link>
@@ -71,10 +71,9 @@ const Footer = () => {
                   <li>
                     <Link to="/products">Products</Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link to="#">Gallery</Link>
-                  </li>
-                
+                  </li> */}
                 </ul>
               </div>
               <div className="col-lg-3 col-md-3 col-4">
@@ -89,9 +88,9 @@ const Footer = () => {
                   <li>
                     <Link to="/terms-and-conditions">Terms & Conditions</Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link to="#">Sitemap</Link>
-                  </li>
+                  </li> */}
                 </ul>
               </div>
               {/* <div className="col-lg-2 col-md-3 col-4">
@@ -112,20 +111,20 @@ const Footer = () => {
                 <h2>Help</h2>
                 <ul className="footer-social-link">
                   <li>
-                    <Link to="#">Payment</Link>
+                    <Link to="/help-center/payment-info">Payment</Link>
                   </li>
                   <li>
-                    <Link to="/return-exchange">Return Order</Link>
+                    <Link to="/help-center/return">Return Order</Link>
                   </li>
                   <li>
-                    <Link to="#">Cancel Order</Link>
+                    <Link to="/help-center/order">Cancel Order</Link>
                   </li>
                   <li>
                     <Link to="/help-center">Help Center</Link>
                   </li>
-                  <li>
+                  {/* <li>
                     <Link to="/refund-and-returns-policy">Contact for Bulk</Link>
-                  </li>
+                  </li> */}
                   {/* <li>
                     <Link to="/return-exchange">Return & Exchange</Link>
                   </li>

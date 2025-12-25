@@ -23,7 +23,7 @@ export const Contact = () => {
     }
     const [loading,setLoading] = useState(false);
     const [showAlert,setShowAlert] = useState(false);
-
+    const [apiloading,setApiLoading] = useState(false);
     const formik = useFormik({
         initialValues,
         validationSchema:ContactSchema,
@@ -32,14 +32,21 @@ export const Contact = () => {
         onSubmit: async () =>{
             const userLoggedIn = !!localStorage.getItem("auth_token");
             if(userLoggedIn){
+                setApiLoading(true);
                 await axios.post("https://admin.bossdentindia.com/wp-json/custom/v1/submit-form",{
                         name:formik?.values?.name,
                         email: formik?.values?.email,
                         phone: formik?.values?.phone,
                         subject: formik?.values?.subject,
                         message: formik?.values?.message,  
-                    }).then((res)=>console.log("res",res))
-                    .catch((err)=>console.log("err",err));
+                    }).then((res)=>{
+                        setApiLoading(false);
+                        formik?.resetForm();
+                        console.log("res",res)})
+                    .catch((err)=>{
+                        setApiLoading(false);
+                        toast.error(`There was an error submitting the form:, ${err}`);
+                        console.log("err",err)});
                 // try{
                 //     const response = await axios.post("https://admin.bossdentindia.com/wp-json/custom/v1/submit-form",{
                 //         name:formik?.values?.name,
@@ -155,7 +162,7 @@ export const Contact = () => {
                                             )
                                         }
                                     </div>
-                                    <button className="btn contact-btn " type="submit">Submit Now</button>
+                                    <button className="btn contact-btn" type="submit">Submit Now</button>
                                 </form>
                             </div>
                         </div>

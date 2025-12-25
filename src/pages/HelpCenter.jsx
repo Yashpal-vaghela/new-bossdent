@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { ProfileSideBar } from "../component/ProfileSideBar";
 
 export const HelpCenter = () => {
+  useEffect(()=>{
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  },[])
   return (
     <div className="home-main pt-4 pb-2">
       <section className="Breadcrumbs-section">
@@ -18,131 +22,244 @@ export const HelpCenter = () => {
           </nav>
         </div>
       </section>
-      <section className="help-center-section">
+      <section className="help-center-section profile-section">
         <div className="container">
-          <h1>
-            <Link to="tel:+917698828883">+91 76988 28883</Link>
-          </h1>
-          <div className="accordion" id="accordionExample">
-            <div className="accordion-item help-item" >
-              <h2 className="accordion-header" id="headingOne">
-                <button
-                  className="accordion-button"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#collapseOne"
-                  aria-expanded="true"
-                  aria-controls="collapseOne"
-                  data-number="01"
-                >
-                  How to place an order?
-                </button>
-              </h2>
-              <div
-                id="collapseOne"
-                className="accordion-collapse collapse show"
-                aria-labelledby="headingOne"
-                data-bs-parent="#accordionExample"
-              >
-                <div className="accordion-body"  data-number="01">
-                  <p>For the product order follow the below instructions:</p>
-                  <p className="mb-sm-1 mb-3">Click on shop on the site header part.</p>
-                  <ul className="account-ul">
-                    <li>Select your product</li>
-                    <li>Select size and quantity</li>
-                    <li>Click on add to cart</li>
-                    <li>Click on the cart icon & click on continue to checkout</li>
-                    <li>Enter you required details on the checkout page</li>
-                    <li>Select your payment options & click on place order button.</li>
-                  </ul>
-                  <p>Still unsatisfied, mail us <Link to="email:zahndentaldepo@gmail.com">zahndentaldepo@gmail.com</Link></p>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="offcanvas"
+            href="#offcanvasExample1"
+            aria-controls="offcanvasExample1"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div className="d-flex w-100 profile-content-wrapper align-items-start justify-content-between gap-3">
+            <ProfileSideBar></ProfileSideBar>
+            <div className="rightside-bar col-lg-9 ">
+              <div className="row help-content-wrapper order-2  order-sm-1">
+                <div className="col-lg-3 col-md-3 col-sm-6 col-12">
+                  <div className="card">
+                    <Link to="/help-center/order">
+                      <div className="card-content">
+                        <img
+                          src="/img/order-img1.jpg"
+                          className="card-header img-fluid"
+                          alt="order-img"
+                        ></img>
+                        <p className="card-footer text-center">Order</p>
+                      </div>
+                      <svg
+                        width="22"
+                        height="39"
+                        viewBox="0 0 22 39"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M2.21673 0.000114441L21.6084 19.3918L2.21673 38.7834L6.48499e-05 36.5668L17.1771 19.3918L0.00214767 2.21678L2.21673 0.000114441Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </Link>
+                  </div>
+                </div>
+                <div className="col-lg-3 col-md-3 col-sm-6 col-12">
+                  <div className="card">
+                    <Link to="/help-center/delivery">
+                      <div className="card-content">
+                        <img
+                          src="/img/delivery-img2.jpg"
+                          className="img-fluid"
+                          alt="delivery-img"
+                        ></img>
+                        <p className="card-footer text-center">Delivery</p>
+                      </div>
+                      <svg
+                        width="22"
+                        height="39"
+                        viewBox="0 0 22 39"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M2.21673 0.000114441L21.6084 19.3918L2.21673 38.7834L6.48499e-05 36.5668L17.1771 19.3918L0.00214767 2.21678L2.21673 0.000114441Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </Link>
+                  </div>
+                </div>
+                <div className="col-lg-3 col-md-3 col-sm-6 col-12">
+                  <div className="card">
+                    <Link to="/help-center/payment-info">
+                      <div className="card-content">
+                        <img
+                          src="/img/payment-img2.jpg"
+                          className="img-fluid"
+                          alt="payment-img"
+                        ></img>
+                        <p className="card-footer text-center">Payment</p>
+                      </div>
+                      <svg
+                        width="22"
+                        height="39"
+                        viewBox="0 0 22 39"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M2.21673 0.000114441L21.6084 19.3918L2.21673 38.7834L6.48499e-05 36.5668L17.1771 19.3918L0.00214767 2.21678L2.21673 0.000114441Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </Link>
+                  </div>
+                </div>
+                <div className="col-lg-3 col-md-3 col-sm-6 col-12">
+                  <div className="card">
+                    <Link to="/help-center/return">
+                      <div className="card-content">
+                        <img
+                          src="/img/return-img1.jpg"
+                          className="img-fluid"
+                          alt="return-img"
+                        ></img>
+                        <p className="card-footer text-center">Return</p>
+                      </div>
+                      <svg
+                        width="22"
+                        height="39"
+                        viewBox="0 0 22 39"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M2.21673 0.000114441L21.6084 19.3918L2.21673 38.7834L6.48499e-05 36.5668L17.1771 19.3918L0.00214767 2.21678L2.21673 0.000114441Z"
+                          fill="white"
+                        />
+                      </svg>
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="accordion-item help-item" >
-              <h2 className="accordion-header" id="headingTwo">
-                <button
-                  className="accordion-button collapsed"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#collapseTwo"
-                  aria-expanded="false"
-                  aria-controls="collapseTwo"
-                  data-number="02"
+              <div className="help-order-content mt-0 mt-sm-4 order-1 order-sm-2">
+                <div
+                  className="accordion help-order-accordion"
+                  id="accordionExample"
                 >
-                  How to create an account?
-                </button>
-              </h2>
-              <div
-                id="collapseTwo"
-                className="accordion-collapse collapse"
-                aria-labelledby="headingTwo"
-                data-bs-parent="#accordionExample"
-              >
-                <div className="accordion-body" data-number="02">
-                  <p>For create an account follow the below instructions:</p>
-                  <ul className="account-ul">
-                    <li>Click on my account on the site header part.</li>
-                    <li>You can see login & register form on the my account page.</li>
-                    <li>Enter your details and click on register button.</li>
-                  </ul>
-                  <p>If you already have an account then you can enter your email/username and password in the login form on the my-account page.</p>
-                </div>
-              </div>
-            </div>
-            <div className="accordion-item help-item">
-              <h2 className="accordion-header" id="headingThree">
-                <button
-                  className="accordion-button collapsed"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#collapseThree"
-                  aria-expanded="false"
-                  aria-controls="collapseThree"
-                  data-number="03"
-                >
-                  How much time it takes to deliver the order?
-                </button>
-              </h2>
-              <div
-                id="collapseThree"
-                className="accordion-collapse collapse"
-                aria-labelledby="headingThree"
-                data-bs-parent="#accordionExample"
-              >
-                <div className="accordion-body" data-number="03">
-                  <p>It takes 3-4 Business Days to deliver your order.</p>
-                </div>
-              </div>
-            </div>
-            <div className="accordion-item help-item">
-              <h2 className="accordion-header" id="headingFour">
-                <button
-                  className="accordion-button collapsed"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#collapseFour"
-                  aria-expanded="false"
-                  aria-controls="collapseFour"
-                  data-number="04"
-                >
-                  How can I contact the store?
-                </button>
-              </h2>
-              <div
-                id="collapseFour"
-                className="accordion-collapse collapse"
-                aria-labelledby="headingFour"
-                data-bs-parent="#accordionExample"
-              >
-                <div className="accordion-body" data-number="04"> 
-                    <h2>How can I contact the store?</h2>
-                    <ul className="address-ul">
-                        <li>Bossdentindia (Disposables & Consumables) is an online dental product selling store based in Surat Gujrat.</li>
-                        <li>Address: Plot No. 1 to 8, Marutidham Industrial Estate, Behind Hotel Royal, Velanja Road, Umra, Surat - 394130, Gujarat, India</li>
-                        <li>Email: <Link to="email:">zahndentaldepo@gmail.com</Link></li>
-                        <li>Phone: <Link to="tel:+917698828883">+91 76988 28883</Link></li>
-                    </ul>
+                  <div className="accordion-item">
+                    <h2 className="accordion-header" id="headingOne">
+                      <button
+                        className="accordion-button"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseOne"
+                        aria-expanded="true"
+                        aria-controls="collapseOne"
+                      >
+                        How to place a new order on the Bossdent website?
+                      </button>
+                    </h2>
+                    <div
+                      id="collapseOne"
+                      className="accordion-collapse collapse show"
+                      aria-labelledby="headingOne"
+                      data-bs-parent="#accordionExample"
+                    >
+                      <div className="accordion-body">
+                        <p>
+                          Browse our products, add the items you need to your
+                          cart, and proceed to checkout. Enter your delivery
+                          details, select a payment method, and confirm your
+                          order.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="accordion-item">
+                    <h2 className="accordion-header" id="headingTwo">
+                      <button
+                        className="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseTwo"
+                        aria-expanded="false"
+                        aria-controls="collapseTwo"
+                      >
+                        Do I need a GST number to shop on Bossdent?
+                      </button>
+                    </h2>
+                    <div
+                      id="collapseTwo"
+                      className="accordion-collapse collapse"
+                      aria-labelledby="headingTwo"
+                      data-bs-parent="#accordionExample"
+                    >
+                      <div className="accordion-body">
+                        <p>
+                          No, a GST number is not required for shopping. It is
+                          optional and only needed if you want your GST number
+                          to appear on the invoice for business claims.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="accordion-item">
+                    <h2 className="accordion-header" id="headingThree">
+                      <button
+                        className="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseThree"
+                        aria-expanded="false"
+                        aria-controls="collapseThree"
+                      >
+                        Do you provide GST invoices with every order?
+                      </button>
+                    </h2>
+                    <div
+                      id="collapseThree"
+                      className="accordion-collapse collapse"
+                      aria-labelledby="headingThree"
+                      data-bs-parent="#accordionExample"
+                    >
+                      <div className="accordion-body">
+                        <p>
+                          Yes, every order comes with a proper GST invoice. If
+                          you provide your GST number during checkout, it will
+                          be included on your invoice.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="accordion-item">
+                    <h2 className="accordion-header" id="headingFour">
+                      <button
+                        className="accordion-button collapsed"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#collapseFour"
+                        aria-expanded="false"
+                        aria-controls="collapseFour"
+                      >
+                        Can I track my order in real-time?
+                      </button>
+                    </h2>
+                    <div
+                      id="collapseFour"
+                      className="accordion-collapse collapse"
+                      aria-labelledby="headingFour"
+                      data-bs-parent="#accordionExample"
+                    >
+                      <div className="accordion-body">
+                        <p>
+                          Yes, once your order is shipped, you’ll receive a
+                          tracking link via email or SMS. You can use this link
+                          to follow your package until delivery.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

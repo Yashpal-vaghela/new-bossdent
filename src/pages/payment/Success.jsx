@@ -3,10 +3,12 @@ import React, { useEffect, useState } from "react";
 import BASE_URL from "../../api/config";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export const Success = () => {
   const [paymentStatus, setPaymentStatus] = useState("");
-  const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
+  const token = useSelector((state)=>state.auth.token);
+  // const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
   const [orderId] = useState(JSON.parse(localStorage.getItem("orderId")));
   const navigate = useNavigate();
   const fetchPaymentCallBack = async (controller) => {
@@ -35,7 +37,7 @@ export const Success = () => {
       fetchPaymentCallBack(controller);
     }
     return () => controller.abort();
-  }, []);
+  }, [paymentStatus]);
   return (
     <div className="home-main pt-4">
       <section className="checkout-success-wrapper ">

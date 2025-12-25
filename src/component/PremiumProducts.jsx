@@ -7,15 +7,19 @@ import useValidateUser from "./useValidateUser";
 import { toast } from "react-toastify";
 import { AddToCart } from "../redux/cartSlice";
 import { useSelector } from "react-redux";
-import { AddToWishlist, WishlistCounter, wishlistId } from "../redux/wishlistSlice";
+import {
+  AddToWishlist,
+  WishlistCounter,
+  wishlistId,
+} from "../redux/wishlistSlice";
 
-const PremiumProducts = ({token,getCartData,dispatch}) => {
+const PremiumProducts = ({ token, getCartData, dispatch }) => {
   const [premiumProducts, setPremiumProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showVariationModal,setShowVariationModal] = useState(false);
-  const [selectedProductForModal,setSelectedProductForModal] = useState(null);
-  const wishlistData = useSelector((state)=>state?.wishlist?.wishlist);
+  const [showVariationModal, setShowVariationModal] = useState(false);
+  const [selectedProductForModal, setSelectedProductForModal] = useState(null);
+  const wishlistData = useSelector((state) => state?.wishlist?.wishlist);
   const wishlistId1 = useSelector((state) => state.wishlist?.wishlistId);
   const validateUser = useValidateUser();
 
@@ -34,143 +38,201 @@ const PremiumProducts = ({token,getCartData,dispatch}) => {
     }
   };
 
-  const handleAddToCart = async (e,product,selectedAttributes,quantity,slug) =>{
-    // console.log("add",e,product)
-    if(!token){
+  const handleAddToCart = async (
+    e,
+    product,
+    selectedAttributes,
+    quantity,
+    slug
+  ) => {
+    if (token === "null" || !token) {
       validateUser();
-    }
-    const AlreadyExistsData = getCartData?.items?.filter((i)=>{
-      return i?.variation_id !== 0 ? 
-      i?.variation_id === selectedAttributes?.id
-      : true && i?.product_id === product?.id;
-    })
-    if(AlreadyExistsData.length > 0){
-      if(product?.variations && product?.variations.length !== 0 && selectedAttributes === 0){
-         console.warn("open modal ProductVariationsData Edit api call");
-         setShowVariationModal((prev)=>!prev);
-         setSelectedProductForModal(product);
-      }else{
-        if(selectedAttributes === null && selectedAttributes !== undefined){
-          // console.log("please select attributes");
-          toast.error(`Please select ${product?.variations?.map((i,index)=>Object.keys(i?.attributes)[index])[0]}`)
-        }else{
-          if(selectedAttributes === undefined){
-            // console.log("please select attributes")
-            toast.error(`please select ${product?.variations?.map((i,index)=>Object.keys(i?.attributes)[index])[1]}`)
-          }else{  
-            const payload = {
-              cart_id:AlreadyExistsData[0]?.cart_id,
-              quantity:AlreadyExistsData[0]?.quantity + quantity,
-            }
-            console.log("EditCartData api call")
-            try{
-              const res = await axios.post(`${BASE_URL}/update-cart`,payload,{
-                headers:{
-                  Authorization:`Bearer ${token}`.replace(/\s+/g, " ").trim(),
-                  "Content-Type": "application/json",
+    } else {
+      const AlreadyExistsData = getCartData?.items?.filter((i) => {
+        return i?.variation_id !== 0
+          ? i?.variation_id === selectedAttributes?.id
+          : true && i?.product_id === product?.id;
+      });
+      if (AlreadyExistsData.length > 0) {
+        if (
+          product?.variations &&
+          product?.variations.length !== 0 &&
+          selectedAttributes === 0
+        ) {
+          console.warn("open modal ProductVariationsData Edit api call");
+          setShowVariationModal((prev) => !prev);
+          setSelectedProductForModal(product);
+        } else {
+          if (selectedAttributes === null && selectedAttributes !== undefined) {
+            toast.error(
+              `Please select ${
+                product?.variations?.map(
+                  (i, index) => Object.keys(i?.attributes)[index]
+                )[0]
+              }`
+            );
+          } else {
+            if (selectedAttributes === undefined) {
+              toast.error(
+                `please select ${
+                  product?.variations?.map(
+                    (i, index) => Object.keys(i?.attributes)[index]
+                  )[1]
+                }`
+              );
+            } else {
+              const payload = {
+                cart_id: AlreadyExistsData[0]?.cart_id,
+                quantity: AlreadyExistsData[0]?.quantity + quantity,
+              };
+              // console.log("EditCartData api call")
+              try {
+                const res = await axios.post(
+                  `${BASE_URL}/update-cart`,
+                  payload,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${token}`
+                        .replace(/\s+/g, " ")
+                        .trim(),
+                      "Content-Type": "application/json",
+                    },
+                  }
+                );
+                toast.success("Product updated in cart successfully!");
+                if (showVariationModal === true) {
+                  setShowVariationModal((prev) => !prev);
                 }
-              });
-              toast.success("Product updated in cart successfully!");
-              if(showVariationModal === true){
-                setShowVariationModal((prev)=>!prev);
+                dispatch(AddToCart({ ...res.data, items: res.data.items }));
+              } catch (err) {
+                console.log("error", err);
               }
-              dispatch(AddToCart({...res.data,items:res.data.items}));
-            }catch(err){
-              console.log("error",err)
+            }
+          }
+        }
+      } else {
+        if (
+          product?.variations &&
+          product?.variations.length !== 0 &&
+          selectedAttributes === 0
+        ) {
+          setShowVariationModal((prev) => !prev);
+          setSelectedProductForModal(product);
+        } else {
+          if (selectedAttributes === null && selectedAttributes !== undefined) {
+            toast.error(
+              `please select ${
+                product?.variations?.map(
+                  (i, index) => Object.keys(i?.attributes)[index]
+                )[0]
+              }`
+            );
+          } else {
+            if (selectedAttributes === undefined) {
+              toast.error(
+                `please select ${
+                  product?.variations?.map(
+                    (i, index) => Object.keys(i?.attributes)[index]
+                  )[1]
+                }`
+              );
+            } else {
+              const payload = {
+                product_id: product?.id,
+                variation_id:
+                  selectedAttributes === 0
+                    ? selectedAttributes
+                    : selectedAttributes?.id,
+                quantity: quantity,
+              };
+              // console.log("AddtoCartData api call",payload);
+              try {
+                const res = await axios.post(
+                  `${BASE_URL}/new-add-to-cart`,
+                  payload,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${token}`
+                        .replace(/\s+/g, " ")
+                        .trim(),
+                      "Content-Type": "application/json",
+                    },
+                  }
+                );
+                if (showVariationModal === true) {
+                  setShowVariationModal((prev) => !prev);
+                }
+                toast.success("Product added to cart successfully!");
+                dispatch(
+                  AddToCart({
+                    ...res.data,
+                    items: [...getCartData.items, res.data?.data],
+                  })
+                );
+              } catch (err) {
+                console.log("error", err);
+              }
             }
           }
         }
       }
-      // console.log("open modal and select value");
-    }else{
-      if(product?.variations && product?.variations.length !== 0 && selectedAttributes === 0){
-        setShowVariationModal((prev)=>!prev);
-        setSelectedProductForModal(product);
-        console.log("open modal")
-      }else{
-        if(selectedAttributes === null && selectedAttributes !== undefined){
-          console.log("please select variations");
-          toast.error(`please select ${product?.variations?.map((i,index)=>Object.keys(i?.attributes)[index])[0]}`)
-        }else{
-          if(selectedAttributes === undefined){
-            console.log("please select variations");
-            toast.error(`please select ${
-                            product?.variations?.map(
-                              (i, index) => Object.keys(i?.attributes)[index]
-                            )[1]
-                          }`
-                        );
-          }else{
-            const payload = {
-              product_id: product?.id,
-              variation_id:
-                selectedAttributes === 0
-                  ? selectedAttributes
-                  : selectedAttributes?.id,
-              quantity: quantity,
-            };
-            console.log("AddtoCartData api call",payload);
-            try{
-              const res = await axios.post(`${BASE_URL}/new-add-to-cart`,payload,{
-                headers:{
-                  Authorization:`Bearer ${token}`.replace(/\s+/g, " ").trim(),
-                  "Content-Type":"application/json",
-                }
-              });
-              if(showVariationModal === true){
-                setShowVariationModal((prev)=>!prev);
-              }
-              toast.success("Product added to cart successfully!");
-              dispatch(AddToCart({
-                ...res.data,
-                items:[...getCartData.items,res.data?.data],
-              }))
-            } catch(err){
-              console.log("error",err)
+    }
+  };
+
+  const handleAddToWishlist = async (e, product) => {
+    if (token === "null" || !token) {
+      validateUser();
+    } else {
+      const FilterCartData = wishlistData?.filter(
+        (i) => i?.product_id === product?.id
+      );
+      const filterwishlistId = wishlistId1.includes(product?.id);
+      if (filterwishlistId) {
+        // console.log("update wishlist add remove wishlist data");
+        await axios
+          .post(
+            `${BASE_URL}/delete-wishlist`,
+            { wishlist_id: FilterCartData[0]?.wishlist_id },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
+                "Content-Type": "application/json",
+              },
             }
-          }
-        }
+          )
+          .then((res) => {
+            toast.success("Product removed form wishlist");
+            const updatedWishlist = wishlistId1.filter(
+              (id) => id !== product?.id
+            );
+            dispatch(wishlistId(updatedWishlist));
+            dispatch(WishlistCounter(res.data.wishlist_count));
+          })
+          .catch((err) => console.log("err", err));
+      } else {
+        // console.log("add wishlist data");
+        await axios
+          .post(
+            `${BASE_URL}/add-wishlist`,
+            { product_id: product?.id },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .then((response) => {
+            toast.success("Product added to wishlist!");
+            const updatedWishlist = [...wishlistId1, product?.id];
+            dispatch(AddToWishlist(response?.data.wishlist));
+            dispatch(wishlistId(updatedWishlist));
+            dispatch(WishlistCounter(response.data.wishlist_count));
+          })
+          .catch((err) => console.log("err", err));
       }
     }
-  }
-  
-  const handleAddToWishlist = async (e,product) =>{
-    if(!token){
-      validateUser();
-    }
-    const FilterCartData = wishlistData?.filter((i)=>i?.product_id === product?.id);
-    const filterwishlistId = wishlistId1.includes(product?.id);
-    // console.log("fil",filterwishlistId,wishlistId1,product)
-    if(filterwishlistId){
-      console.log("update wishlist add remove wishlist data");
-      await axios.post(`${BASE_URL}/delete-wishlist`,{wishlist_id:FilterCartData[0]?.wishlist_id},{
-        headers:{
-          Authorization:`Bearer ${token}`.replace(/\s+/g, " ").trim(),
-          "Content-Type":"application/json",
-        }
-      }).then((res)=>{
-        toast.success("Product removed form wishlist");
-        const updatedWishlist = wishlistId1.filter((id)=>id !== product?.id);
-        dispatch(wishlistId(updatedWishlist));
-        dispatch(WishlistCounter(res.data.wishlist_count));
-      }).catch((err)=>console.log("err",err));
-    }else{
-      console.log("add wishlist data");
-      await axios.post(`${BASE_URL}/add-wishlist`,{product_id:product?.id},{
-        headers:{
-          Authorization:`Bearer ${token}`.replace(/\s+/g, " ").trim(),
-          "Content-Type": "application/json",
-        }
-      })
-      .then(((response)=>{
-        toast.success("Product added to wishlist!");
-        const updatedWishlist = [...wishlistId1,product?.id];
-        dispatch(AddToWishlist(response?.data.wishlist));
-        dispatch(wishlistId(updatedWishlist));
-        dispatch(WishlistCounter(response.data.wishlist_count));
-      })).catch((err)=>console.log("err",err));
-    }
-  }
+  };
   useEffect(() => {
     const controller = new AbortController();
     fetchPremiumProducts(controller);
@@ -180,7 +242,13 @@ const PremiumProducts = ({token,getCartData,dispatch}) => {
   }, []);
   return (
     <section className="premium-products-section">
-      <AddToCartModal isOpen={showVariationModal} onClose={()=>setShowVariationModal(false)} product={selectedProductForModal} onAddToCart={handleAddToCart} variations={selectedProductForModal?.variation}></AddToCartModal>
+      <AddToCartModal
+        isOpen={showVariationModal}
+        onClose={() => setShowVariationModal(false)}
+        product={selectedProductForModal}
+        onAddToCart={handleAddToCart}
+        variations={selectedProductForModal?.variation}
+      ></AddToCartModal>
       <div className="container">
         <div className="d-flex justify-content-between align-items-center">
           <h2 className="text-white fs-2 section-title">
@@ -224,24 +292,25 @@ const PremiumProducts = ({token,getCartData,dispatch}) => {
               </Link>
 
               <div className="product-cart-wrapper d-flex justify-content-between w-100 align-items-center">
-                {
-                  wishlistId1.includes(premiumProducts[6]?.id) ? (
-                    <img
-                      src="/img/heart-fill-icon1.svg"
-                      className="heart-icon img-fluid"
-                      alt="heart-icon"
-                      onClick={(e)=>handleAddToWishlist(e,premiumProducts[6])}
-                    ></img>
-                  ) : (
-                    <img
-                      src="/img/heart-icon.svg"
-                      className="heart-icon img-fluid"
-                      alt="heart-icon"
-                      onClick={(e)=>handleAddToWishlist(e,premiumProducts[6])}
-                    ></img>
-                  )
-                }
-                <button className="btn btn-default" onClick={(e)=>handleAddToCart(e,premiumProducts[6],0,1)}>
+                {wishlistId1.includes(premiumProducts[6]?.id) ? (
+                  <img
+                    src="/img/heart-fill-icon1.svg"
+                    className="heart-icon img-fluid"
+                    alt="heart-icon"
+                    onClick={(e) => handleAddToWishlist(e, premiumProducts[6])}
+                  ></img>
+                ) : (
+                  <img
+                    src="/img/heart-icon.svg"
+                    className="heart-icon img-fluid"
+                    alt="heart-icon"
+                    onClick={(e) => handleAddToWishlist(e, premiumProducts[6])}
+                  ></img>
+                )}
+                <button
+                  className="btn btn-default"
+                  onClick={(e) => handleAddToCart(e, premiumProducts[6], 0, 1)}
+                >
                   Add to Cart
                   <img
                     src="/img/shopping-bag-icon.svg"
@@ -322,7 +391,7 @@ const PremiumProducts = ({token,getCartData,dispatch}) => {
                     src="/img/lightShopping-bag-icon.svg"
                     className="shopping-bag-icon img-fluid"
                     alt="shopping-bag"
-                    onClick={(e)=>handleAddToCart(e,item,0,1)}
+                    onClick={(e) => handleAddToCart(e, item, 0, 1)}
                   />
                 </div>
               </div>
@@ -335,3 +404,7 @@ const PremiumProducts = ({token,getCartData,dispatch}) => {
 };
 
 export default PremiumProducts;
+// change headline in implant banner and make implant banner for mobile screen in figma,
+// setloader and favicon in cart and checkout page,
+// create payment option functionlity in checkout page.
+// make implant banner in figma

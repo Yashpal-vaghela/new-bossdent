@@ -4,9 +4,7 @@ import BASE_URL from "../api/config";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "../css/singleproduct.css";
-// import { Swiper, SwiperSlide } from "swiper/react";
 import { toast } from "react-toastify";
-// import { Autoplay, Navigation, Pagination, Thumbs,} from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
@@ -14,21 +12,23 @@ import { ServiceSection } from "../component/ServiceSection";
 import { RelatedProducts } from "../component/RelatedProducts";
 import { useDispatch, useSelector } from "react-redux";
 import { AddToCart } from "../redux/cartSlice";
-import { AddToWishlist, WishlistCounter, wishlistId} from "../redux/wishlistSlice";
+import {
+  AddToWishlist,
+  WishlistCounter,
+  wishlistId,
+} from "../redux/wishlistSlice";
 import { AddToCartModal } from "../component/AddToCartModal";
 import Loader1 from "../component/Loader1";
 import useValidateUser from "../component/useValidateUser";
+import Loader2 from "../component/Loader2";
 
 const SingleProduct = () => {
   const { slug } = useParams();
   const [singleProduct, setSingleProduct] = useState([]);
-  // const [rating, setRating] = useState(0);
   const [loadMore, setLoadMore] = useState(false);
   const [showQuantity, setShowQuantity] = useState([]);
-  // const swiperRef = useRef(null);
-  // const [thumbsSwiper, setThumbsSwiper] = useState(null);
   const [quantity, setQuantity] = useState({});
-  const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
+  const token = useSelector((state) => state.auth.token);
   const cartData = useSelector((state) => state?.cart?.cart);
   const wishListData = useSelector((state) => state?.wishlist?.wishlist);
   const wishlistId1 = useSelector((state) => state.wishlist?.wishlistId);
@@ -36,9 +36,12 @@ const SingleProduct = () => {
   const [showVariationModal, setShowVariationModal] = useState(false);
   const [selectedProductForModal, setSelectedProductForModal] = useState(null);
   const [loading, setloading] = useState(true);
+  const [apiloading, setApiLoading] = useState(false);
   const validateUser = useValidateUser();
-
-  const a = cartData.length !== 0
+  const navigate = useNavigate();
+  
+  const a =
+    cartData.length !== 0
       ? cartData?.items.map((i) => {
           return {
             id: i?.variation_id === 0 ? i?.product_id : i?.variation_id,
@@ -56,22 +59,23 @@ const SingleProduct = () => {
     : singleProduct?.variations?.slice(0, 3);
   const dispatch = useDispatch();
   const SingleProductData = async (controller) => {
-      setloading(true);
-      try {
-        const res = await axios.get(`${BASE_URL}/new-product/${slug}`, {
-          signal: controller.signal,
-        });
-        setSingleProduct(res.data?.data);
-        setloading(false);
-        handleRelatedProducts(controller, res.data.data?.id);
-      } catch (err) {
-        // setloading(false);
-        if (err.name !== "AbortError") console.error(err);
-      }
+    setloading(true);
+    try {
+      const res = await axios.get(`${BASE_URL}/new-product/${slug}`, {
+        signal: controller.signal,
+      });
+      setSingleProduct(res.data?.data);
+      setloading(false);
+      handleRelatedProducts(controller, res.data.data?.id);
+    } catch (err) {
+      // setloading(false);
+      if (err.name !== "AbortError") console.error(err);
+    }
   };
   useEffect(() => {
     const controller = new AbortController();
     SingleProductData(controller);
+    window.scrollTo({ top: 0, behavior: "smooth" });
     return () => controller.abort();
   }, [slug]);
 
@@ -208,85 +212,118 @@ const SingleProduct = () => {
     }
   };
 
-  const handleAddToCart = async ( singleproduct, id, qty, selectattributes, action) => {
+  const handleAddToCart = async (
+    singleproduct,
+    id,
+    qty,
+    selectattributes,
+    action
+  ) => {
     if (!token) {
       validateUser();
-    }
-
-    const AlreadyExistingdata = cartData?.items?.filter((i, index) => {
-      return i?.variation_id !== 0
-        ? (typeof id === "object" ? i?.variation_id === id?.id : i?.variation_id === id) && i?.product_id === singleproduct?.id
-        : i?.product_id === singleproduct?.id;
-    });
-    if (AlreadyExistingdata.length > 0) {
-      const payload = {
-        cart_id: AlreadyExistingdata[0]?.cart_id,
-        quantity: typeof id === "object" ? qty[id?.id] : AlreadyExistingdata[0]?.quantity + qty[id],
-      };
-      handleEditApi(payload);
     } else {
-      const payload = {
-        product_id: singleProduct?.id,
-        variation_id: typeof id === "object" ? id?.id : id,
-        quantity: typeof id === "object" ? qty[id?.id] : qty[id],
-      };
-      // console.warn("finalAddtoCart", payload, qty);
-      handleAddApi(payload);
+      const AlreadyExistingdata = cartData?.items?.filter((i, index) => {
+        console.log("i",i?.variation_id,i?.product_id)
+        return i?.variation_id !== 0
+          ? (typeof id === "object"
+              ? i?.variation_id === id?.id
+              : i?.variation_id === id) && i?.product_id === singleproduct?.id
+          : i?.product_id === singleproduct?.id;
+      });
+       console.log("ass",AlreadyExistingdata)
+      if (AlreadyExistingdata.length > 0) {
+        const payload = {
+          cart_id: AlreadyExistingdata[0]?.cart_id,
+          quantity:
+            typeof id === "object"
+              ? qty[id?.id]
+              : AlreadyExistingdata[0]?.quantity + 1,
+        };
+        console.log(
+          "payload",
+          payload,
+          qty,
+          id?.id,
+          AlreadyExistingdata[0].quantity
+        );
+        handleEditApi(payload);
+      } else {
+        // const payload = {
+        //   product_id: singleProduct?.id,
+        //   variation_id: typeof id === "object" ? id?.id : id,
+        //   quantity: typeof id === "object" ? qty[id?.id] : qty[id],
+        // };
+        console.warn("finalAddtoCart",id, qty);
+        // handleAddApi(payload);
+      }
+      if(action === "/checkout"){
+        navigate(`${action}`);
+        if(cartData?.items?.length === 0){
+          toast.error("Your cart is empty!")
+        }
+      }
     }
+    
+    console.log("sin",singleProduct,id,qty,selectattributes,action)
   };
 
   const handleWishlist = async (e, product) => {
-    if (!token) {
-     validateUser();
-    }
-    const filterWishlistData = wishListData?.filter(
-      (i) => i?.product_id === product?.id
-    );
-    const filterwishlistId = wishlistId1.includes(product?.id);
-
-    if (filterwishlistId) {
-      await axios
-        .post(
-          `${BASE_URL}/delete-wishlist`,
-          { wishlist_id: filterWishlistData[0]?.wishlist_id },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((res) => {
-          const updatedWishlist = wishlistId1.filter(
-            (id) => id !== product?.id
-          );
-          toast.success("Product removed from watchlist successfully.");
-          dispatch(AddToWishlist([]));
-          dispatch(wishlistId(updatedWishlist));
-          dispatch(WishlistCounter(res.data.wishlist_count));
-        })
-        .catch((err) => console.log("err", err));
+    if (token === "null" || !token) {
+      validateUser();
     } else {
-      console.warn("add wishlist data");
-      await axios
-        .post(
-          `${BASE_URL}/add-wishlist`,
-          { product_id: product?.id },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
-              "Content-Type": "application/json",
-            },
-          }
-        )
-        .then((response) => {
-          const updatedWishlist = [...wishlistId1, product?.id];
-          toast.success("Product add into the wishlist!.");
-          dispatch(AddToWishlist(response?.data.wishlist));
-          dispatch(wishlistId(updatedWishlist));
-          dispatch(WishlistCounter(response?.data?.wishlist_count));
-        })
-        .catch((error) => console.log("err", error));
+      const filterWishlistData = wishListData?.filter(
+        (i) => i?.product_id === product?.id
+      );
+      const filterwishlistId = wishlistId1.includes(product?.id);
+
+      if (filterwishlistId) {
+        setApiLoading(true);
+        await axios
+          .post(
+            `${BASE_URL}/delete-wishlist`,
+            { wishlist_id: filterWishlistData[0]?.wishlist_id },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .then((res) => {
+            setApiLoading(false);
+            const updatedWishlist = wishlistId1.filter(
+              (id) => id !== product?.id
+            );
+            toast.success("Product removed from watchlist successfully.");
+            dispatch(AddToWishlist([]));
+            dispatch(wishlistId(updatedWishlist));
+            dispatch(WishlistCounter(res.data.wishlist_count));
+          })
+          .catch((err) => console.log("err", err));
+      } else {
+        console.warn("add wishlist data");
+        setApiLoading(true);
+        await axios
+          .post(
+            `${BASE_URL}/add-wishlist`,
+            { product_id: product?.id },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
+                "Content-Type": "application/json",
+              },
+            }
+          )
+          .then((response) => {
+            setApiLoading(false);
+            const updatedWishlist = [...wishlistId1, product?.id];
+            toast.success("Product add into the wishlist!.");
+            dispatch(AddToWishlist(response?.data.wishlist));
+            dispatch(wishlistId(updatedWishlist));
+            dispatch(WishlistCounter(response?.data?.wishlist_count));
+          })
+          .catch((error) => console.log("err", error));
+      }
     }
   };
 
@@ -299,80 +336,96 @@ const SingleProduct = () => {
         setRelatedProducts(res.data.related_products);
       })
       .catch((err) => {
-        console.log("error", err)});
+        console.log("error", err);
+      });
   };
 
-  const handleAddToCartModal = async (e,product,selectedAttributes,quantity,variation = null) => {
-    if (!token) {
+  const handleAddToCartModal = async (
+    e,
+    product,
+    selectedAttributes,
+    quantity,
+    variation = null,
+    action
+  ) => {
+    if (token === "null" || !token) {
       validateUser();
-    }
-
-    const AlreadyExistsData = cartData?.items?.filter((i) => {
-      return i?.variation_id !== 0
-        ? i?.variation_id === selectedAttributes?.variation_id
-        : true && i?.product_id === product?.id;
-    });
-    if (AlreadyExistsData.length > 0) {
-      if (
-        product?.variation &&
-        product.variations.length !== 0 &&
-        selectedAttributes === 0
-      ) {
-        console.warn("ProductVariData Edit api call");
-        setShowVariationModal((prev) => !prev);
-        setSelectedProductForModal(product);
-      } else {
-        if (selectedAttributes === null && selectedAttributes !== undefined) {
-          toast.error(
-            `please select ${
-              product?.variations?.map(
-                (i, index) => Object.keys(i?.attributes)[index]
-              )[0]
-            }`
-          );
-        } else {
-          const payload = {
-            cart_id: AlreadyExistsData[0]?.cart_id,
-            quantity: AlreadyExistsData[0]?.quantity + quantity,
-          };
-          console.warn("EditCartData api call", payload);
-          handleEditApi(payload);
-        }
-      }
     } else {
-      if (
-        product?.variations &&
-        product.variations.length !== 0 &&
-        selectedAttributes === 0
-      ) {
-        setShowVariationModal((prev) => !prev);
-        setSelectedProductForModal(product);
-      } else {
-        if (selectedAttributes === null && selectedAttributes !== undefined) {
-          toast.error(
-            `please select ${
-              product?.variations?.map(
-                (i, index) => Object.keys(i?.attributes)[index]
-              )[0]
-            }`
-          );
+      const AlreadyExistsData = cartData?.items?.filter((i) => {
+        return i?.variation_id !== 0
+          ? i?.variation_id === selectedAttributes?.variation_id
+          : true && i?.product_id === product?.id;
+      });
+      if (AlreadyExistsData.length > 0) {
+        if (
+          product?.variation &&
+          product.variations.length !== 0 &&
+          selectedAttributes === 0
+        ) {
+          console.warn("ProductVariData Edit api call");
+          setShowVariationModal((prev) => !prev);
+          setSelectedProductForModal(product);
         } else {
-          const payload = {
-            product_id: product?.id,
-            variation_id:
-              selectedAttributes === 0
-                ? selectedAttributes
-                : selectedAttributes?.variation_id,
-            quantity: quantity,
-          };
-          console.warn("addtocartData api call", payload);
-          handleAddApi(payload);
+          if (selectedAttributes === null && selectedAttributes !== undefined) {
+            toast.error(
+              `please select ${
+                product?.variations?.map(
+                  (i, index) => Object.keys(i?.attributes)[index]
+                )[0]
+              }`
+            );
+          } else {
+            const payload = {
+              cart_id: AlreadyExistsData[0]?.cart_id,
+              quantity: AlreadyExistsData[0]?.quantity + quantity,
+            };
+            console.warn("EditCartData api call", payload);
+            handleEditApi(payload);
+          }
+        }
+      } else {
+        if (
+          product?.variations &&
+          product.variations.length !== 0 &&
+          selectedAttributes === 0
+        ) {
+          setShowVariationModal((prev) => !prev);
+          setSelectedProductForModal(product);
+        } else {
+          if (selectedAttributes === null && selectedAttributes !== undefined) {
+            toast.error(
+              `please select ${
+                product?.variations?.map(
+                  (i, index) => Object.keys(i?.attributes)[index]
+                )[0]
+              }`
+            );
+          } else {
+            const payload = {
+              product_id: product?.id,
+              variation_id:
+                selectedAttributes === 0
+                  ? selectedAttributes
+                  : selectedAttributes?.variation_id,
+              quantity: quantity,
+            };
+            console.warn("addtocartData api call", payload);
+            handleAddApi(payload);
+          }
         }
       }
     }
+    if(variation === "/checkout"){
+      navigate(`${variation}`);
+      if(cartData?.items?.length === 0){
+        toast.error("Your cart is empty!")
+      }
+    }
+    console.log("variat",variation,action)
   };
 
   const handleEditApi = async (payload) => {
+    setApiLoading(true);
     await axios
       .post(`${BASE_URL}/update-cart`, payload, {
         headers: {
@@ -381,6 +434,7 @@ const SingleProduct = () => {
         },
       })
       .then((res) => {
+        setApiLoading(false);
         if (showVariationModal === true) {
           setShowVariationModal((prev) => !prev);
         }
@@ -388,12 +442,13 @@ const SingleProduct = () => {
         dispatch(AddToCart({ ...res.data, items: res.data.items }));
       })
       .catch((err) => {
-        toast.error("Failed updating cart item:",err)
+        toast.error("Failed updating cart item:", err);
         console.log("error", err);
       });
   };
 
   const handleAddApi = async (payload) => {
+    setApiLoading(true);
     await axios
       .post(`${BASE_URL}/new-add-to-cart`, payload, {
         headers: {
@@ -402,6 +457,7 @@ const SingleProduct = () => {
         },
       })
       .then((res) => {
+        setApiLoading(false);
         if (showVariationModal === true) {
           setShowVariationModal((prev) => !prev);
         }
@@ -416,7 +472,7 @@ const SingleProduct = () => {
         console.log("err", err);
       });
   };
-  
+
   return (
     <div className="home-main pt-1 pt-md-4 ">
       <section className="Breadcrumbs-section">
@@ -436,8 +492,8 @@ const SingleProduct = () => {
           </nav>
         </div>
       </section>
-      
-      {loading  ? (
+      {apiloading && <Loader2></Loader2>}
+      {loading ? (
         <Loader1></Loader1>
       ) : (
         <>
@@ -455,15 +511,25 @@ const SingleProduct = () => {
                   {/* <span className="sale-title">
                     Sale <b>50%</b>
                   </span> */}
-                   {singleProduct?.regular_price && singleProduct?.sale_price && (
+                  {singleProduct?.regular_price &&
+                    singleProduct?.sale_price && (
                       <>
                         <span className="sale-title">
-                          Sale {Math.round(((singleProduct?.regular_price - singleProduct?.sale_price) / singleProduct?.regular_price) * 100)}%
+                          Sale{" "}
+                          {Math.round(
+                            ((singleProduct?.regular_price -
+                              singleProduct?.sale_price) /
+                              singleProduct?.regular_price) *
+                              100
+                          )}
+                          %
                         </span>
-                        <span className="best-sale-title me-auto">Best Sale</span>
+                        <span className="best-sale-title me-auto">
+                          Best Sale
+                        </span>
                       </>
                     )}
-                 
+
                   {wishlistId1.includes(singleProduct?.id) ? (
                     <img
                       className="heart-icon img-fluid ms-auto"
@@ -480,14 +546,14 @@ const SingleProduct = () => {
                     ></img>
                   )}
                 </div>
-                 <div className="singleProduct-img-wrapper d-flex  d-lg-none h-100 mb-2 align-items-center">
-                          <img
-                            // src={item?.img}
-                            src={singleProduct?.image}
-                            className="singleProduct-img  m-auto img-fluid"
-                            alt="singleProduct-img"
-                          ></img>
-                        </div>
+                <div className="singleProduct-img-wrapper d-flex  d-lg-none h-100 mb-2 align-items-center">
+                  <img
+                    // src={item?.img}
+                    src={singleProduct?.image}
+                    className="singleProduct-img  m-auto img-fluid"
+                    alt="singleProduct-img"
+                  ></img>
+                </div>
                 {/* <Swiper
                   ref={swiperRef}
                   spaceBetween={30}
@@ -555,17 +621,27 @@ const SingleProduct = () => {
                           {/* <span className="sale-title">
                             Sale <b>50%</b>
                           </span> */}
-                          {singleProduct?.regular_price && singleProduct?.sale_price && (
-                            <>
-                              <span className="sale-title">
-                                Sale <b>{Math.round(((singleProduct?.regular_price - singleProduct?.sale_price) / singleProduct?.regular_price) * 100)}%</b>
-                              </span>
-                              <span className="best-sale-title me-auto">
-                                Best Sale
-                              </span>
-                            </>
-                          )}
-                        
+                          {singleProduct?.regular_price &&
+                            singleProduct?.sale_price && (
+                              <>
+                                <span className="sale-title">
+                                  Sale{" "}
+                                  <b>
+                                    {Math.round(
+                                      ((singleProduct?.regular_price -
+                                        singleProduct?.sale_price) /
+                                        singleProduct?.regular_price) *
+                                        100
+                                    )}
+                                    %
+                                  </b>
+                                </span>
+                                <span className="best-sale-title me-auto">
+                                  Best Sale
+                                </span>
+                              </>
+                            )}
+
                           {wishlistId1.includes(singleProduct?.id) ? (
                             <img
                               className="heart-icon img-fluid ms-auto"
@@ -583,117 +659,22 @@ const SingleProduct = () => {
                           )}
                         </div>
                         <div className="card-body">
-                            <div className="singleProduct-img-wrapper d-none d-lg-flex h-100 mb-5 align-items-center">
-                          <img
-                            // src={item?.img}
-                            src={singleProduct?.image}
-                            className="singleProduct-img  m-auto img-fluid"
-                            alt="singleProduct-img"
-                          ></img>
-                        </div>
-                          {/* <Swiper
-                            ref={swiperRef || null}
-                            spaceBetween={30}
-                            centeredSlides={true}
-                            autoplay="false"
-                            loop={productImages.length > 1}
-                            pagination={{ clickable: true }}
-                            navigation={true}
-                            thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
-                            modules={[Autoplay, Pagination, Thumbs, Navigation]}
-                            className="singleProductSwiper w-100 d-none d-lg-block"
-                          >
-                            {productImages?.map((item, index) => {
-                              return (
-                                <SwiperSlide key={index}>
-                                  <div className="singleProduct-img-wrapper d-flex">
-                                    <img
-                                      // src={item?.img}
-                                      src={singleProduct?.image}
-                                      className="singleProduct-img  m-auto img-fluid"
-                                      alt="singleProduct-img"
-                                    ></img>
-                                  </div>
-                                </SwiperSlide>
-                              );
-                            })}
-                          </Swiper> */}
-                          {/* <Swiper
-                            // onSwiper={setThumbsSwiper}
-                            onSwiper={(swiper) => setThumbsSwiper(swiper || [])}
-                            loop={productImages.length > 4}
-                            spaceBetween={20}
-                            slidesPerView={4}
-                            freeMode={true}
-                            watchSlidesProgress={true}
-                            modules={[FreeMode, Navigation, Thumbs]}
-                            className="singleProductThumbSwiper w-100 d-none d-lg-block"
-                            breakpoints={{
-                              768: { slidesPerView: 5, spaceBetween: 15 },
-                              992: { slidesPerView: 4 },
-                            }}
-                          >
-                            {productImages?.map((item, index) => {
-                              return (
-                                <SwiperSlide key={index}>
-                                  <div className="singleProduct-img-wrapper d-flex">
-                                    <img
-                                      src={item?.img}
-                                      className="singleProduct-img  m-auto img-fluid"
-                                      alt="singleProduct-img"
-                                    ></img>
-                                  </div>
-                                </SwiperSlide>
-                              );
-                            })}
-                          </Swiper> */}
+                          <div className="singleProduct-img-wrapper d-none d-lg-flex h-100 mb-5 align-items-center">
+                            <img
+                              src={singleProduct?.image}
+                              className="singleProduct-img  m-auto img-fluid"
+                              alt="singleProduct-img"
+                            ></img>
+                          </div>
+
+                
                           <div className="singleProduct-info-wrapper">
-                            <div className="review-content">
-                              <select className="form-select my-3">
-                                <option>Packaging</option>
-                                <option>200</option>
-                                <option>300</option>
-                                <option>400</option>
-                              </select>
-                              {/* <h3 className="review-title">
-                                Ratings & Reviews
-                              </h3>
-                              <div className="review-box d-flex  align-items-center">
-                                <label className="form-label mb-0">
-                                  <i className="fa-solid fa-star"></i>{" "}
-                                  {singleProduct?.average_rating}{" "}
-                                </label>
-                                <select className="form-select">
-                                  <option>5 Reviews</option>
-                                </select>
-                              </div>
-                              <form>
-                                <div className="rating-stars">
-                                  {[...Array(5)].map((_, index) => (
-                                    <i
-                                      className={
-                                        rating > index
-                                          ? "fa-solid fa-star filled"
-                                          : "fa-solid fa-star"
-                                      }
-                                      key={index}
-                                    ></i>
-                                  ))}
-                                </div>
-                                <input
-                                  className="form-control review-input mt-0 mb-3"
-                                  type="text"
-                                  placeholder="Enter your feedback"
-                                  required
-                                ></input>
-                                <button className="btn btn-submit-review mt-3">
-                                  Submit Review
-                                </button>
-                              </form> */}
-                            </div>
                             <button
                               className="btn btn-buyNow mt-3 w-100"
-                              onClick={handleAddToCart}
+                              onClick={(e)=>{
+                                 navigate("/checkout");
+                                  //  (e,product,selectedVariation,quantity,"/checkout")
+                                handleAddToCart(e,singleProduct,singleProduct?.id,quantity,"/checkout")}}
                             >
                               Buy Now
                             </button>
@@ -861,17 +842,24 @@ const SingleProduct = () => {
                             <p>
                               Stock Status: <b>{singleProduct?.stock_status}</b>
                             </p>
-                             <p>
+                            <p>
                               Price:&nbsp;
                               {singleProduct?.sale_price !== null &&
-                              singleProduct?.sale_price === singleProduct?.regular_price ? (
+                              singleProduct?.sale_price ===
+                                singleProduct?.regular_price ? (
                                 <>
                                   <b className="text-decoration-line-through">
-                                    ₹{Number(singleProduct?.regular_price).toFixed(2)}
+                                    ₹
+                                    {Number(
+                                      singleProduct?.regular_price
+                                    ).toFixed(2)}
                                   </b>
                                   &nbsp;
                                   <b className="fw-bold">
-                                    ₹{Number(singleProduct?.sale_price).toFixed(2)}
+                                    ₹
+                                    {Number(singleProduct?.sale_price).toFixed(
+                                      2
+                                    )}
                                   </b>
                                 </>
                               ) : (
@@ -917,7 +905,7 @@ const SingleProduct = () => {
                             ) : (
                               <>
                                 <button
-                                  className="btn btn-addToCart me-0 ms-auto d-flex align-items-center justify-content-between"
+                                  className={`btn btn-addToCart me-0 ms-auto d-flex align-items-center justify-content-between ${singleProduct?.stock_status}`}
                                   onClick={(e) =>
                                     handleQuantity(
                                       e,

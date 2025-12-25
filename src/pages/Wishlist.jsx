@@ -11,21 +11,23 @@ import {
   WishlistCounter,
   wishlistId,
 } from "../redux/wishlistSlice";
-import { AddToCart,  CartTotal } from "../redux/cartSlice";
+import { AddToCart, CartTotal } from "../redux/cartSlice";
 import Loader1 from "../component/Loader1";
 import useValidateUser from "../component/useValidateUser";
+import Loader2 from "../component/Loader2";
 
 const Wishlist = () => {
   const [showVariationModal, setShowVariationModal] = useState(false);
   const [selectedProductForModal, setSelectedProductForModal] = useState(null);
-  const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
+  const token = useSelector((state) => state.auth.token);
+  // const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
   const wishlistData = useSelector((state) => state?.wishlist?.wishlist);
   const Loading = useSelector((state) => state.wishlist?.loading);
   const cartData = useSelector((state) => state.cart?.cart);
   const dispatch = useDispatch();
   const [loading, setloading] = useState(true);
+  const [apiLoading, setApiLoading] = useState(false);
   const validateUser = useValidateUser();
-
 
   const wishlistId1 = useSelector((state) => state.wishlist?.wishlistId);
 
@@ -37,6 +39,7 @@ const Wishlist = () => {
     // const updatedWishlist = wishlistId1.filter(id => id !== product?.product_id);
     // const filterData = wishlistData.filter((i)=>i.product_id !== product?.product_id)
     // console.log("updatewish",updatedWishlist,"filterData",filterData);
+    setApiLoading(true);
     await axios
       .post(
         `${BASE_URL}/delete-wishlist`,
@@ -56,6 +59,7 @@ const Wishlist = () => {
         const filterData = wishlistData.filter(
           (i) => i.product_id !== product?.product_id
         );
+        setApiLoading(false);
         dispatch(AddToWishlist(filterData));
         dispatch(wishlistId(updatedWishlist));
         dispatch(WishlistCounter(res?.data?.wishlist_count));
@@ -66,6 +70,7 @@ const Wishlist = () => {
     const a = wishlistData?.filter((i) => i.product_id === product?.product_id);
 
     // console.log("delte", a);
+    setApiLoading(true);
     await axios
       .post(
         `${BASE_URL}/delete-wishlist`,
@@ -85,7 +90,7 @@ const Wishlist = () => {
         const filterData = wishlistData?.filter(
           (i) => i.product_id !== product?.product_id
         );
-
+        setApiLoading(false);
         dispatch(AddToWishlist(filterData));
         dispatch(wishlistId(updatedWishlist));
         dispatch(WishlistCounter(res?.data?.wishlist_count));
@@ -93,127 +98,130 @@ const Wishlist = () => {
       .catch((err) => console.log("err", err));
   };
   const handleAddToCart = async (e, product, selectedAttributes, qty) => {
-    if (!token) {
+    if (token === "null" || !token) {
       validateUser();
       // toast.error("Please login to add product to wishlist!");
-    }
-    // console.log("addtoCart",product,"cartData",cartData);
-    const filterwishlist = wishlistData?.filter(
-      (i) => i?.product_id === product?.product_id
-    );
-    const filterwishlistId = wishlistId1.includes(product?.product_id);
-    // console.log("fil",filterwishlistId,wishlistId1)
-    const AlreadyExistsData = cartData?.items.filter((i) => {
-      const sizeMatch =
-        i?.variation_id !== 0
-          ? i?.variation_id === selectedAttributes?.id
-          : true && i?.product_id === product?.product_id;
-      return sizeMatch;
-    });
-    // console.log(
-    //   "AlreasyExistData",
-    //   AlreadyExistsData,
-    //   "quantity",
-    //   qty,
-    //   "selectAttributes",
-    //   selectedAttributes
-    // );
-
-    if (AlreadyExistsData.length > 0) {
-      if (
-        product?.variations &&
-        product?.variations.length !== 0 &&
-        selectedAttributes === 0
-      ) {
-        // console.log("call addtocart api");
-        setShowVariationModal((prev) => !prev);
-        setSelectedProductForModal(product);
-      } else {
-        if (selectedAttributes === null && selectedAttributes !== undefined) {
-          toast.error(
-            `please select ${
-              product?.variations?.map(
-                (i, index) => Object.keys(i?.attributes)[index]
-              )[0]
-            }`
-          );
-        } else {
-          handledeleteWishlist(filterwishlist, filterwishlistId, product);
-          const payload = {
-            cart_id: AlreadyExistsData[0]?.cart_id,
-            quantity: AlreadyExistsData[0]?.quantity + qty,
-          };
-          await axios
-            .post(`${BASE_URL}/update-cart`, payload, {
-              headers: {
-                Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
-                "Content-Type": "application/json",
-              },
-            })
-            .then((res) => {
-              if (showVariationModal === true) {
-                setShowVariationModal((prev) => !prev);
-              }
-              dispatch(AddToCart({ ...res.data, items: res.data.items }));
-            })
-            .catch((err) => {
-              console.log("error", err);
-            });
-          console.warn("Edit CartData api call", filterwishlist);
-        }
-      }
     } else {
-      if (
-        product?.variations &&
-        product?.variations.length !== 0 &&
-        selectedAttributes === 0
-      ) {
-        // console.log("call addtocart api");
-        setShowVariationModal((prev) => !prev);
-        setSelectedProductForModal(product);
-      } else {
-        if (selectedAttributes === null && selectedAttributes !== undefined) {
-          toast.error(
-            `please select ${
-              product?.variations?.map(
-                (i, index) => Object.keys(i?.attributes)[index]
-              )[0]
-            }`
-          );
+      // console.log("addtoCart",product,"cartData",cartData);
+      const filterwishlist = wishlistData?.filter(
+        (i) => i?.product_id === product?.product_id
+      );
+      const filterwishlistId = wishlistId1.includes(product?.product_id);
+      // console.log("fil",filterwishlistId,wishlistId1)
+      const AlreadyExistsData = cartData?.items.filter((i) => {
+        const sizeMatch =
+          i?.variation_id !== 0
+            ? i?.variation_id === selectedAttributes?.id
+            : true && i?.product_id === product?.product_id;
+        return sizeMatch;
+      });
+      // console.log(
+      //   "AlreasyExistData",
+      //   AlreadyExistsData,
+      //   "quantity",
+      //   qty,
+      //   "selectAttributes",
+      //   selectedAttributes
+      // );
+
+      if (AlreadyExistsData.length > 0) {
+        if (
+          product?.variations &&
+          product?.variations.length !== 0 &&
+          selectedAttributes === 0
+        ) {
+          // console.log("call addtocart api");
+          setShowVariationModal((prev) => !prev);
+          setSelectedProductForModal(product);
         } else {
-          handledeleteWishlist(filterwishlist, filterwishlistId, product);
-          const payload = {
-            product_id: product?.product_id,
-            variation_id:
-              selectedAttributes === 0
-                ? selectedAttributes
-                : selectedAttributes?.id,
-            quantity: qty,
-          };
-          // console.log("paylaod", payload, "selecy", selectedAttributes);
-          await axios
-            .post(`${BASE_URL}/new-add-to-cart`, payload, {
-              headers: {
-                Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
-                "Content-Type": "application/json",
-              },
-            })
-            .then((res) => {
-              console.log("res", res.data);
-              if (showVariationModal === true) {
-                setShowVariationModal((prev) => !prev);
-              }
-              dispatch(CartTotal(res.data.cart_total));
-              // dispatch(CartCounter(res.data.cart_count));
-              dispatch(
-                AddToCart({
-                  ...res.data,
-                  items: [...cartData.items, res.data?.data],
-                })
-              );
-            })
-            .catch((err) => console.log("error", err));
-          console.warn("Add CartData api call");
+          if (selectedAttributes === null && selectedAttributes !== undefined) {
+            toast.error(
+              `please select ${
+                product?.variations?.map(
+                  (i, index) => Object.keys(i?.attributes)[index]
+                )[0]
+              }`
+            );
+          } else {
+            handledeleteWishlist(filterwishlist, filterwishlistId, product);
+            const payload = {
+              cart_id: AlreadyExistsData[0]?.cart_id,
+              quantity: AlreadyExistsData[0]?.quantity + qty,
+            };
+            setApiLoading(true);
+            await axios
+              .post(`${BASE_URL}/update-cart`, payload, {
+                headers: {
+                  Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
+                  "Content-Type": "application/json",
+                },
+              })
+              .then((res) => {
+                // setApiLoading(false);
+                if (showVariationModal === true) {
+                  setShowVariationModal((prev) => !prev);
+                }
+                dispatch(AddToCart({ ...res.data, items: res.data.items }));
+              })
+              .catch((err) => {
+                console.log("error", err);
+              });
+            console.warn("Edit CartData api call", filterwishlist);
+          }
+        }
+      } else {
+        if (
+          product?.variations &&
+          product?.variations.length !== 0 &&
+          selectedAttributes === 0
+        ) {
+          // console.log("call addtocart api");
+          setShowVariationModal((prev) => !prev);
+          setSelectedProductForModal(product);
+        } else {
+          if (selectedAttributes === null && selectedAttributes !== undefined) {
+            toast.error(
+              `please select ${
+                product?.variations?.map(
+                  (i, index) => Object.keys(i?.attributes)[index]
+                )[0]
+              }`
+            );
+          } else {
+            handledeleteWishlist(filterwishlist, filterwishlistId, product);
+            const payload = {
+              product_id: product?.product_id,
+              variation_id:
+                selectedAttributes === 0
+                  ? selectedAttributes
+                  : selectedAttributes?.id,
+              quantity: qty,
+            };
+            // console.log("paylaod", payload, "selecy", selectedAttributes);
+            await axios
+              .post(`${BASE_URL}/new-add-to-cart`, payload, {
+                headers: {
+                  Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
+                  "Content-Type": "application/json",
+                },
+              })
+              .then((res) => {
+                console.log("res", res.data);
+                if (showVariationModal === true) {
+                  setShowVariationModal((prev) => !prev);
+                }
+                dispatch(CartTotal(res.data.cart_total));
+                // dispatch(CartCounter(res.data.cart_count));
+                dispatch(
+                  AddToCart({
+                    ...res.data,
+                    items: [...cartData.items, res.data?.data],
+                  })
+                );
+              })
+              .catch((err) => console.log("error", err));
+            console.warn("Add CartData api call");
+          }
         }
       }
     }
@@ -233,14 +241,14 @@ const Wishlist = () => {
               <li className="breadcrumb-item ">
                 <Link to="/">Home</Link>
               </li>
-              <li className="breadcrumb-item active" >
+              <li className="breadcrumb-item active">
                 <Link to="/wishlist">WishList</Link>
-                
               </li>
             </ol>
           </nav>
         </div>
       </section>
+      {apiLoading && <Loader2></Loader2>}
       {loading || Loading ? (
         <Loader1></Loader1>
       ) : (
@@ -273,6 +281,7 @@ const Wishlist = () => {
                       <h2>Cart</h2>
                     </div>
                     {wishlistData?.map((item, index) => {
+                      console.log("ietm", item);
                       return (
                         <React.Fragment key={index}>
                           <div className="wishlist-item" key={index}>
@@ -304,6 +313,7 @@ const Wishlist = () => {
                             </p>
                             <p className="wishlist-item-pack mb-md-0 mb-4 d-md-block d-none">
                               {item?.short_description}
+                              {/* {item?.short_description?.replace(/<\/?(ul|li)[^>]*>/g, "")} */}
                             </p>
                             <button
                               className={`btn wishlist-item-stock ${item.stock}`}
@@ -311,8 +321,14 @@ const Wishlist = () => {
                               {item?.stock}
                             </button>
                             <button
-                              className="btn wishlist-addTocart"
-                              onClick={(e) => handleAddToCart(e, item, 0, 1)}
+                              className={`btn wishlist-addTocart ${item.stock}`}
+                              onClick={(e) =>
+                                item.stock == "instock" ? (
+                                  handleAddToCart(e, item, 0, 1)
+                                ) : (
+                                  <></>
+                                )
+                              }
                             >
                               Add to Cart
                             </button>

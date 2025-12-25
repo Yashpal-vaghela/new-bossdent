@@ -3,6 +3,7 @@ import { Link,useParams } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../api/config";
 import Loader1 from "../component/Loader1";
+import Loader2 from "../component/Loader2";
 
 const Category = () => {
     const { slug } = useParams();
@@ -47,7 +48,7 @@ const Category = () => {
           </div>
         </section>
         {loading ? (
-          <Loader1></Loader1>
+         <Loader2></Loader2>
         ) : (
           <>
             <section className="product-section">

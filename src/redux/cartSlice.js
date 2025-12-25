@@ -25,7 +25,7 @@ export const fetchCart = createAsyncThunk("cart/fetchCart", async (_, { signal, 
         return rejectWithValue('TOKEN EXPIRED');
       }
       if (axios.isCancel(err)) {  
-        console.log("Fetch aborted");
+        // console.log("Fetch aborted");
         return;
       }
       
@@ -50,8 +50,8 @@ const cartSlice = createSlice({
             // console.log("action",state.cart,action.payload);
             state.cart = action.payload || {items:[]};
             state.deliveryCharge = state.cart.cart_total <= 2300 ? 90 : 0 || 0; 
-            state.cartTotal = state.cart.cart_total;
-            state.cartCount = state.cart.cart_count;
+            state.cartTotal = state.cart.cart_total || action.payload.cart_total;
+            state.cartCount = state.cart.cart_count || action.payload.cart_count;
             // state.cart.push(action.payload)
             return state;
         },

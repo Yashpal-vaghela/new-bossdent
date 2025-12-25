@@ -4,20 +4,25 @@ import axios from "axios";
 import LoginDialogBox from "./LoginDialogBox";
 import { useDispatch, useSelector } from "react-redux";
 import React from "react";
-import Loader1 from "./Loader1";
+// import Loader1 from "./Loader1";
 import BASE_URL from "../api/config";
+import { AddToken } from "../redux/authSlice";
 
 const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchIcon, setSearchIcon] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
-  const { categories, loading } = useSelector((state) => state.category);
-  const navigate = useNavigate();
+  const { categories } = useSelector((state) => state.category);
   const cartCounter = useSelector((state) => state.cart.cartCount);
-  const cartTotal = useSelector((state) => state.cart.cartTotal);
-  const wishlistCounter = useSelector((state) => state.wishlist.wishlistCount);
-  const [token] = useState(localStorage.getItem("auth_token"));
 
+  const cartTotal = useSelector((state) => state.cart.cartTotal);
+  const token = useSelector((state)=>state.auth.token);
+  const wishlistCounter = useSelector((state) => state.wishlist.wishlistCount);
+    const cartCounter1 = useSelector((state)=>state.wishlist);
+  // const [token,setToken] = useState(localStorage.getItem("auth_token"));
+  const text = "* Free shipping on order above 2300 *";
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleSearchChange = async (e) => {
     const query = e.target.value;
     setSearchQuery(query);
@@ -30,7 +35,7 @@ const Navbar = () => {
       const response = await axios.get(
         `${BASE_URL}/product-suggestions?s=${query}`
       );
-      console.warn("response", response);
+      // console.warn("response", response);
       const filterData = response?.data?.suggestions?.filter((product) => {
         return product?.name.toLowerCase().includes(query.toLowerCase());
       });
@@ -111,7 +116,7 @@ const Navbar = () => {
           );
           Array.from(navbarMainElements).forEach((element) => {
             // element.style.position = "relative";
-            element.style.padding = "0px 0px 12px 0px";
+            element.style.padding = "0px 0px 0px 0px";
           });
 
           navbarlogoElements.classList.add("d-lg-none");
@@ -135,6 +140,8 @@ const Navbar = () => {
         navbarlogoElements.classList.add("d-lg-none");
       }
     };
+    dispatch(AddToken(JSON.parse(localStorage.getItem("auth_token")) || "null"));
+    console.log("loca",JSON.parse(localStorage.getItem("auth_token")));
     const handleResize = () => {
       handleScroll();
     };
@@ -205,7 +212,7 @@ const Navbar = () => {
                   <span className="navbar-cart-counter">{cartCounter}</span>
                 </Link>
               </div>
-              {token !== null ? (
+              {token !== "null" ? (
                 <img
                   src="/img/user-icon1.svg"
                   className="img-fluid user-icon d-none d-lg-block"
@@ -281,7 +288,17 @@ const Navbar = () => {
             ) : (
               <></>
             )}
+           
           </div>
+        <div className="navbar-bottom-highlight d-lg-none d-block">
+          <div className="ticker">
+            <div className="ticker-track">
+              {Array.from({ length: 20 }).map((_, i) => (
+                <span key={i}>{text}</span>
+              ))}
+            </div>
+          </div>
+        </div>
         </nav>
         <div
           className="offcanvas offcanvas-start navbar-offcanvas navbar-content-wrapper d-lg-flex"
@@ -449,7 +466,7 @@ const Navbar = () => {
                     {wishlistCounter}
                   </span>
                 </Link>
-                {token !== null ? (
+                {token !== "null" ? (
                   <img
                     className="img-fluid user-icon d-none"
                     alt="user-icon"
@@ -503,6 +520,18 @@ const Navbar = () => {
           </div>
         </div>
         <LoginDialogBox></LoginDialogBox>
+        {/* <div className="d-flex navbar-bottom-highlight d-flex justify-content-center align-items-center">
+          <p>*Free shipping on order above 2300*</p>
+        </div> */}
+        <div className="navbar-bottom-highlight d-none d-lg-block">
+          <div className="ticker">
+            <div className="ticker-track">
+              {Array.from({ length: 20 }).map((_, i) => (
+                <span key={i}>{text}</span>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </React.Fragment>
   );

@@ -170,6 +170,10 @@ export const AddToCartModal = ({
               className="btn btn-addTocart"
               onClick={(e)=>{
                 const selectedVariation = getMatchedVariation();
+                setTimeout(()=>{
+                  setQuantity(1);
+                },500)
+                
                 onAddToCart(e,product,selectedVariation,quantity)}}
             >
               Add To Cart
@@ -179,6 +183,9 @@ export const AddToCartModal = ({
               className="btn btn-buynow"
               onClick={(e)=>{
                 const selectedVariation = getMatchedVariation();
+                 setTimeout(()=>{
+                  setQuantity(1);
+                },500)
                 onAddToCart(e,product,selectedVariation,quantity,"/checkout")
               }}
             >

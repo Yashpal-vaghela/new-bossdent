@@ -9,6 +9,7 @@ import Indian_states_cities_list from 'indian-states-cities-list';
 import { AddToCart } from "../redux/cartSlice";
 import { toast } from "react-toastify";
 import { Success } from "./payment/Success";
+import Loader2 from "../component/Loader2";
 
 const checkoutSchema = yup.object().shape({
     first_name: yup.string().required("First Name Field is required"),
@@ -28,7 +29,9 @@ export const Checkout = () => {
     const [paymentStatus,setPaymentStatus] = useState(false);
     const [orderId,setOrderId] = useState("");
     const [Loading,setLoading] = useState(false);
-    const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
+    const [apiloading,setApiLoading] = useState(false);
+    const token = useSelector((state)=>state.auth.token);
+    // const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
     const [States,setStates] = useState([]);
     const [codoption,setcodOption] = useState(false);
     const user = useSelector((state)=>state.user.user);
@@ -58,7 +61,8 @@ export const Checkout = () => {
           console.log("formik",formik?.values);
             if(formik?.values.payment_method && formik?.values){
               try{
-                setLoading(true);                  
+                // setLoading(true);  
+                setApiLoading(true);                
                 const orderResponse = await axios.post(`${BASE_URL}/create-order`,formik.values,{
                   headers:{
                     Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
@@ -69,7 +73,8 @@ export const Checkout = () => {
                   setOrderId(newOrderId);
 
                   if(formik?.values.payment_method === "PhonePe"){
-                    setLoading(true);
+                    // setLoading(true);
+                    setApiLoading(true);
                     const paymentResponse = await fetch(`${BASE_URL}/phonepe/new-initiate`,{
                           method: "POST",
                           headers: {
@@ -92,30 +97,38 @@ export const Checkout = () => {
                    
                     const paymentData = await paymentResponse.json();
                     if(paymentData.phonepe_response.success && paymentData.phonepe_response && paymentData.phonepe_response.data.instrumentResponse && paymentData.phonepe_response.data.instrumentResponse.redirectInfo){
-                      setLoading(false);
+                      // setLoading(false);
+                      setApiLoading(false);
+                      // console.log("payment",paymentData);
                       const paymentUrl = paymentData.phonepe_response.data.instrumentResponse.redirectInfo.url;
+                      // console.log("payment",paymentUrl,window)
                       window.open(paymentUrl,"_blank");
 
                       paymentIntervalRef.current = setInterval(()=>{
                         checkPaymentStatus(paymentData.phonepe_response.data.merchantId,paymentData.x_verify,paymentData.phonepe_response.data.merchantTransactionId,res.data.order_id);
                       },10000);
-                      DeletCartItems();
+                      dispatch(AddToCart({items:[],cart_count:0,cart_total:0}));
+                      // DeletCartItems();
                     }
+                    // setTimeout(()=>{
+                    //   setLoading(false);
+                    // },2000)
                   }else{
                     DeletCartItems();
                     navigate("/payment/success");
                   }
                 });
               }catch(err){
-                setLoading(false);
+                setApiLoading(false);
                 toast.error(err?.message);
               } finally{
-                setLoading(false);
+                setApiLoading(false);
               }
             }
         }
     })
     const checkPaymentStatus = async (merchantId,verifyToken,transactionId,orderId) =>{
+      setApiLoading(true);
       try{
         const res = await axios.post(`${BASE_URL}/phonepe/callback`,{"merchantTransactionId":transactionId},{
           headers:{
@@ -131,13 +144,15 @@ export const Checkout = () => {
           toast.success("Payment Successful!");
           clearInterval(paymentIntervalRef.current);
           paymentIntervalRef.current = null; 
-          setLoading(false);
+          // setLoading(false);
+          setApiLoading(false);
           navigate("/payment/success");
         }
         if (res.data.payment_status === "FAILED" ) {
           toast.error("Payment Failed!");
           clearInterval(paymentIntervalRef.current);
           paymentIntervalRef.current = null;
+          // setLoading(false);
           setLoading(false);
           navigate("/payment/success");
         }
@@ -148,21 +163,24 @@ export const Checkout = () => {
       }
     }
     const DeletCartItems = async () =>{
+      setApiLoading(true);
       await axios.post(`${BASE_URL}/delete-cart`,{},{
         headers:{
           Authorization:`Bearer ${token}`,
           "Content-Type":"application/json",
         },
       }).then((res)=>{
+        setApiLoading(false);
         dispatch(AddToCart({...res.data,items:[]}));
       })
       .catch((err)=>{
+        setApiLoading(false);
         console.log("err",err);
       })
     }
     useEffect(()=>{
       setStates(Indian_states_cities_list?.STATES_OBJECT);
-      console.log("cartData",cartData);
+      // console.log("cartData",cartData);
       if(Number(cartData?.cart_total) <= 10000){
         setcodOption(true);
       }
@@ -184,6 +202,17 @@ export const Checkout = () => {
           </nav>
         </div>
       </section>
+      {apiloading && <Loader2></Loader2>}
+      {/* {
+        Loading && (
+          <div className="loader-overlay">
+            <div className="loader">
+              <img src="/img/favicon1.png" className="img-fluid" alt="loader-img"></img>
+              <div className="loader-border"></div>
+            </div>
+          </div>
+        )
+      } */}
       <section className="checkout-page-section text-white">
         <div className="container">
           <div className="row">
@@ -330,17 +359,6 @@ export const Checkout = () => {
                     return(
                       <div className="d-flex align-items-center justify-content-between" key={index}>
                         <p>{i?.product_name}</p>
-                        {/* {
-                          i?.sale_price ? 
-                          <div className="d-flex align-items-center">
-                            <p className="fw-bold">
-                              ₹{Number(i?.subtotal).toFixed(2)}
-                            </p>
-                          </div> : 
-                          <p className="fw-bold">
-                            ₹{Number(i?.subtotal).toFixed(2)}
-                          </p>
-                        } */}
                           <p className="fw-bold">
                             ₹{Number(i?.subtotal).toFixed(2)}
                           </p>
@@ -356,10 +374,6 @@ export const Checkout = () => {
                     <p>Shipping:</p>
                     <p>{deliverydata === 0 ? "Free" : `₹${Number(deliverydata).toFixed(2)}`} </p>
                 </div>
-                {/* <div className="cart-total-content">
-                    <p>Discount:</p>
-                    <p>Free</p>
-                </div> */}
                 <div className="cart-total-content">
                     <p>Total:</p>
                     <p>₹{(Number(cartData?.cart_total) + Number(deliverydata)).toFixed(2)}</p>
@@ -379,9 +393,6 @@ export const Checkout = () => {
                 {formik?.errors?.payment_method && (
                     <p className="text-danger my-1 my-lg-0 my-xl-1">{formik?.errors?.payment_method}</p>
                 )}
-                {/* <p className="cart-applycoupon-notice d-none">
-                  You’ll save <b>₹50.00</b> on this order!{" "}
-                </p> */}
                 <button className="btn btn-checkout"  onClick={()=>formik.handleSubmit()}>Proceed to payment</button>
               </div>
             </div>

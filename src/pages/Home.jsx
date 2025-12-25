@@ -15,10 +15,12 @@ import { useDispatch, useSelector } from "react-redux";
 import CategorySection from "../component/CategorySection";
 import Loader1 from "../component/Loader1";
 import { DentalProductSection } from "../component/DentalProductSection";
+import Loader2 from "../component/Loader2";
 
 const Home = () => {
   // const SearchProductData = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
-  const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
+  const token = useSelector((state)=>state.auth.token);
+  // const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
   const { categories, loading } = useSelector((state) => state.category);
   const dispatch = useDispatch();
   // const [loadingCategories, setLoadingCategories] = useState(true);
@@ -42,9 +44,10 @@ const Home = () => {
       }
       const response = await axios.get(apiUrl, { signal: controller.signal });
       setDentalProducts(response.data?.data || []);
+      setLoadingProducts(false);
     } catch (error) {
       console.error("Error fetching products:", error);
-      setLoadingProducts(false);
+      // setLoadingProducts(false);
       // setErrorProducts("Failed to load products");
     }
   };
@@ -63,14 +66,14 @@ const Home = () => {
   return (
     <div className="home-main overflow-hidden">
       {loadingProducts ? (
-        <Loader1></Loader1>
+        <Loader2></Loader2>
       ) : (
         <>
           <HomeBanner></HomeBanner>
           <ServiceSection></ServiceSection>
           {/* product range section */}
           {loading ? (
-            <Loader1></Loader1>
+            <Loader2></Loader2>
           ) : (
             <DentalProductSection getCartData={getCartData} token={token} dispatch={dispatch} categories={categories} loadingProducts={loadingProducts} visibleProducts={visibleProducts}></DentalProductSection>
           )}

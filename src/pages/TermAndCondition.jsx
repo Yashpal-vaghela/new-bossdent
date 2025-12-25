@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export const TermAndCondition = () => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
   return (
     <div className="home-main pt-2 pb-2">
       <section className="Breadcrumbs-section">
@@ -27,7 +30,14 @@ export const TermAndCondition = () => {
           <p>Welcome to bossdentindia.com!</p>
           <p>
             These terms and conditions outline the rules and regulations for the
-            use of bossdentindia’s Website, located at <Link to="https://bossdentindia.com" target="_blank" rel="noopener noreferrer">https://bossdentindia.com</Link>
+            use of bossdentindia’s Website, located at{" "}
+            <Link
+              to="https://bossdentindia.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              https://bossdentindia.com
+            </Link>
           </p>
           <p>
             By accessing this website we assume you accept these terms and

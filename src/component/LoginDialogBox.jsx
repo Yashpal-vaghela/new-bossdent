@@ -4,6 +4,11 @@ import BASE_URL from "../api/config";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCart } from "../redux/cartSlice";
+import { fetchWishList } from "../redux/wishlistSlice";
+import { fetchUser } from "../redux/userSlice";
+import { AddToken } from "../redux/authSlice";
 
 const LoginDialogBox = () => {
   const [formvalue, setformValue] = useState("");
@@ -13,21 +18,12 @@ const LoginDialogBox = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const location  = useLocation();
   const navigate = useNavigate();
+  const token = useSelector((state)=>state.auth.token);
+  const dispatch = useDispatch();
 
   const handleRequestOTP = async (e, action) => {
-    // console.log("OTP requested",formvalue);
-    // const modal = document.getElementById("exampleModal");
-    // const isModalOpen = modal && modal.classList.contains("show");
-
-    // console.log("isModalOpen",isModalOpen);
-    
-    // if (!isModalOpen) {
-    //   toast.error("Please enter phone number");
-    // }
-
     if (formvalue?.phone_number || formvalue !== "") {
       if (action === "login") {
-        // console.log("login api");
         setStep(2);
         setTime(60);
         setShowResend(false);
@@ -42,7 +38,6 @@ const LoginDialogBox = () => {
           })
           .catch((err) => console.log("err", err));
       } else {
-        // console.log("resend api");
         await axios.post(`${BASE_URL}/login/resend-otp`,formvalue,{
           headers:{
             "Content-Type":"application/json",
@@ -127,7 +122,6 @@ const LoginDialogBox = () => {
     // If all boxes are filled → Verify OTP
     if (newOtp.every((digit) => digit !== "")) {
       const finalOtp = newOtp.join("");
-      // console.log("Full OTP entered:", finalOtp);
 
       try {
         const res = await axios.post(`${BASE_URL}/login/verify-otp`, {
@@ -150,17 +144,26 @@ const LoginDialogBox = () => {
         const isModalOpen = modal && modal.classList.contains("show");
         if(isModalOpen){
           modal.classList.remove("show");
+          modal.style.display = "none";
           document.querySelector(".modal-backdrop")?.remove();
           document.body.classList.remove("modal-open");
           document.body.style.overflow = "";
           document.body.style.paddingRight = "";
         }
+          
         // navigate("/profile");
         toast.success("OTP verified successfully!");
-        // console.log("✅ OTP Verified Successfully:", res.data);
+        const controller = new AbortController();
+        dispatch(fetchCart(undefined,{signal:controller.signal}));
+        dispatch(fetchWishList(undefined, { signal: controller.signal }));
+        dispatch(fetchUser(undefined,{signal: controller.signal}))
+        dispatch(AddToken(res.data.token));
+        return () => {
+          controller.abort(); // cleanup on unmount
+        };
       } catch (err) {
         toast.error("Invaild OTP, Please Enter correct OTP.");
-        console.error("❌ OTP Verification Failed:", err);
+        // console.error("❌ OTP Verification Failed:", err);
       }
     }
   };

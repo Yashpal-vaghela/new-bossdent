@@ -1,8 +1,9 @@
 import axios from "axios";
 import { useFormik } from "formik";
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
+import Loader2 from "../component/Loader2";
 
 const ReturnExchangeSchema = yup.object().shape({
   first_name: yup.string().required("First Name field is required"),
@@ -29,7 +30,7 @@ export const ReturnExchange = () => {
     return_or_replace: "",
   };
   const navigate = useNavigate();
-
+  const [apiloading,setApiLoading] = useState(false);
   const formik = useFormik({
     initialValues,
     validationSchema: ReturnExchangeSchema,
@@ -38,6 +39,7 @@ export const ReturnExchange = () => {
     onSubmit: async () => {
       const userLoggedIn = !!localStorage.getItem("auth_token");
       if (userLoggedIn) {
+        setApiLoading(true);
         await axios
           .post(
             `https://admin.bossdentindia.com/wp-json/custom/v1/return-exchange`,
@@ -51,10 +53,11 @@ export const ReturnExchange = () => {
             }
           )
           .then((response) => {
+            setApiLoading(false);
             navigate("/");
             console.log("res", response);
           })
-          .catch((error) => console.log("error", error));
+          .catch((error) =>{ setApiLoading(false);console.log("error", error)});
       }
     },
   });
@@ -74,6 +77,7 @@ export const ReturnExchange = () => {
           </nav>
         </div>
       </section>
+      {apiloading && <Loader2></Loader2>}
       <section className="return-exchange-section">
         <div className="container">
           <div className="return-header-wrapper pt-2 pb-2">
