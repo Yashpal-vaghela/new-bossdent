@@ -946,9 +946,10 @@ const SingleProduct = () => {
                       </div>
                     </>
                   )}
-                  {visibleVariation.length >= 3 && (
+                  {
                      singleProduct?.variations !== null &&
-                    singleProduct?.variations !== undefined &&
+                    singleProduct?.variations !== undefined && 
+                    visibleVariation.length >= 3 &&
                     (loadMore === true ? (
                       <button
                         className="btn btn-loadMore mb-4 d-block m-auto"
@@ -964,7 +965,7 @@ const SingleProduct = () => {
                         <i className="fa-solid fa-angles-down"></i>
                       </button>
                     ))
-                  )}
+                  }
                  
                   <div
                     className="single-variation-description-wrapper accordion"
