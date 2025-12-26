@@ -48,11 +48,13 @@ const Footer = () => {
           <div className="footer-main-content mb-2 mb-sm-3 mb-md-4">
             <div className="row mt-lg-3 justify-content-between">
               <div className="col-lg-4">
-                <img
-                  src="/img/logo2.svg"
-                  className="footer-logo img-fluid mb-3"
-                  alt="logo"
-                ></img>
+                <Link to="/">
+                  <img
+                    src="/img/logo2.svg"
+                    className="footer-logo img-fluid mb-3"
+                    alt="logo"
+                  ></img>
+                </Link>
                 <p className="footer-content">
                   A leading dental supply partner for dentists. Trusted by more
                   than 10k dentists in India, we deliver authentic and reliable
@@ -80,7 +82,9 @@ const Footer = () => {
                 <h2>Policy</h2>
                 <ul className="footer-social-link">
                   <li>
-                    <Link to="/refund-and-returns-policy">Refunds & Returns Policy</Link>
+                    <Link to="/refund-and-returns-policy">
+                      Refunds & Returns Policy
+                    </Link>
                   </li>
                   <li>
                     <Link to="/privacy-policy">Privacy Policy</Link>
@@ -114,7 +118,7 @@ const Footer = () => {
                     <Link to="/help-center/payment-info">Payment</Link>
                   </li>
                   <li>
-                    <Link to="/help-center/return">Return Order</Link>
+                    <Link to="/return-exchange">Return Order</Link>
                   </li>
                   <li>
                     <Link to="/help-center/order">Cancel Order</Link>
@@ -142,9 +146,12 @@ const Footer = () => {
             </div>
           </div>
           <div className="footer-copyright-wrapper d-md-flex d-grid justify-content-between align-items-center">
-            <p className="mb-0 order-md-1 order-2">2025 © all right reserved by BossDentIndia</p>
+            <p className="mb-0 order-md-1 order-2">
+              2025 © all right reserved by BossDentIndia
+            </p>
             <div className="footer-copyright order-md-2 order-1">
-              <span>+91 76988 28883</span>
+              <Link to="tel:+917698828883">+91 76988 28883</Link>
+              {/* <span>+91 76988 28883</span> */}
               or
               <Link
                 to="mailto:zahndentaldepo@gmailcom"

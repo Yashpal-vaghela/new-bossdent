@@ -1,9 +1,10 @@
 import axios from 'axios';
 import { useFormik } from 'formik';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as yup from "yup";
+import Loader2 from '../component/Loader2';
 
 const ContactSchema = yup.object().shape({
     name:yup.string().required("Name field is required."),
@@ -21,8 +22,7 @@ export const Contact = () => {
         subject:"",
         message:"",
     }
-    const [loading,setLoading] = useState(false);
-    const [showAlert,setShowAlert] = useState(false);
+    // const [showAlert,setShowAlert] = useState(false);
     const [apiloading,setApiLoading] = useState(false);
     const formik = useFormik({
         initialValues,
@@ -72,7 +72,9 @@ export const Contact = () => {
             }
         }
     });
-
+    useEffect(()=>{
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    },[])
     return (
         <div className='home-main pt-0 pt-sm-4'>
             <section className="Breadcrumbs-section">
@@ -89,6 +91,7 @@ export const Contact = () => {
                     </nav>
                 </div>
             </section>
+            {apiloading && <Loader2></Loader2>}
             <section className="contact-section my-4 my-md-5">
                 <div className="container">
                     <div className="row pt-2 pb-4 gap-3 gap-sm-0">

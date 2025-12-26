@@ -12,10 +12,12 @@ import {
   WishlistCounter,
   wishlistId,
 } from "../redux/wishlistSlice";
+import Loader2 from "./Loader2";
 
 const PremiumProducts = ({ token, getCartData, dispatch }) => {
   const [premiumProducts, setPremiumProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [apiloading,setApiLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showVariationModal, setShowVariationModal] = useState(false);
   const [selectedProductForModal, setSelectedProductForModal] = useState(null);
@@ -85,6 +87,7 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
                 cart_id: AlreadyExistsData[0]?.cart_id,
                 quantity: AlreadyExistsData[0]?.quantity + quantity,
               };
+              setApiLoading(true);
               // console.log("EditCartData api call")
               try {
                 const res = await axios.post(
@@ -99,6 +102,7 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
                     },
                   }
                 );
+                setApiLoading(false);
                 toast.success("Product updated in cart successfully!");
                 if (showVariationModal === true) {
                   setShowVariationModal((prev) => !prev);
@@ -145,6 +149,7 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
                     : selectedAttributes?.id,
                 quantity: quantity,
               };
+              setApiLoading(true);
               // console.log("AddtoCartData api call",payload);
               try {
                 const res = await axios.post(
@@ -162,6 +167,7 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
                 if (showVariationModal === true) {
                   setShowVariationModal((prev) => !prev);
                 }
+                setApiLoading(false);
                 toast.success("Product added to cart successfully!");
                 dispatch(
                   AddToCart({
@@ -188,6 +194,7 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
       );
       const filterwishlistId = wishlistId1.includes(product?.id);
       if (filterwishlistId) {
+        setApiLoading(true);
         // console.log("update wishlist add remove wishlist data");
         await axios
           .post(
@@ -201,6 +208,7 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
             }
           )
           .then((res) => {
+            setApiLoading(false);
             toast.success("Product removed form wishlist");
             const updatedWishlist = wishlistId1.filter(
               (id) => id !== product?.id
@@ -210,6 +218,7 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
           })
           .catch((err) => console.log("err", err));
       } else {
+        setApiLoading(true);
         // console.log("add wishlist data");
         await axios
           .post(
@@ -223,6 +232,7 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
             }
           )
           .then((response) => {
+            setApiLoading(false);
             toast.success("Product added to wishlist!");
             const updatedWishlist = [...wishlistId1, product?.id];
             dispatch(AddToWishlist(response?.data.wishlist));
@@ -255,10 +265,13 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
             Exclusive Premium Products
           </h2>
           <button className="btn btn-default txt-grident btn-view">
-            view All
+            <Link to={`/products?category=premium-product`}>
+               view All
             <i className="fa-solid fa-arrow-right" />
+            </Link>
           </button>
         </div>
+        {apiloading && <Loader2></Loader2>}
         {loading ? (
           <p className="text-light text-center mt-4">
             Loading premium products...
@@ -268,7 +281,7 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
             No premium products available.
           </p>
         ) : (
-          <div className="grid-container my-3">
+          <div className="grid-container my-3 mt-md-2 mb-md-2">
             <div className="grid-item big card position-relative">
               {premiumProducts[6]?.regular_price &&
                 premiumProducts[6]?.sale_price && (
@@ -331,58 +344,58 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
                 {premiumProducts[6]?.sale_price ? (
                   <>
                     <span className="text-muted text-decoration-line-through me-2">
-                      ₹{premiumProducts[6]?.regular_price}
+                      ₹{Number(premiumProducts[6]?.regular_price).toFixed(2)}
                     </span>
                     <span className="fw-bold text-white">
-                      ₹{premiumProducts[6]?.sale_price}
+                      ₹{Number(premiumProducts[6]?.sale_price).toFixed(2)}
                     </span>
                   </>
                 ) : (
                   <span className="fw-bold text-white">
                     ₹
-                    {premiumProducts[6]?.price ||
+                    {Number(premiumProducts[6]?.price ||
                       premiumProducts[6]?.regular_price ||
-                      "0"}
+                      "0").toFixed(2)}
                   </span>
                 )}
               </h3>
             </div>
             {premiumProducts.slice(0, 11).map((item, index) => (
               <div className="grid-item card position-relative" key={index}>
-                {item.regular_price && item.sale_price && (
+                {item?.regular_price && item?.sale_price && (
                   <span className="discount-badge position-absolute top-0 end-0 m-2 px-2 py-1 rounded text-white">
                     Sale{" "}
                     {Math.round(
-                      ((item.regular_price - item.sale_price) /
-                        item.regular_price) *
+                      ((item?.regular_price - item?.sale_price) /
+                        item?.regular_price) *
                         100
                     )}
                     %
                   </span>
                 )}
-                <Link to={`/products/${item.slug}`}>
+                <Link to={`/products/${item?.slug}`}>
                   <img
-                    src={item.image}
+                    src={item?.image}
                     className="product-img img-fluid"
-                    alt={item.name}
+                    alt={item?.name}
                   />
                 </Link>
                 <div className="product-card-wrapper d-flex align-items-center justify-content-between w-100 h-auto">
                   <div className="d-block">
-                    <h2 className="product-card-title mb-0">{item.name}</h2>
+                    <h2 className="product-card-title mb-0">{item?.name}</h2>
                     <p className="product-price mb-1">
-                      {item.sale_price ? (
+                      {item?.sale_price ? (
                         <>
                           <span className="text-muted text-decoration-line-through me-2">
-                            ₹{item.regular_price}
+                            ₹{Number(item?.regular_price).toFixed(2)}
                           </span>
                           <span className="fw-bold text-white">
-                            ₹{item.sale_price}
+                            ₹{Number(item?.sale_price).toFixed(2)}
                           </span>
                         </>
                       ) : (
                         <span className="fw-bold text-white">
-                          ₹{item.price || item.regular_price || "0"}
+                          ₹{Number(item?.price || item?.regular_price || "0").toFixed(2)}
                         </span>
                       )}
                     </p>
@@ -404,7 +417,3 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
 };
 
 export default PremiumProducts;
-// change headline in implant banner and make implant banner for mobile screen in figma,
-// setloader and favicon in cart and checkout page,
-// create payment option functionlity in checkout page.
-// make implant banner in figma

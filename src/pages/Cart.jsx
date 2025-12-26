@@ -183,6 +183,7 @@ const Cart = () => {
                                 className={`cart-item ${item?.stock_status}`}
                               >
                                 <div className="cart-item-product">
+                                  {/* <Link to={`/product/${item?.slug}`}></Link> */}
                                   <img
                                     src={item?.image}
                                     alt="cart-product-img"

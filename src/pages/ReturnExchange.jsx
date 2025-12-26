@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useFormik } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import Loader2 from "../component/Loader2";
+import { useSelector } from "react-redux";
 
 const ReturnExchangeSchema = yup.object().shape({
   first_name: yup.string().required("First Name field is required"),
@@ -21,16 +22,18 @@ const ReturnExchangeSchema = yup.object().shape({
 });
 
 export const ReturnExchange = () => {
+  const [apiloading,setApiLoading] = useState(false);
+  const user = useSelector((state)=>state.user.user);
   const initialValues = {
-    first_name: "",
-    last_name:"",
-    contact_number: "",
+    first_name: Object.keys(user).length !== 0 ? user?.first_name : "",
+    last_name:Object.keys(user).length !== 0 ? user.last_name : "",
+    contact_number: Object.keys(user).length !== 0 ? user.phone_number : "",
     order_number: "",
     query: "",
     return_or_replace: "",
   };
   const navigate = useNavigate();
-  const [apiloading,setApiLoading] = useState(false);
+  
   const formik = useFormik({
     initialValues,
     validationSchema: ReturnExchangeSchema,
@@ -61,6 +64,9 @@ export const ReturnExchange = () => {
       }
     },
   });
+  useEffect(()=>{
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  },[])
   return (
     <div className="home-main pt-4">
       <section className="Breadcrumbs-section">
@@ -130,14 +136,14 @@ export const ReturnExchange = () => {
                     name="contact_number"
                     type="number"
                     value={formik?.values?.contact_number || ""}
-                    onChange={formik?.handleChange}
-                    onBlur={formik?.handleBlur}
+                    // onChange={formik?.handleChange}
+                    // onBlur={formik?.handleBlur}
                   ></input>
-                  {formik?.errors?.contact_number && (
+                  {/* {formik?.errors?.contact_number && (
                     <span className="return-form-error">
                       {formik?.errors?.contact_number}
                     </span>
-                  )}
+                  )} */}
                 </div>
                 <div
                   className={`${

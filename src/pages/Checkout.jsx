@@ -181,6 +181,7 @@ export const Checkout = () => {
     useEffect(()=>{
       setStates(Indian_states_cities_list?.STATES_OBJECT);
       // console.log("cartData",cartData);
+      window.scrollTo({ top: 0, behavior: "smooth" });
       if(Number(cartData?.cart_total) <= 10000){
         setcodOption(true);
       }

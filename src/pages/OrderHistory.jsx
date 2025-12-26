@@ -110,6 +110,7 @@ export const OrderHistory = () => {
     } else {
       handlefetchOrderData(controller);
     }
+    window.scrollTo({ top: 0, behavior: "smooth" });
     return () => controller.abort();
   }, [params]);
 
@@ -129,329 +130,336 @@ export const OrderHistory = () => {
           </nav>
         </div>
       </section>
-      {apiloading && <Loader2></Loader2>}
-      <section className="profile-section order-history-section">
-        <div className="container">
-          <div className="row">
-            <>
-              <div className="col-lg-3 order-history-content-wrapper profile-content-wrapper align-items-start justify-content-between">
-                <button
-                  className="navbar-toggler"
-                  type="button"
-                  data-bs-toggle="offcanvas"
-                  href="#offcanvasExample1"
-                  aria-controls="offcanvasExample1"
-                >
-                  <span className="navbar-toggler-icon"></span>
-                </button>
-                <ProfileSideBar></ProfileSideBar>
-              </div>
-              {Object.keys(params)[0] === undefined ? (
-                <div className="col-lg-9 order-details-container">
-                  <h2>Order History</h2>
-                  <React.Fragment>
-                    {orderData.length !== 0 ? (
-                      visibleData?.map((i, index) => {
-                        return (
-                          <div className="order-card" key={index}>
-                            <div className="row1">
-                              <span>
-                                <b>ORDER ID :</b> #{i?.order_id}
-                              </span>
-                              <span>
-                                <b>DATE :</b> {formatDate(i?.order_date)}
-                              </span>
-                              <span>
-                                <b>STATUS :</b> {i?.status}
-                              </span>
-                            </div>
-
-                            <div className="row2">
-                              <span>
-                                <b>TOTAL :</b> ₹{Number(i?.order_total)} (
-                                {Number(i?.item_count)} Products)
-                              </span>
-                              <button className="details-btn">
-                                <Link to={`/order-history/${i?.order_id}`}>
-                                  <i className="fa-regular fa-eye"></i>
-                                </Link>
-                              </button>
-                            </div>
-                          </div>
-                        );
-                      })
-                    ) : (
-                      <div className="order-card">
-                        <p className="mb-0">No Order Data found!</p>
-                      </div>
-                    )}
-                    <nav className="order-card py-4">
-                      <ul className="order-table-pagination pagination justify-content-center m-0">
-                        <li
-                          className={`page-item ${
-                            page === 1 ? "disabled" : ""
-                          }`}
-                        >
-                          <button
-                            className="page-link"
-                            onClick={() => handlePageChange(page - 1)}
-                          >
-                            <i className="fa-solid fa-angles-left"></i>
-                          </button>
-                        </li>
-                        {renderPagination()}
-                        <li
-                          className={`page-item ${
-                            page === totalPages ? "disabled" : ""
-                          }`}
-                        >
-                          <button
-                            className="page-link"
-                            onClick={() => handlePageChange(page + 1)}
-                          >
-                            <i className="fa-solid fa-angles-right"></i>
-                          </button>
-                        </li>
-                      </ul>
-                    </nav>
-                  </React.Fragment>
-
-                  <table className="table order-detail-table ">
-                    <thead>
-                      <tr>
-                        <td>Order id</td>
-                        <td>Date</td>
-                        <td>Total</td>
-                        <td>Status</td>
-                        <td></td>
-                      </tr>
-                    </thead>
-                    <tbody>
+      {/* {apiloading && <Loader2></Loader2>} */}
+      {apiloading ? (
+        <Loader2></Loader2>
+      ) : (
+        <section className="profile-section order-history-section">
+          <div className="container">
+            <div className="row">
+              <>
+                <div className="col-lg-3 order-history-content-wrapper profile-content-wrapper align-items-start justify-content-between">
+                  <button
+                    className="navbar-toggler"
+                    type="button"
+                    data-bs-toggle="offcanvas"
+                    href="#offcanvasExample1"
+                    aria-controls="offcanvasExample1"
+                  >
+                    <span className="navbar-toggler-icon"></span>
+                  </button>
+                  <ProfileSideBar></ProfileSideBar>
+                </div>
+                {Object.keys(params)[0] === undefined ? (
+                  <div className="col-lg-9 order-details-container">
+                    <h2>Order History</h2>
+                    <React.Fragment>
                       {orderData.length !== 0 ? (
                         visibleData?.map((i, index) => {
                           return (
-                            <tr key={index}>
-                              <td>#{i?.order_id}</td>
-                              <td>{formatDate(i?.order_date)}</td>
-                              <td>
-                                ₹{Number(i?.order_total).toFixed(2)} (
-                                {Number(i?.item_count)} products)
-                              </td>
-                              <td>{i?.status}</td>
-                              <td>
-                                <Link to={`/order-history/${i?.order_id}`}>
-                                  <i className="fa-regular fa-eye"></i>
-                                </Link>
-                              </td>
-                            </tr>
+                            <div className="order-card" key={index}>
+                              <div className="row1">
+                                <span>
+                                  <b>ORDER ID :</b> #{i?.order_id}
+                                </span>
+                                <span>
+                                  <b>DATE :</b> {formatDate(i?.order_date)}
+                                </span>
+                                <span>
+                                  <b>STATUS :</b> {i?.status}
+                                </span>
+                              </div>
+
+                              <div className="row2">
+                                <span>
+                                  <b>TOTAL :</b> ₹{Number(i?.order_total)} (
+                                  {Number(i?.item_count)} Products)
+                                </span>
+                                <button className="details-btn">
+                                  <Link to={`/order-history/${i?.order_id}`}>
+                                    <i className="fa-regular fa-eye"></i>
+                                  </Link>
+                                </button>
+                              </div>
+                            </div>
                           );
                         })
                       ) : (
+                        <div className="order-card">
+                          <p className="mb-0">No Order Data found!</p>
+                        </div>
+                      )}
+                      <nav className="order-card py-4">
+                        <ul className="order-table-pagination pagination justify-content-center m-0">
+                          <li
+                            className={`page-item ${
+                              page === 1 ? "disabled" : ""
+                            }`}
+                          >
+                            <button
+                              className="page-link"
+                              onClick={() => handlePageChange(page - 1)}
+                            >
+                              <i className="fa-solid fa-angles-left"></i>
+                            </button>
+                          </li>
+                          {renderPagination()}
+                          <li
+                            className={`page-item ${
+                              page === totalPages ? "disabled" : ""
+                            }`}
+                          >
+                            <button
+                              className="page-link"
+                              onClick={() => handlePageChange(page + 1)}
+                            >
+                              <i className="fa-solid fa-angles-right"></i>
+                            </button>
+                          </li>
+                        </ul>
+                      </nav>
+                    </React.Fragment>
+
+                    <table className="table order-detail-table ">
+                      <thead>
                         <tr>
-                          <td colSpan="5" className="p-5 text-center">
-                            No Order Data found!
+                          <td>Order id</td>
+                          <td>Date</td>
+                          <td>Total</td>
+                          <td>Status</td>
+                          <td></td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {orderData.length !== 0 ? (
+                          visibleData?.map((i, index) => {
+                            return (
+                              <tr key={index}>
+                                <td>#{i?.order_id}</td>
+                                <td>{formatDate(i?.order_date)}</td>
+                                <td>
+                                  ₹{Number(i?.order_total).toFixed(2)} (
+                                  {Number(i?.item_count)} products)
+                                </td>
+                                <td>{i?.status}</td>
+                                <td>
+                                  <Link to={`/order-history/${i?.order_id}`}>
+                                    <i className="fa-regular fa-eye"></i>
+                                  </Link>
+                                </td>
+                              </tr>
+                            );
+                          })
+                        ) : (
+                          <tr>
+                            <td colSpan="5" className="p-5 text-center">
+                              No Order Data found!
+                            </td>
+                          </tr>
+                          // <p>No Order Data found!</p>
+                        )}
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <td colSpan="5">
+                            <nav>
+                              <ul className="order-table-pagination pagination justify-content-center m-0">
+                                <li
+                                  className={`page-item ${
+                                    page === 1 ? "disabled" : ""
+                                  }`}
+                                >
+                                  <button
+                                    className="page-link"
+                                    onClick={() => setPage(page - 1)}
+                                  >
+                                    <i className="fa-solid fa-angles-left"></i>
+                                  </button>
+                                </li>
+                                {renderPagination()}
+                                <li
+                                  className={`page-item ${
+                                    page === totalPages ? "disabled" : ""
+                                  }`}
+                                >
+                                  <button
+                                    className="page-link"
+                                    onClick={() => setPage(page + 1)}
+                                  >
+                                    <i className="fa-solid fa-angles-right"></i>
+                                  </button>
+                                </li>
+                              </ul>
+                            </nav>
                           </td>
                         </tr>
-                        // <p>No Order Data found!</p>
-                      )}
-                    </tbody>
-                    <tfoot>
-                      <tr>
-                        <td colSpan="5">
-                          <nav>
-                            <ul className="order-table-pagination pagination justify-content-center m-0">
-                              <li
-                                className={`page-item ${
-                                  page === 1 ? "disabled" : ""
-                                }`}
-                              >
-                                <button
-                                  className="page-link"
-                                  onClick={() => setPage(page - 1)}
-                                >
-                                  <i className="fa-solid fa-angles-left"></i>
-                                </button>
-                              </li>
-                              {renderPagination()}
-                              <li
-                                className={`page-item ${
-                                  page === totalPages ? "disabled" : ""
-                                }`}
-                              >
-                                <button
-                                  className="page-link"
-                                  onClick={() => setPage(page + 1)}
-                                >
-                                  <i className="fa-solid fa-angles-right"></i>
-                                </button>
-                              </li>
-                            </ul>
-                          </nav>
-                        </td>
-                      </tr>
-                    </tfoot>
-                  </table>
-                </div>
-              ) : (
-                <div className="col-lg-9 order-details-container">
-                  {apiloading ? (
-                    <Loader2></Loader2>
-                  ) : (
-                    <>
-                      {orderDetails?.length !== 0 ? (
-                        <>
-                          <div className="order-header">
-                            <h2 className="mb-0">Order Details</h2>
-                            <span className="status">
-                              {orderDetails?.status === "Processing"
-                                ? "Success"
-                                : orderDetails?.status}
-                            </span>
-                          </div>
-                          <div className="row order-view-details-row">
-                            <div className="col-lg-8 billing-address-section d-flex">
-                              <div className="billing-address-card card">
-                                <div className="card-header">
-                                  <h3 className="mb-0">Billing Address</h3>
-                                </div>
-                                <div className="card-body">
-                                  <div className="username-wrapper">
-                                    <p className="mb-0">
-                                      {orderDetails?.billing?.first_name}
-                                      {orderDetails?.billing?.last_name}
-                                    </p>
-                                    <span>
-                                      {orderDetails?.billing?.address}{" "}
-                                      {orderDetails?.billing?.city},
-                                      {orderDetails?.billing?.state} -{" "}
-                                      {orderDetails?.billing?.zipcode}.
-                                    </span>
+                      </tfoot>
+                    </table>
+                  </div>
+                ) : (
+                  <div className="col-lg-9 order-details-container">
+                    {apiloading ? (
+                      <Loader2></Loader2>
+                    ) : (
+                      <>
+                        {orderDetails?.length !== 0 ? (
+                          <>
+                            <div className="order-header">
+                              <h2 className="mb-0">Order Details</h2>
+                              <span className="status">
+                                {orderDetails?.status === "Processing"
+                                  ? "Success"
+                                  : orderDetails?.status}
+                              </span>
+                            </div>
+                            <div className="row order-view-details-row">
+                              <div className="col-lg-8 billing-address-section d-flex">
+                                <div className="billing-address-card card">
+                                  <div className="card-header">
+                                    <h3 className="mb-0">Billing Address</h3>
                                   </div>
+                                  <div className="card-body">
+                                    <div className="username-wrapper">
+                                      <p className="mb-0">
+                                        {orderDetails?.billing?.first_name}
+                                        {orderDetails?.billing?.last_name}
+                                      </p>
+                                      <span>
+                                        {orderDetails?.billing?.address}{" "}
+                                        {orderDetails?.billing?.city},
+                                        {orderDetails?.billing?.state} -{" "}
+                                        {orderDetails?.billing?.zipcode}.
+                                      </span>
+                                    </div>
 
-                                  <div className="email-wrapper mb-2">
-                                    <label className="form-label mb-0">
-                                      Email
-                                    </label>
-                                    <p>{orderDetails?.billing?.email}</p>
+                                    <div className="email-wrapper mb-2">
+                                      <label className="form-label mb-0">
+                                        Email
+                                      </label>
+                                      <p>{orderDetails?.billing?.email}</p>
+                                    </div>
+                                    <div className="phone-wrapper">
+                                      <label className="form-label mb-0">
+                                        Phone
+                                      </label>
+                                      <p className="mb-1">
+                                        {orderDetails?.billing?.phone?.slice(2)}
+                                      </p>
+                                    </div>
                                   </div>
-                                  <div className="phone-wrapper">
-                                    <label className="form-label mb-0">
-                                      Phone
-                                    </label>
-                                    <p className="mb-1">
-                                      {orderDetails?.billing?.phone?.slice(2)}
-                                    </p>
+                                </div>
+                                <div className="billing-address-card">
+                                  <div className="card-header">
+                                    <h3 className="mb-0">Shipping Address</h3>
+                                  </div>
+                                  <div className="card-body">
+                                    <div className="username-wrapper">
+                                      <p className="mb-0">
+                                        {orderDetails?.billing?.first_name}
+                                        {orderDetails?.billing?.last_name}
+                                      </p>
+                                      <span>
+                                        {orderDetails?.billing?.address}{" "}
+                                        {orderDetails?.billing?.city},
+                                        {orderDetails?.billing?.state} -{" "}
+                                        {orderDetails?.billing?.zipcode}.
+                                      </span>
+                                    </div>
+                                    <div className="email-wrapper mb-2">
+                                      <label className="form-label mb-0">
+                                        Email
+                                      </label>
+                                      <p>{orderDetails?.billing?.email}</p>
+                                    </div>
+                                    <div className="phone-wrapper">
+                                      <label className="form-label mb-0">
+                                        Phone
+                                      </label>
+                                      <p className="mb-1">
+                                        {orderDetails?.billing?.phone?.slice(2)}
+                                      </p>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                              <div className="billing-address-card">
-                                <div className="card-header">
-                                  <h3 className="mb-0">Shipping Address</h3>
-                                </div>
-                                <div className="card-body">
-                                  <div className="username-wrapper">
-                                    <p className="mb-0">
-                                      {orderDetails?.billing?.first_name}
-                                      {orderDetails?.billing?.last_name}
-                                    </p>
-                                    <span>
-                                      {orderDetails?.billing?.address}{" "}
-                                      {orderDetails?.billing?.city},
-                                      {orderDetails?.billing?.state} -{" "}
-                                      {orderDetails?.billing?.zipcode}.
-                                    </span>
+                              <div className="col-lg-4">
+                                <div className="summary-card-section card">
+                                  <div className="card-header d-xl-flex d-lg-lock d-flex align-items-center justify-content-between">
+                                    <div className="summary-row d-block">
+                                      <h2>Order Id:</h2>
+                                      <p className="mb-0">
+                                        #{orderDetails?.order_id}
+                                      </p>
+                                    </div>
+                                    <div className="line1"></div>
+                                    <div className="summary-row d-block">
+                                      <h2>Payment Method:</h2>
+                                      <p className="mb-0">
+                                        {orderDetails?.payment_method}
+                                      </p>
+                                    </div>
                                   </div>
-                                  <div className="email-wrapper mb-2">
-                                    <label className="form-label mb-0">
-                                      Email
-                                    </label>
-                                    <p>{orderDetails?.billing?.email}</p>
-                                  </div>
-                                  <div className="phone-wrapper">
-                                    <label className="form-label mb-0">
-                                      Phone
-                                    </label>
-                                    <p className="mb-1">
-                                      {orderDetails?.billing?.phone?.slice(2)}
-                                    </p>
+                                  <div className="card-body">
+                                    <div className="summary-total-row">
+                                      <span>Subtotal</span>
+                                      <p>₹{orderDetails?.subtotal}</p>
+                                    </div>
+                                    <div className="summary-total-row">
+                                      <span>Shipping</span>
+                                      <p>
+                                        {orderDetails?.shipping_charge ===
+                                        "0.00"
+                                          ? "Free"
+                                          : orderDetails?.shipping_charge}
+                                      </p>
+                                    </div>
+                                    <div className="summary-total-row total align-items-center">
+                                      <span>Total</span>
+                                      <p>₹{orderDetails?.total}</p>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                            <div className="col-lg-4">
-                              <div className="summary-card-section card">
-                                <div className="card-header d-xl-flex d-lg-lock d-flex align-items-center justify-content-between">
-                                  <div className="summary-row d-block">
-                                    <h2>Order Id:</h2>
-                                    <p className="mb-0">
-                                      #{orderDetails?.order_id}
-                                    </p>
-                                  </div>
-                                  <div className="line1"></div>
-                                  <div className="summary-row d-block">
-                                    <h2>Payment Method:</h2>
-                                    <p className="mb-0">
-                                      {orderDetails?.payment_method}
-                                    </p>
-                                  </div>
-                                </div>
-                                <div className="card-body">
-                                  <div className="summary-total-row">
-                                    <span>Subtotal</span>
-                                    <p>₹{orderDetails?.subtotal}</p>
-                                  </div>
-                                  <div className="summary-total-row">
-                                    <span>Shipping</span>
-                                    <p>
-                                      {orderDetails?.shipping_charge === "0.00"
-                                        ? "Free"
-                                        : orderDetails?.shipping_charge}
-                                    </p>
-                                  </div>
-                                  <div className="summary-total-row total align-items-center">
-                                    <span>Total</span>
-                                    <p>₹{orderDetails?.total}</p>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <table className="product-order-table table w-100">
-                            <thead>
-                              <tr>
-                                <td>Product</td>
-                                <td>price</td>
-                                <td className="text-center">Quantity</td>
-                                <td className="text-center">subtotal</td>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {orderDetails?.items.map((i, index) => {
-                                return (
-                                  <tr key={index}>
-                                    <td>{i?.product_name}</td>
-                                    <td>₹{i?.product_price}</td>
-                                    <td className="text-center">
-                                      x {i?.quantity}
-                                    </td>
-                                    <td className="text-center">{i?.total}</td>
-                                  </tr>
-                                );
-                              })}
-                            </tbody>
-                          </table>
-                        </>
-                      ) : (
-                        <></>
-                      )}
-                    </>
-                  )}
-                </div>
-              )}
-            </>
+                            <table className="product-order-table table w-100">
+                              <thead>
+                                <tr>
+                                  <td>Product</td>
+                                  <td>price</td>
+                                  <td className="text-center">Quantity</td>
+                                  <td className="text-center">subtotal</td>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {orderDetails?.items.map((i, index) => {
+                                  return (
+                                    <tr key={index}>
+                                      <td>{i?.product_name}</td>
+                                      <td>₹{i?.product_price}</td>
+                                      <td className="text-center">
+                                        x {i?.quantity}
+                                      </td>
+                                      <td className="text-center">
+                                        {i?.total}
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                              </tbody>
+                            </table>
+                          </>
+                        ) : (
+                          <></>
+                        )}
+                      </>
+                    )}
+                  </div>
+                )}
+              </>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 };

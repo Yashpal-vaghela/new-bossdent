@@ -79,7 +79,7 @@
 }
 .footer-main-content .footer-content{
     font-weight: 400;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1.5;
 }
 .footer-main-content .footer-social-link{
@@ -141,7 +141,7 @@
     margin-bottom: 12px !important;
   }
   .footer-section p{
-    text-align: center;
+    text-align: start;
   }
   .footer-main-content .footer-content{
     text-align: start;

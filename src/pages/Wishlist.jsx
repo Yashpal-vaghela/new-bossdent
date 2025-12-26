@@ -161,6 +161,7 @@ const Wishlist = () => {
                 if (showVariationModal === true) {
                   setShowVariationModal((prev) => !prev);
                 }
+                toast.success("Product updated in cart successfully!");
                 dispatch(AddToCart({ ...res.data, items: res.data.items }));
               })
               .catch((err) => {
@@ -210,6 +211,7 @@ const Wishlist = () => {
                 if (showVariationModal === true) {
                   setShowVariationModal((prev) => !prev);
                 }
+                toast.success("Product added to cart successfully!");
                 dispatch(CartTotal(res.data.cart_total));
                 // dispatch(CartCounter(res.data.cart_count));
                 dispatch(
@@ -250,7 +252,7 @@ const Wishlist = () => {
       </section>
       {apiLoading && <Loader2></Loader2>}
       {loading || Loading ? (
-        <Loader1></Loader1>
+        <Loader2></Loader2>
       ) : (
         <>
           {wishlistData?.length === 0 ? (

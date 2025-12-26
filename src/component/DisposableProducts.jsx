@@ -203,11 +203,10 @@ const DisposableProducts = ({ token, getCartData, dispatch }) => {
         <h2 className="text-white fs-2 text-center section-title">
           Disposable Products
         </h2>
-        {apiloading ? (
+        {apiloading && 
           <Loader2></Loader2>
-        ) : (
-          // <p className="text-light text-center mt-4">Loading disposable products...</p>
-          <Swiper
+        }
+         <Swiper
             modules={[Navigation, Pagination, Autoplay]}
             spaceBetween={0}
             slidesPerView={2}
@@ -220,7 +219,7 @@ const DisposableProducts = ({ token, getCartData, dispatch }) => {
               768: { slidesPerView: 3 },
               992: { slidesPerView: 4 },
             }}
-            className="py-4 disposable-swiper"
+            className="pt-3 pb-4 pt-md-3 pb-md-4 py-lg-3 py-xl-4 disposable-swiper"
           >
             <div className="row py-3 py-md-4">
               {disposableProduct?.map((item, index) => {
@@ -255,15 +254,15 @@ const DisposableProducts = ({ token, getCartData, dispatch }) => {
                             {item.sale_price ? (
                               <>
                                 <span className="text-muted text-decoration-line-through me-2">
-                                  ₹{item.regular_price}
+                                  ₹{Number(item.regular_price).toFixed(2)}
                                 </span>
                                 <span className="fw-bold text-white">
-                                  ₹{item.sale_price}
+                                  ₹{Number(item.sale_price).toFixed(2)}
                                 </span>
                               </>
                             ) : (
                               <span className="fw-bold text-white">
-                                ₹{item.price || item.regular_price || "0"}
+                                ₹{Number(item.price || item.regular_price || "0").toFixed(2)}
                               </span>
                             )}
                           </p>
@@ -281,7 +280,6 @@ const DisposableProducts = ({ token, getCartData, dispatch }) => {
               })}
             </div>
           </Swiper>
-        )}
       </div>
     </section>
   );

@@ -5,8 +5,8 @@ import { useSelector } from 'react-redux';
 export const ProtectedOrderRoute = ({children}) => {
     const location = useLocation();
     const token = useSelector((state)=>state.auth.token);
-    const cartdata = useSelector((state)=>state.cart.cart)
-    if(token === "null"){
+    const cartdata = useSelector((state)=>state.cart.cart);
+    if(token == "null"){
         // if(cartdata.items.length === 0){
               return(
                     <Navigate 

@@ -16,9 +16,9 @@ const Navbar = () => {
   const cartCounter = useSelector((state) => state.cart.cartCount);
 
   const cartTotal = useSelector((state) => state.cart.cartTotal);
-  const token = useSelector((state)=>state.auth.token);
+  const token = useSelector((state) => state.auth.token);
   const wishlistCounter = useSelector((state) => state.wishlist.wishlistCount);
-    const cartCounter1 = useSelector((state)=>state.wishlist);
+  const cartCounter1 = useSelector((state) => state.wishlist);
   // const [token,setToken] = useState(localStorage.getItem("auth_token"));
   const text = "* Free shipping on order above 2300 *";
   const dispatch = useDispatch();
@@ -140,8 +140,10 @@ const Navbar = () => {
         navbarlogoElements.classList.add("d-lg-none");
       }
     };
-    dispatch(AddToken(JSON.parse(localStorage.getItem("auth_token")) || "null"));
-    console.log("loca",JSON.parse(localStorage.getItem("auth_token")));
+    dispatch(
+      AddToken(JSON.parse(localStorage.getItem("auth_token")) || "null")
+    );
+    console.log("loca", JSON.parse(localStorage.getItem("auth_token")));
     const handleResize = () => {
       handleScroll();
     };
@@ -288,17 +290,16 @@ const Navbar = () => {
             ) : (
               <></>
             )}
-           
           </div>
-        <div className="navbar-bottom-highlight d-lg-none d-block">
-          <div className="ticker">
-            <div className="ticker-track">
-              {Array.from({ length: 20 }).map((_, i) => (
-                <span key={i}>{text}</span>
-              ))}
+          <div className="navbar-bottom-highlight d-lg-none d-block">
+            <div className="ticker">
+              <div className="ticker-track">
+                {Array.from({ length: 20 }).map((_, i) => (
+                  <span key={i}>{text}</span>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
         </nav>
         <div
           className="offcanvas offcanvas-start navbar-offcanvas navbar-content-wrapper d-lg-flex"
@@ -485,8 +486,8 @@ const Navbar = () => {
                   ></img>
                 )}
                 <div className="d-flex justify-content-center align-items-center">
-                  <a
-                    href="tel:+917698828883"
+                  <Link
+                    to="tel:+917698828883"
                     className="ms-2 text-decoration-none"
                   >
                     <img
@@ -499,7 +500,7 @@ const Navbar = () => {
                     <span className="navbar-contact-title">
                       +91 76988 28883
                     </span>
-                  </a>
+                  </Link>
                 </div>
               </div>
               <div className="navbar-cart-wrapper d-lg-flex d-none align-items-center">

@@ -134,7 +134,7 @@ export const DentalProductSection = ({
               )}
             </ul>
           </div>
-          <div className="row pt-3 justify-content-center">
+          <div className="row pt-1 pt-md-3 justify-content-center">
             {loadingProducts ? (
               <p>Loading products...</p>
             ) : visibleProducts.length > 0 ? (

@@ -33,7 +33,7 @@ const CategorySection = (categories,setLoadingCategories) => {
           ref={swiperRef}
           spaceBetween={0}
           slidesPerView={6}
-          centeredSlides={true}
+          centeredSlides={false}
           autoplay="false"
           grabCursor={true}
           pagination={{

@@ -224,7 +224,7 @@
   font-weight: 400;
 }
 .product-content-wrapper .product-price b{
- padding: 0px 4px;
+ padding: 0px 4px 0px 1px;
  text-decoration: line-through;
 }
 .product-content-wrapper .product-review {

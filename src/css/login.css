@@ -613,11 +613,11 @@
   font-weight: 600;
   text-transform: uppercase;
 }
-.order-detail-table tbody tr td:last-child {
+.order-detail-table tbody tr:last-child td {
   border-bottom: 0px;
 }
 .order-detail-table tbody tr td {
-  padding: 8px 0.4rem;
+  padding: 12px 0.4rem;
 }
 .order-detail-table tbody tr td a {
   color: #fff;

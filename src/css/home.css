@@ -71,8 +71,9 @@
   padding: 40px 0px 40px;
 }
 .premium-products-section .shopping-bag-icon{
-  width:22%;
-  padding: 11px;
+  width:40px;
+  height: 40px;
+  padding: 9px;
 }
 .Otherbanner-section {
   padding: 50px 0px 40px;
@@ -159,6 +160,11 @@
   font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
+ 
+}
+.premium-products-section .big .product-card-title{
+ margin-bottom: 0px;
+ font-size: 18px;
 }
 .product-card-title.active {
   font-size: 18px;
@@ -166,6 +172,7 @@
 }
 .big .product-price {
   font-size: 24px;
+  margin-bottom: 15px;
 }
 .product-price {
   font-size: 16px;
@@ -227,6 +234,7 @@
 .search-product-card .card-body .shopping-bag-icon {
   width: auto;
   padding: 9px;
+  cursor: pointer;
 }
 @media (max-width: 1200px) {
   .dental-product-section .card-body .shopping-bag-icon,
@@ -235,12 +243,28 @@
     height: 40px;
     padding: 10px;
   }
+  .product-price{
+    font-size: 14px;
+  }
+  .premium-products-section .product-cart-wrapper{
+    padding: 15px 0px;
+  }
+  .premium-products-section .big .product-card-title{
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  .banner-img-section{
+    padding: 30px 0px 30px;
+  }
+  .RecentSearch-section{
+    padding: 30px 0px 30px;
+  }
 }
 @media (max-width: 991px) {
   .dental-product-section .card-body .shopping-bag-icon,
   .search-product-card .card-body .shopping-bag-icon {
-    width: 20%;
-    padding: 11px;
+    /* width: 20%; */
+    padding: 9px;
   }
   .contact-link-section .row {
     padding: 12px 0px;
@@ -251,11 +275,16 @@
   .contact-content-wrapper {
     gap: 10px;
   }
+  .premium-products-section .big .product-card-title{
+    font-size: 16px;
+  }
 }
 .category-content-wrapper .card-img-top,
-.dental-product-section .card-img-top,
-.search-product-card .card-img-top{
+.dental-product-section .card-img-top{
   padding: 30px 10px 20px;
+}
+.search-product-card .card-img-top{
+  padding: 20px 10px 15px;
 }
 /* .card-img-top {
   padding: 30px 30px 5px;
@@ -366,28 +395,35 @@
   .contact-link-section-content h2 {
     font-size: 15px;
   }
+  .dental-product-section .card-img-top{
+    padding: 10px 0px 0px;
+  }
 }
 @media (max-width: 991px) {
   .dental-product-section .row .col-6:nth-child(7),
   .dental-product-section .row .col-6:nth-child(8) {
     display: none;
   }
+  .product-filter-category-list{
+    margin: 15px auto;
+  }
 }
 @media (max-width: 768px) {
   .product-filter-category-list .product-category {
     padding: 0px 10px;
+    margin: 8px 0px;
   }
   .product-filter-category-list {
     padding-left: 0rem;
-    margin: 18px auto;
+    margin: 10px auto;
   }
   /* .dental-product-section .row{
         gap:30px;
     } */
   .dental-product-section .card-body .shopping-bag-icon,
   .search-product-card .card-body .shopping-bag-icon {
-    width: 20%;
-    padding: 12px;
+    /* width: 20%; */
+    padding: 8px;
   }
   .contact-content-wrapper {
     display: block !important;
@@ -444,10 +480,25 @@
     font-size: 34px;
   }
   .premium-products-section .shopping-bag-icon{
-    padding: 10px;
+    padding: 6px;
+    width: 32px;
+    height: 32px;
   }
+  
+  .premium-products-section .product-card-wrapper .product-card-title{
+    font-size: 13px;
+  }
+ .premium-products-section .big .product-price{
+  font-size: 20px;
+ }
+ .premium-products-section .product-cart-wrapper .heart-icon{
+  padding: 8px;
+ }
   .premium-products-section .card .product-img{
-    padding: 30px 0px;
+    padding: 5px 5px;
+  }
+  .grid-item .product-card-wrapper{
+    padding: 5px 5px;
   }
 }
 @media (max-width: 991px) {
@@ -455,7 +506,7 @@
     font-size: 15px;
   }
   .category-subtitle {
-    font-size: 32px;
+    font-size: 30px;
   }
   /* .RecentSearch-section .row .col-lg-3{
         padding-right: 0px ;
@@ -464,12 +515,16 @@
   .RecentSearch-section .card-img-top {
     padding: 30px 10px 5px;
   }
-  .RecentSearch-section .card-body .shopping-bag-icon {
-    padding: 9px;
-    width: 25%;
+  .premium-products-section .shopping-bag-icon{
+    width: 38px;
+    height: 38px;
+    padding: 8px;
   }
   .disposable-swiper .card-body .shopping-bag-icon{
-    width: 18% !important;
+    /* width: 18% !important; */
+    width:35px !important;
+    height: 35px;
+    padding: 7px;
   }
   .Otherbanner-section .col-lg-4 {
     margin-bottom: 25px;
@@ -480,25 +535,34 @@
   .dental-product-section {
     padding: 25px 0px 35px;
   }
-  .banner-img-section {
+  /* .banner-img-section {
     padding: 48px 0px 36px;
+  } */
+  .banner-img-section{
+    padding: 25px 0px 20px;
+  }
+  .RecentSearch-section{
+    padding: 25px 0px 25px;
   }
   .category-section {
-    padding: 34px 0px 38px;
+    padding: 34px 0px 40px;
   }
   .Otherbanner-section {
     padding: 45px 0px 35px;
   }
   .RecentSearch-section{
-    padding: 36px 0px 30px;
+    padding: 0px 0px 30px;
   }
   .other-banner-img{
     display: flex;
     margin: auto;
     justify-content: center;
   }
+  .premium-products-section .card .product-img{
+    padding: 20px 8px;
+  }
   .premium-products-section .grid-container{
-    grid-template-columns: repeat(4,1fr);
+    grid-template-columns: repeat(3,1fr);
   }
   .product-cart-wrapper{
     padding: 10px 0px;
@@ -513,8 +577,10 @@
 }
 @media (max-width: 768px) {
   .RecentSearch-section .card-body .shopping-bag-icon {
-    width: 20%;
-    padding: 12px;
+    /* width: 20%; */
+    width: 38px;
+    height: 35px;
+    padding: 8px 8px 7px;
   }
  
   .dental-product-section {
@@ -535,6 +601,9 @@
   .RecentSearch-section{
     padding: 16px 0px 10px;
   }
+  .RecentSearch-section .card-img-top{
+    padding: 15px 10px 5px;
+  }
   .premium-products-section .grid-container{
     grid-template-columns: repeat(2,1fr);
   }
@@ -542,10 +611,17 @@
     padding: 20px 0px;
   }
   .premium-products-section .shopping-bag-icon{
-    padding: 10px;
-    width: 18%;
+    padding: 9px;
+    width: 40px;
+    height: 40px;
+    /* width: 18%; */
   }
-
+  .premium-products-section .product-card-wrapper{
+    height: 100% !important;
+  }
+  .premium-products-section .product-card-wrapper .product-card-title{
+    font-size: 15px;
+  }
   .grid-container .grid-item:nth-child(5),
   .grid-container .grid-item:nth-child(6),
   .grid-container .grid-item:nth-child(7),
@@ -556,7 +632,11 @@
     display: none;
   } 
   .category-subtitle{
-    font-size: 28px;
+    font-size: 26px;
+  }
+  .premium-products-section .section-title{
+    font-size: 26px !important;
+    margin-bottom: 0px;
   }
   /* .grid-container:nth-child(5) .card,
   .grid-container:nth-child(6) .card,
@@ -627,8 +707,11 @@
     display: none;
   }
   .category-section .swiper{
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 15px;
+    padding-bottom: 25px;
+  }
+  .categorySwiper .swiper-wrapper{
+    justify-content: start !important;
   }
   .category-section .swiper-horizontal > .swiper-pagination-bullets, .swiper-pagination-bullets.swiper-pagination-horizontal{
     bottom: var(--swiper-pagination-bottom, -5px);

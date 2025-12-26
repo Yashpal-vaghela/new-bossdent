@@ -549,7 +549,7 @@ export const Product = () => {
                             <div className="d-flex justify-content-between align-items-center">
                               <div className="product-content-wrapper">
                                 <span className="product-price card-text">
-                                  ₹&nbsp;
+                                  ₹
                                   {product?.regular_price !== null &&
                                   product?.regular_price !== product?.price ? (
                                     <>
@@ -557,7 +557,7 @@ export const Product = () => {
                                       {`${lowerPrice}.00`}
                                     </>
                                   ) : (
-                                    <>{`${Number(product?.price)}.00`}</>
+                                    <>&nbsp;{`${Number(product?.price)}.00`}</>
                                   )}
                                 </span>
 

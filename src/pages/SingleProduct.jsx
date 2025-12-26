@@ -39,7 +39,7 @@ const SingleProduct = () => {
   const [apiloading, setApiLoading] = useState(false);
   const validateUser = useValidateUser();
   const navigate = useNavigate();
-  
+
   const a =
     cartData.length !== 0
       ? cartData?.items.map((i) => {
@@ -90,7 +90,11 @@ const SingleProduct = () => {
     { img: "/img/singleProduct-img3.png" },
   ];
 
+  const handleShowQuantity = () => {
+    setShowQuantity([]);
+  };
   const handleQuantity = (e, id, action, item) => {
+    // console.log("acvtion", action);
     // const AlreadyExistData = cartData.items.filter((i, index) => {
     //   return i?.variation_id !== 0
     //     ? typeof id === "object"
@@ -132,6 +136,7 @@ const SingleProduct = () => {
       }
     } else {
       const filterData = singleProduct?.id === id;
+      // console.log("sing", singleProduct);
       setShowQuantity(filterData);
       const currentQty = quantity[id] || 1;
       setQuantity({ ...quantity, [id]: currentQty });
@@ -175,6 +180,7 @@ const SingleProduct = () => {
           const updatedShowQuantity = showQuantity.filter(
             (item) => item.id !== id
           );
+          // console.log("up", updatedShowQuantity);
           setShowQuantity(updatedShowQuantity);
           // handleAddToCart(singleproduct, item,{ ...quantity, [id]: currentQty },item?.attributes);
           const newQuantities = { ...quantity };
@@ -223,48 +229,49 @@ const SingleProduct = () => {
       validateUser();
     } else {
       const AlreadyExistingdata = cartData?.items?.filter((i, index) => {
-        console.log("i",i?.variation_id,i?.product_id)
+        // console.log("i", i?.variation_id, i?.product_id);
         return i?.variation_id !== 0
           ? (typeof id === "object"
               ? i?.variation_id === id?.id
               : i?.variation_id === id) && i?.product_id === singleproduct?.id
           : i?.product_id === singleproduct?.id;
       });
-       console.log("ass",AlreadyExistingdata)
+      // console.log("ass", AlreadyExistingdata, qty[id]);
       if (AlreadyExistingdata.length > 0) {
         const payload = {
           cart_id: AlreadyExistingdata[0]?.cart_id,
           quantity:
             typeof id === "object"
               ? qty[id?.id]
+              : qty[id]
+              ? qty[id]
               : AlreadyExistingdata[0]?.quantity + 1,
         };
-        console.log(
-          "payload",
-          payload,
-          qty,
-          id?.id,
-          AlreadyExistingdata[0].quantity
-        );
+        // console.log(
+        //   "payload",
+        //   payload,
+        //   qty,
+        //   id?.id,
+        //   AlreadyExistingdata[0].quantity
+        // );
         handleEditApi(payload);
       } else {
-        // const payload = {
-        //   product_id: singleProduct?.id,
-        //   variation_id: typeof id === "object" ? id?.id : id,
-        //   quantity: typeof id === "object" ? qty[id?.id] : qty[id],
-        // };
-        console.warn("finalAddtoCart",id, qty);
-        // handleAddApi(payload);
+        const payload = {
+          product_id: singleProduct?.id,
+          variation_id: typeof id === "object" ? id?.id : id,
+          quantity: typeof id === "object" ? qty[id?.id] : qty[id],
+        };
+        // console.warn("finalAddtoCart", id, qty);
+        handleAddApi(payload);
       }
-      if(action === "/checkout"){
+      if (action === "/checkout") {
         navigate(`${action}`);
-        if(cartData?.items?.length === 0){
-          toast.error("Your cart is empty!")
+        if (cartData?.items?.length === 0) {
+          toast.error("Your cart is empty!");
         }
       }
     }
-    
-    console.log("sin",singleProduct,id,qty,selectattributes,action)
+    // console.log("sin", singleProduct, id, qty, selectattributes, action);
   };
 
   const handleWishlist = async (e, product) => {
@@ -294,7 +301,7 @@ const SingleProduct = () => {
             const updatedWishlist = wishlistId1.filter(
               (id) => id !== product?.id
             );
-            toast.success("Product removed from watchlist successfully.");
+            toast.success("Product removed from wishlist successfully.");
             dispatch(AddToWishlist([]));
             dispatch(wishlistId(updatedWishlist));
             dispatch(WishlistCounter(res.data.wishlist_count));
@@ -415,13 +422,13 @@ const SingleProduct = () => {
         }
       }
     }
-    if(variation === "/checkout"){
+    if (variation === "/checkout") {
       navigate(`${variation}`);
-      if(cartData?.items?.length === 0){
-        toast.error("Your cart is empty!")
+      if (cartData?.items?.length === 0) {
+        toast.error("Your cart is empty!");
       }
     }
-    console.log("variat",variation,action)
+    // console.log("variat", variation, action);
   };
 
   const handleEditApi = async (payload) => {
@@ -667,14 +674,20 @@ const SingleProduct = () => {
                             ></img>
                           </div>
 
-                
                           <div className="singleProduct-info-wrapper">
                             <button
                               className="btn btn-buyNow mt-3 w-100"
-                              onClick={(e)=>{
-                                 navigate("/checkout");
-                                  //  (e,product,selectedVariation,quantity,"/checkout")
-                                handleAddToCart(e,singleProduct,singleProduct?.id,quantity,"/checkout")}}
+                              onClick={(e) => {
+                                navigate("/checkout");
+                                //  (e,product,selectedVariation,quantity,"/checkout")
+                                handleAddToCart(
+                                  e,
+                                  singleProduct,
+                                  singleProduct?.id,
+                                  quantity,
+                                  "/checkout"
+                                );
+                              }}
                             >
                               Buy Now
                             </button>
@@ -733,64 +746,73 @@ const SingleProduct = () => {
                                 }`}
                               >
                                 <p className="text-end mb-0">
-                                  {Object.keys(item?.attributes)[0]}:{" "}
-                                  <b>{Object.values(item?.attributes)[0]}</b>
+                                  {Object.keys(item?.attributes)[0].replace(
+                                    /pa_|attribute_/,
+                                    ""
+                                  )}
+                                  : <b>{Object.values(item?.attributes)[0]}</b>
                                 </p>
                                 &nbsp;
                               </div>
-                              {showQuantity.some((i) => i.id === item?.id) ? (
+                              {Array.isArray(showQuantity) && (
                                 <>
-                                  <div className="singleProduct-quantity vari">
+                                  {showQuantity.some(
+                                    (i) => i.id === item?.id
+                                  ) ? (
+                                    <>
+                                      <div className="singleProduct-quantity vari">
+                                        <button
+                                          onClick={(e) =>
+                                            handleUpdateqty(
+                                              e,
+                                              "MINUS",
+                                              item?.id,
+                                              singleProduct,
+                                              item
+                                            )
+                                          }
+                                        >
+                                          -
+                                        </button>
+                                        <span>{quantity[item?.id] || 1}</span>
+                                        <button
+                                          onClick={(e) =>
+                                            handleUpdateqty(
+                                              e,
+                                              "PLUS",
+                                              item?.id,
+                                              singleProduct,
+                                              item
+                                            )
+                                          }
+                                        >
+                                          +
+                                        </button>
+                                      </div>
+                                    </>
+                                  ) : (
                                     <button
+                                      className="btn btn-addToCart me-0 ms-auto d-flex align-items-center justify-content-between"
                                       onClick={(e) =>
-                                        handleUpdateqty(
+                                        handleQuantity(
                                           e,
-                                          "MINUS",
                                           item?.id,
-                                          singleProduct,
+                                          "variation",
                                           item
                                         )
                                       }
                                     >
-                                      -
+                                      Add To Cart
+                                      <div className="cart-icon">
+                                        <img
+                                          src="/img/cart-icon.svg"
+                                          className="img-fluid"
+                                          alt="cart-icon"
+                                        />
+                                      </div>
                                     </button>
-                                    <span>{quantity[item?.id] || 1}</span>
-                                    <button
-                                      onClick={(e) =>
-                                        handleUpdateqty(
-                                          e,
-                                          "PLUS",
-                                          item?.id,
-                                          singleProduct,
-                                          item
-                                        )
-                                      }
-                                    >
-                                      +
-                                    </button>
-                                  </div>
+                                  )}
                                 </>
-                              ) : (
-                                <button
-                                  className="btn btn-addToCart me-0 ms-auto d-flex align-items-center justify-content-between"
-                                  onClick={(e) =>
-                                    handleQuantity(
-                                      e,
-                                      item?.id,
-                                      "variation",
-                                      item
-                                    )
-                                  }
-                                >
-                                  Add To Cart
-                                  <div className="cart-icon">
-                                    <img
-                                      src="/img/cart-icon.svg"
-                                      className="img-fluid"
-                                      alt="cart-icon"
-                                    />
-                                  </div>
-                                </button>
                               )}
                             </div>
                             <p>
@@ -826,10 +848,7 @@ const SingleProduct = () => {
                               <p>
                                 Pack Size:{" "}
                                 <b>
-                                  {singleProduct?.short_description.replace(
-                                    /<\/?p>/g,
-                                    ""
-                                  )}
+                                  {singleProduct?.short_description.replace(/<\/?p>/g, "")}
                                 </b>
                               </p>
                             )}
@@ -850,16 +869,12 @@ const SingleProduct = () => {
                                 <>
                                   <b className="text-decoration-line-through">
                                     ₹
-                                    {Number(
-                                      singleProduct?.regular_price
-                                    ).toFixed(2)}
+                                    {Number(singleProduct?.regular_price).toFixed(2)}
                                   </b>
                                   &nbsp;
                                   <b className="fw-bold">
                                     ₹
-                                    {Number(singleProduct?.sale_price).toFixed(
-                                      2
-                                    )}
+                                    {Number(singleProduct?.sale_price).toFixed(2)}
                                   </b>
                                 </>
                               ) : (
@@ -990,6 +1005,7 @@ const SingleProduct = () => {
             wishlistId1={wishlistId1}
             handleQuantity={handleQuantity}
             handleAddToCartModal={handleAddToCartModal}
+            handleShowQuantity={handleShowQuantity}
           ></RelatedProducts>
         </>
       )}

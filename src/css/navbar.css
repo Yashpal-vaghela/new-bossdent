@@ -116,6 +116,7 @@ body {
 }
 .social-link-wrapper .user-icon {
   padding: 0px 0px 0px 8px;
+  cursor: pointer;
 }
 /* .social-link-wrapper img {
   width: 45.5%;

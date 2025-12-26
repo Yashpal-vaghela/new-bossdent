@@ -9,6 +9,7 @@ import { AddToOrder } from "../redux/orderSlice";
 import { ProfileSideBar } from "../component/ProfileSideBar";
 import Loader1 from "../component/Loader1";
 import useValidateUser from "../component/useValidateUser";
+import Loader2 from "../component/Loader2";
 
 const Profile = () => {
   // const loginData1 = useSelector((state)=>state.user);
@@ -62,6 +63,7 @@ const Profile = () => {
     //   // localStorage.removeItem("auth_token");
     //   navigate("/login");
     // }
+    window.scrollTo({ top: 0, behavior: "smooth" });
     handlefetchOrderData(controller);
     setStates(Indian_states_cities_list?.STATES_OBJECT);
     return ()=>{
@@ -85,8 +87,9 @@ const Profile = () => {
         </div>
       </section>
       <section className="profile-section">
+        {/* {loading && <Loader2></Loader2>} */}
         {loading ? (
-          <Loader1></Loader1>
+          <Loader2></Loader2>
         ) : (
           <>
             <div className="container">

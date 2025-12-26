@@ -6,7 +6,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Link } from "react-router-dom";
 
-export const RelatedProducts = ({relatedproducts,handleWishlist,wishlistId1,handleQuantity,handleAddToCartModal}) => {
+export const RelatedProducts = ({relatedproducts,handleWishlist,wishlistId1,handleQuantity,handleAddToCartModal,handleShowQuantity}) => {
   const swiperRef = useRef(null);
 
   return (
@@ -16,8 +16,8 @@ export const RelatedProducts = ({relatedproducts,handleWishlist,wishlistId1,hand
         <Swiper
           spaceBetween={18}
           slidesPerView={1}
-        //   autoplay={{delay:3000,disableOnInteraction:false}}
-          autoplay="false"
+          autoplay={{delay:3000,disableOnInteraction:false}}
+          // autoplay="false"
           loop={true}
           pagination={{ clickable: true }}
           navigation={true}
@@ -51,7 +51,7 @@ export const RelatedProducts = ({relatedproducts,handleWishlist,wishlistId1,hand
                       }
                     </div>
                     
-                    <Link to={`/products/${item?.slug}`}>
+                    <Link to={`/products/${item?.slug}`} onClick={handleShowQuantity}>
                       <img
                         src={item?.image}
                         className="img-fluid related-product-img mb-3"
