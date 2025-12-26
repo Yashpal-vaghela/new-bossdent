@@ -44,6 +44,8 @@ const DisposableProducts = ({ token, getCartData, dispatch }) => {
   ) => {
     if (token === "null" || !token) {
       validateUser();
+      toast.error("Please login to product add to cart!")
+      // toast.error("Please login to add product to wishlist!")
     } else {
       const AlreadyExistsData = getCartData?.items?.filter((i) => {
         return i?.variation_id !== 0

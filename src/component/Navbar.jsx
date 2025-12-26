@@ -18,7 +18,6 @@ const Navbar = () => {
   const cartTotal = useSelector((state) => state.cart.cartTotal);
   const token = useSelector((state) => state.auth.token);
   const wishlistCounter = useSelector((state) => state.wishlist.wishlistCount);
-  const cartCounter1 = useSelector((state) => state.wishlist);
   // const [token,setToken] = useState(localStorage.getItem("auth_token"));
   const text = "* Free shipping on order above 2300 *";
   const dispatch = useDispatch();

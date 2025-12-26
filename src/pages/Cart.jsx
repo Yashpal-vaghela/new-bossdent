@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -82,6 +82,7 @@ const Cart = () => {
   const handleUpdateQty = async (e, product, action) => {
     if (token === "null" || !token) {
       validateUser();
+      toast.error("Please login to product update qty!")
     } else {
       setloading(true);
 
@@ -123,6 +124,9 @@ const Cart = () => {
       }
     }
   };
+  useEffect(()=>{
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  },[])
 
   return (
     <div className="home-main cart-main">

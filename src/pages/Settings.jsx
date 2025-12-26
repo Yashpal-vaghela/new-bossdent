@@ -56,6 +56,7 @@ export const Settings = () => {
   });
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setStates(Indian_states_cities_list?.STATES_OBJECT);
   }, []);
   return (

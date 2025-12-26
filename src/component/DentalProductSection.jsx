@@ -38,6 +38,7 @@ export const DentalProductSection = ({
     // console.log("add",e,product)
     if (token === "null" || !token) {
       validateUser();
+      toast.error("Please login to product add to cart!")
     } else {
       const filterCartData = getCartData?.items.filter(
         (i) => i?.product_id === product?.id

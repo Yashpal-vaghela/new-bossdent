@@ -225,8 +225,9 @@ const SingleProduct = () => {
     selectattributes,
     action
   ) => {
-    if (!token) {
+    if (token === "null" || !token) {
       validateUser();
+      toast.error("Please login to product add to cart!");
     } else {
       const AlreadyExistingdata = cartData?.items?.filter((i, index) => {
         // console.log("i", i?.variation_id, i?.product_id);
@@ -277,6 +278,7 @@ const SingleProduct = () => {
   const handleWishlist = async (e, product) => {
     if (token === "null" || !token) {
       validateUser();
+      toast.error("Please login to add product to wishlist!")
     } else {
       const filterWishlistData = wishListData?.filter(
         (i) => i?.product_id === product?.id
@@ -357,6 +359,7 @@ const SingleProduct = () => {
   ) => {
     if (token === "null" || !token) {
       validateUser();
+      toast.error("Please login to product add to cart!");
     } else {
       const AlreadyExistsData = cartData?.items?.filter((i) => {
         return i?.variation_id !== 0

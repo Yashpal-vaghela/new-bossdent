@@ -37,7 +37,7 @@ export const Success = () => {
       fetchPaymentCallBack(controller);
     }
     return () => controller.abort();
-  }, [paymentStatus]);
+  }, []);
   return (
     <div className="home-main pt-4">
       <section className="checkout-success-wrapper ">

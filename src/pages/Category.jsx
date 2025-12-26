@@ -13,6 +13,7 @@ const Category = () => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
         const fetchCategoryProducts = async() => {
             try {
                 setLoading(true);

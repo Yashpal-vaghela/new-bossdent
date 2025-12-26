@@ -112,6 +112,7 @@ export const Product = () => {
 
   useEffect(() => {
     const controller = new AbortController();
+    window.scrollTo({ top: 0, behavior: "smooth" });
     fetchProductData(controller);
     return () => controller.abort();
   }, [currentPage, searchParams, sortOrder]);
@@ -180,6 +181,7 @@ export const Product = () => {
   ) => {
     if (token === "null" || !token) {
       validateUser();
+      toast.error("Please login to product add to cart!");
     } else {
       const AlreadyExistsData = cart?.items?.filter((i) => {
         return i?.variation_id !== 0
@@ -290,13 +292,13 @@ export const Product = () => {
                     : selectedAttributes?.id,
                 quantity: quantity,
               };
-              console.warn(
-                "addtocartData api call",
-                payload,
-                "select",
-                selectedAttributes,
-                product?.variations
-              );
+              // console.warn(
+              //   "addtocartData api call",
+              //   payload,
+              //   "select",
+              //   selectedAttributes,
+              //   product?.variations
+              // );
               setApiLoading(true);
               // setLoading(true);
               try {
@@ -342,6 +344,7 @@ export const Product = () => {
   const handleAddToWishList = async (e, product) => {
     if (token === "null" || !token) {
       validateUser();
+      toast.error("Please login to add product to wishlist!")
     } else {
       const FilterCartdata = wishlistData?.filter(
         (i) => i?.product_id === product?.id

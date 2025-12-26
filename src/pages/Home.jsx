@@ -53,6 +53,7 @@ const Home = () => {
   };
   useEffect(() => {
     const controller = new AbortController();
+    window.scrollTo({ top: 0, behavior: "smooth" });
     fetchProducts(controller);
     return () => controller.abort();
   }, []);

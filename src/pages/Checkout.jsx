@@ -58,7 +58,7 @@ export const Checkout = () => {
         validateOnChange:true,
         validateOnBlur:false,
         onSubmit: async ()=>{
-          console.log("formik",formik?.values);
+          // console.log("formik",formik?.values);
             if(formik?.values.payment_method && formik?.values){
               try{
                 // setLoading(true);  
@@ -394,7 +394,9 @@ export const Checkout = () => {
                 {formik?.errors?.payment_method && (
                     <p className="text-danger my-1 my-lg-0 my-xl-1">{formik?.errors?.payment_method}</p>
                 )}
-                <button className="btn btn-checkout"  onClick={()=>formik.handleSubmit()}>Proceed to payment</button>
+                <button className="btn btn-checkout"  onClick={()=>formik.handleSubmit()}>
+                  {formik?.values?.payment_method === "COD" ? "Place Order": "Proceed to payment"}
+                  </button>
               </div>
             </div>
           </div>

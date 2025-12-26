@@ -49,6 +49,7 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
   ) => {
     if (token === "null" || !token) {
       validateUser();
+      toast.error("Please login to add to cart product!")
     } else {
       const AlreadyExistsData = getCartData?.items?.filter((i) => {
         return i?.variation_id !== 0
@@ -188,6 +189,7 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
   const handleAddToWishlist = async (e, product) => {
     if (token === "null" || !token) {
       validateUser();
+      toast.error("Please login to add product to wishlist!")
     } else {
       const FilterCartData = wishlistData?.filter(
         (i) => i?.product_id === product?.id

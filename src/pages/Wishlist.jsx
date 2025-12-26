@@ -52,6 +52,7 @@ const Wishlist = () => {
         }
       )
       .then((res) => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
         console.log("res", res.data);
         const updatedWishlist = wishlistId1.filter(
           (id) => id !== product?.product_id
@@ -90,6 +91,7 @@ const Wishlist = () => {
         const filterData = wishlistData?.filter(
           (i) => i.product_id !== product?.product_id
         );
+        window.scrollTo({ top: 0, behavior: "smooth" });
         setApiLoading(false);
         dispatch(AddToWishlist(filterData));
         dispatch(wishlistId(updatedWishlist));
@@ -100,7 +102,7 @@ const Wishlist = () => {
   const handleAddToCart = async (e, product, selectedAttributes, qty) => {
     if (token === "null" || !token) {
       validateUser();
-      // toast.error("Please login to add product to wishlist!");
+      toast.error("Please login to product add to cart!");
     } else {
       // console.log("addtoCart",product,"cartData",cartData);
       const filterwishlist = wishlistData?.filter(
@@ -230,6 +232,7 @@ const Wishlist = () => {
   };
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setTimeout(() => {
       setloading(false);
     }, 2000);
