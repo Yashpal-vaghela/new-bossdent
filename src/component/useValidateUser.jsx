@@ -6,8 +6,9 @@ const useValidateUser = () => {
     const location = useLocation();
 
     const validateUser = () =>{
-        toast.error("Please login to add product to wishlist!");
+        
         setTimeout(() => {
+            // toast.error("Please login to add product to wishlist!");
             const modal = document.getElementById("exampleModal");
             if (modal) {
                 modal.classList.add("show");
@@ -25,7 +26,7 @@ const useValidateUser = () => {
             }
             // navigate(`/${location.pathname}`,{ state: { from: location.pathname } })
             // navigate("/");
-        }, 2000);
+        }, 1000);
     }
     return validateUser;
 }
