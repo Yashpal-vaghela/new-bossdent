@@ -1,9 +1,9 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import BASE_URL from "../api/config";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"; 
+import "react-toastify/dist/ReactToastify.css";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCart } from "../redux/cartSlice";
 import { fetchWishList } from "../redux/wishlistSlice";
@@ -16,9 +16,9 @@ const LoginDialogBox = () => {
   const [time, setTime] = useState(60);
   const [showResend, setShowResend] = useState(false);
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const location  = useLocation();
+  const location = useLocation();
   const navigate = useNavigate();
-  const token = useSelector((state)=>state.auth.token);
+  const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
 
   const handleRequestOTP = async (e, action) => {
@@ -27,27 +27,31 @@ const LoginDialogBox = () => {
         setStep(2);
         setTime(60);
         setShowResend(false);
-        await axios.post(`${BASE_URL}/login/request-otp`, formvalue,{
-            headers:{
-              "Content-Type":"application/json",
-              "Authorization":"Basic ODA3M2FiM2JjODo3ZTlmNTFlZDc5YjIxMTlmYTJmZA=="
-            }
+        await axios
+          .post(`${BASE_URL}/login/request-otp`, formvalue, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization:
+                "Basic ODA3M2FiM2JjODo3ZTlmNTFlZDc5YjIxMTlmYTJmZA==",
+            },
           })
-          .then((response) =>{
+          .then((response) => {
             console.log("response", response);
           })
           .catch((err) => console.log("err", err));
       } else {
-        await axios.post(`${BASE_URL}/login/resend-otp`,formvalue,{
-          headers:{
-            "Content-Type":"application/json",
-            "Authorization":"Basic ODA3M2FiM2JjODo3ZTlmNTFlZDc5YjIxMTlmYTJmZA=="
-          }
-        })
-        .then((res)=>console.log("res",res))
-        .catch((err)=>console.error("error",err))
+        await axios
+          .post(`${BASE_URL}/login/resend-otp`, formvalue, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization:
+                "Basic ODA3M2FiM2JjODo3ZTlmNTFlZDc5YjIxMTlmYTJmZA==",
+            },
+          })
+          .then((res) => console.log("res", res))
+          .catch((err) => console.error("error", err));
       }
-    } else{
+    } else {
       toast.error("please enter phone number");
       return;
     }
@@ -56,8 +60,8 @@ const LoginDialogBox = () => {
     const { name } = e?.target;
     const value = e.target.value.replace(/\D/g, "");
     // setformValue({ [name]: value });
-    if(value.length <= 10){
-      setformValue({[name]:value})
+    if (value.length <= 10) {
+      setformValue({ [name]: value });
     }
   };
 
@@ -128,7 +132,7 @@ const LoginDialogBox = () => {
           phone_number: formvalue.phone_number,
           otp: finalOtp,
         });
-        localStorage.setItem("auth_token",JSON.stringify(res.data.token));
+        localStorage.setItem("auth_token", JSON.stringify(res.data.token));
         document.querySelector("#exampleModal .btn-close").click();
         setTimeout(() => {
           setStep(1);
@@ -142,7 +146,7 @@ const LoginDialogBox = () => {
         // const modalElement = document.querySelectorAll(".modal");
         const modal = document.getElementById("exampleModal");
         const isModalOpen = modal && modal.classList.contains("show");
-        if(isModalOpen){
+        if (isModalOpen) {
           modal.classList.remove("show");
           modal.style.display = "none";
           document.querySelector(".modal-backdrop")?.remove();
@@ -150,13 +154,13 @@ const LoginDialogBox = () => {
           document.body.style.overflow = "";
           document.body.style.paddingRight = "";
         }
-          
+
         // navigate("/profile");
         toast.success("OTP verified successfully!");
         const controller = new AbortController();
-        dispatch(fetchCart(undefined,{signal:controller.signal}));
+        dispatch(fetchCart(undefined, { signal: controller.signal }));
         dispatch(fetchWishList(undefined, { signal: controller.signal }));
-        dispatch(fetchUser(undefined,{signal: controller.signal}))
+        dispatch(fetchUser(undefined, { signal: controller.signal }));
         dispatch(AddToken(res.data.token));
         return () => {
           controller.abort(); // cleanup on unmount
@@ -167,6 +171,13 @@ const LoginDialogBox = () => {
       }
     }
   };
+const modalRef = useRef(null);
+  const handleClose = () => {
+      const modal =
+    window.bootstrap.Modal.getInstance(modalRef.current) ||
+    new window.bootstrap.Modal(modalRef.current);
+  modal.hide();
+  };
   return (
     <div
       className="modal fade"
@@ -176,6 +187,7 @@ const LoginDialogBox = () => {
       // aria-hidden="true"
       // data-bs-backdrop="static"
       data-bs-keyboard="false"
+      ref={modalRef}
     >
       <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
@@ -183,8 +195,9 @@ const LoginDialogBox = () => {
             <button
               type="button"
               className="btn-close"
-              data-bs-dismiss="modal"
+              // data-bs-dismiss="modal"
               aria-label="Close"
+              onClick={handleClose}
             ></button>
           </div>
           <div className="modal-body">

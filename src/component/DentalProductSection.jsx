@@ -6,6 +6,7 @@ import BASE_URL from "../api/config";
 import { toast } from "react-toastify";
 import { AddToCart } from "../redux/cartSlice";
 import Loader2 from "./Loader2";
+import useValidateUser from "./useValidateUser";
 
 export const DentalProductSection = ({
   getCartData,
@@ -19,6 +20,7 @@ export const DentalProductSection = ({
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [apiloading, setApiLoading] = useState(false);
   const visibleCategories = showAll ? categories : categories.slice(0, 5);
+  const validateUser = useValidateUser();
   const handleCategoryClick = (slug) => {
     const controller = new AbortController();
     setSelectedCategory(slug);
@@ -34,59 +36,63 @@ export const DentalProductSection = ({
   };
   const handleAddToCart = async (e, product) => {
     // console.log("add",e,product)
-    const filterCartData = getCartData?.items.filter(
-      (i) => i?.product_id === product?.id
-    );
-    if (filterCartData.length > 0) {
-      const payload = {
-        cart_id: filterCartData[0]?.cart_id,
-        quantity: Number(filterCartData[0].quantity) + 1,
-      };
-      setApiLoading(true);
-      await axios
-        .post(`${BASE_URL}/update-cart`, payload, {
-          headers: {
-            Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
-            "Content-Type": "application/json",
-          },
-        })
-        .then((res) => {
-          setApiLoading(false);
-          // console.log("res",res.data);
-          toast.success("Product updated in cart successfully!");
-          dispatch(AddToCart({ ...res.data, items: res.data.items }));
-        })
-        .catch((err) => {
-          console.log("err", err);
-        });
+    if (token === "null" || !token) {
+      validateUser();
     } else {
-      const payload = {
-        product_id: product?.id,
-        variation_id: 0,
-        quantity: 1,
-      };
-      setApiLoading(true);
-      await axios
-        .post(`${BASE_URL}/new-add-to-cart`, payload, {
-          headers: {
-            Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
-            "Content-Type": "application/json",
-          },
-        })
-        .then((res) => {
-          setApiLoading(false);
-          // console.log("res",res.data,getCartData);
-          toast.success("Product added to cart successfully!");
-          dispatch(
-            AddToCart({
-              ...res.data,
-              items: [...getCartData.items, res.data?.data],
-            })
-          );
-        })
-        .catch((err) => {
-          console.log("err", err);
-        });
+      const filterCartData = getCartData?.items.filter(
+        (i) => i?.product_id === product?.id
+      );
+      if (filterCartData.length > 0) {
+        const payload = {
+          cart_id: filterCartData[0]?.cart_id,
+          quantity: Number(filterCartData[0].quantity) + 1,
+        };
+        setApiLoading(true);
+        await axios
+          .post(`${BASE_URL}/update-cart`, payload, {
+            headers: {
+              Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
+              "Content-Type": "application/json",
+            },
+          })
+          .then((res) => {
+            setApiLoading(false);
+            // console.log("res",res.data);
+            toast.success("Product updated in cart successfully!");
+            dispatch(AddToCart({ ...res.data, items: res.data.items }));
+          })
+          .catch((err) => {
+            console.log("err", err);
+          });
+      } else {
+        const payload = {
+          product_id: product?.id,
+          variation_id: 0,
+          quantity: 1,
+        };
+        setApiLoading(true);
+        await axios
+          .post(`${BASE_URL}/new-add-to-cart`, payload, {
+            headers: {
+              Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
+              "Content-Type": "application/json",
+            },
+          })
+          .then((res) => {
+            setApiLoading(false);
+            // console.log("res",res.data,getCartData);
+            toast.success("Product added to cart successfully!");
+            dispatch(
+              AddToCart({
+                ...res.data,
+                items: [...getCartData.items, res.data?.data],
+              })
+            );
+          })
+          .catch((err) => {
+            console.log("err", err);
+          });
+      }
     }
   };
 
