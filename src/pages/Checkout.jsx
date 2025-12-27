@@ -91,7 +91,7 @@ export const Checkout = () => {
                     });
                     if(!paymentResponse.ok){
                       const paymentErrorText = await paymentResponse.text();
-                      throw new Error("Failed to initiate payment.");
+                      throw new Error("Failed to initiate payment.", paymentErrorText);
                     }
 
                    
@@ -102,7 +102,7 @@ export const Checkout = () => {
                       // console.log("payment",paymentData);
                       const paymentUrl = paymentData.phonepe_response.data.instrumentResponse.redirectInfo.url;
                       // console.log("payment",paymentUrl,window)
-                      window.open(paymentUrl,"_blank");
+                      window.open(paymentUrl);
 
                       paymentIntervalRef.current = setInterval(()=>{
                         checkPaymentStatus(paymentData.phonepe_response.data.merchantId,paymentData.x_verify,paymentData.phonepe_response.data.merchantTransactionId,res.data.order_id);
