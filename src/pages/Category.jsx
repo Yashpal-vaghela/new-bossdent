@@ -2,15 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Link,useParams } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../api/config";
-import Loader1 from "../component/Loader1";
 import Loader2 from "../component/Loader2";
 
 const Category = () => {
     const { slug } = useParams();
     const [products, setProducts] = useState([]);
-    const [categoryName, setCategoryName] = useState("");
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -21,10 +18,8 @@ const Category = () => {
                 const data = response.data?.data || [];
 
                 setProducts(data);
-                setCategoryName(slug.replace("-", " ").toUpperCase());
             }catch (err){
                 console.error("Error fetching category products:", err);
-                setError("Failed to load category products.");
             }finally {
                 setLoading(false);
             }
@@ -53,7 +48,6 @@ const Category = () => {
         ) : (
           <>
             <section className="product-section">
-              {/* <AddToCartModal isOpen={showVariationModal} onClose={()=>setShowVariationModal(false)} product={selectedProductForModal} onAddToCart={handleAddToCartFromModal} variations={selectedProductForModal?.variation}></AddToCartModal> */}
               <div className="container">
                 <div className="product-category-content d-flex gap-5 my-4">
                   <select
@@ -65,10 +59,6 @@ const Category = () => {
                     <option>200</option>
                   </select>
                 </div>
-                {/* {loading ? (
-                  <Loader1></Loader1>
-                ) : (
-                )} */}
                 <div className="row justify-content-center gap-3 gap-sm-0 mb-5">
                   {products?.map((product, index) => {
                     const greaterPrice = Math.max(

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect} from "react";
 import "./App.css";
 import { Allrouters } from "./component/Allrouters";
 import Navbar from "./component/Navbar";
@@ -21,14 +21,12 @@ import { fetchCart } from "./redux/cartSlice";
 import { fetchWishList } from "./redux/wishlistSlice";
 import { fetchUser } from "./redux/userSlice";
 import { fetchCategories } from "./redux/categorySlice";
-import Loader1 from "./component/Loader1";
-import { Loader2 } from "./component/Loader2";
+import Loader2 from "./component/Loader2";
 
 function App() {
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.category.loading);
   const token = useSelector((state)=>state.auth.token);
-  // const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
   
   useEffect(() => {
     if (!token) return;
@@ -44,7 +42,6 @@ function App() {
   useEffect(() => {
     const controller = new AbortController();
     dispatch(fetchCategories(undefined, { signal: controller.signal }));
-    // console.log("categories",loading);
     return () => {
       controller.abort(); // cleanup on unmount
     };
@@ -56,7 +53,7 @@ function App() {
         <ToastContainer></ToastContainer>
         <Navbar></Navbar>
         {/* <Allrouters></Allrouters> */}
-        {loading ? <Loader1></Loader1> : <Allrouters></Allrouters>}
+        {loading ? <Loader2></Loader2> : <Allrouters></Allrouters>}
         <Footer></Footer>
       </BrowserRouter>
     </React.Fragment>

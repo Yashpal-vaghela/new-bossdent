@@ -12,7 +12,6 @@ export const Settings = () => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user.user);
   const token = useSelector((state)=>state.auth.token);
-  // const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
   const [States, setStates] = useState([]);
   const dispatch = useDispatch();
   const originalValues = {
@@ -145,19 +144,11 @@ export const Settings = () => {
                         name="phone_number"
                         placeholder="Enter Your Phone Number"
                         value={formik?.values?.phone_number}
-                        // onChange={formik?.handleChange}
                       ></input>
                     </div>
                   </div>
                   <div className="setting-profile-right w-50 mt-md-0 mb-md-0 mt-4 mb-1 order-md-2 order-1">
                     <i className="fa-solid fa-circle-user"></i>
-                    {/* <img
-                    //   src="https://i.pravatar.cc/150"
-                      src="/img/user-icon1.svg"
-                      className="d-block img-fluid "
-                      alt="profile-img"
-                    ></img> */}
-                    {/* <button className="choose-img-btn">Choose Image</button> */}
                   </div>
                 </div>
                 <div className="setting-billing-section ">
@@ -203,17 +194,6 @@ export const Settings = () => {
                       ></input>
                     </div>
                     <div className="d-md-flex d-block align-items-center justify-content-between gap-4">
-                      {/* <div className="profileInputBox w-100">
-                        <label className="form-label">Country / Region</label>
-                        <select
-                          className="form-select"
-                          name="country"
-                          value={formik?.values?.country || ""}
-                          onChange={formik?.handleChange}
-                        >
-                          <option value="IN">India</option>
-                        </select>
-                      </div> */}
                       <div className="profileInputBox w-100">
                         <label className="form-label">States</label>
                         <select

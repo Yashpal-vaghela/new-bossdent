@@ -15,11 +15,6 @@ export const fetchCategories = createAsyncThunk(`category/fetchCategories`,
             console.error('Error fetching categories:', error);
             return rejectWithValue(error.message);
         }
-        // if(!response.ok){
-        //     throw new Error('Failed to fetch Categories');
-        // }
-        // const data = await response.data.data;
-        // return data;
     }
 );
 

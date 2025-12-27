@@ -26,8 +26,6 @@ export const fetchUser = createAsyncThunk("user/fetchUser",async(__dirname,{sign
 
         if(err.response){
           const status = err.response.status;
-            // localStorage.removeItem("auth_token");
-            // return rejectWithValue(err.response.code);
             const serverMessage = err.response.data?.message || err.response.data?.error || err.response.statusText || "Server error";
 
             if(status === 401 || status === 403){
@@ -40,7 +38,6 @@ export const fetchUser = createAsyncThunk("user/fetchUser",async(__dirname,{sign
         }
         
         return rejectWithValue({ status: 0, message: err.message || "Unknown error" });
-        // return rejectWithValue(err.message);
     }
 });
 
@@ -53,7 +50,6 @@ const userSlice = createSlice({
     },
     reducers:{
        AddToUser:(state,action)=>{
-        console.log("state",state,action.payload)
         state.user = action.payload || {};
         return state;
        },
@@ -69,16 +65,8 @@ const userSlice = createSlice({
             state.error = null;
         })
         .addCase(fetchUser.fulfilled,(state,action)=>{
-          console.log("sta",action.payload,"data",action.payload.data)
             state.loading = false;
             state.user = action.payload.data || action.payload || {}; 
-            // if(action.payload?.user){
-            //   state.user = action.payload.user;
-            //   return;
-            // }else{
-            //   state.user = action.payload;
-            // }
-            // state.user = action.payload || [];
         })
         .addCase(fetchUser.rejected,(state,action)=>{
             console.log("rejected",action.error,action.payload);
@@ -88,7 +76,6 @@ const userSlice = createSlice({
             }else{
               state.error = {status:500, message:action.error?.message || "Request failed"};
             }
-            // state.error = action.payload?.message || "Request failed";
         });
     },
 })

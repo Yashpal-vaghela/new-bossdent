@@ -1,10 +1,6 @@
-import { useLocation, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+// import { useLocation, useNavigate } from 'react-router-dom';
 
 const useValidateUser = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
-
     const validateUser = () =>{
         
         setTimeout(() => {

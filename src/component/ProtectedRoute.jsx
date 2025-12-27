@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {Navigate,useLocation} from 'react-router-dom';   
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 
 const ProtectedRoute = ({children}) => {
     const location = useLocation();
@@ -9,7 +9,6 @@ const ProtectedRoute = ({children}) => {
     const cartdata = useSelector((state)=>state.cart.cart);
     
     if(cartdata.items !== undefined && cartdata.items.length === 0){
-        // if(cartdata.items.length === 0){
               return(
                     <Navigate 
                         to="/products"

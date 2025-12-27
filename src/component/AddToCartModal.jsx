@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export const AddToCartModal = ({
   isOpen,
@@ -10,46 +9,12 @@ export const AddToCartModal = ({
 }) => {
   const [quantity, setQuantity] = useState(1);
   const [selectedAttributes, setSelectedAttributes] = useState({});
-  const [salePrice, setSalePrice] = useState(null);
-  const [price,setPrice] = useState(null);
   const modalRef = useRef();
 
-  // const uniqueVariations = React.useMemo(() => {
-  //   if (!product?.variations) return [];
-  //   return product?.variations.reduce((acc, item) => {
-  //     const size = item.attributes.size;
-  //     if (!acc[size]) {
-  //       acc[size] = {
-  //         variation_id: item?.id,
-  //         attributes: { size, pack: [] },
-  //         regular_price: [],
-  //         sale_price: [],
-  //         price: [],
-  //       };
-  //     }
-
-  //     acc[size].attributes.pack.push(item.attributes.pack);
-  //     acc[size].regular_price.push(item.regular_price);
-  //     acc[size].sale_price.push(item.sale_price);
-  //     acc[size].price.push(item.price);
-  //     return acc;
-  //   }, {});
-  // }, [product]);
-
   const [variation, setVariations] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    // if (product?.slug === "paper-point") {
-    //   setVariations(Object.values(uniqueVariations));
-    // } else {
-    //   setVariations(product?.variations);
-    //   setSalePrice(product?.sale_price);
-    //   setPrice(product?.price);
-    // }
     setVariations(product?.variations);
-    setSalePrice(product?.sale_price);
-    setPrice(product?.price);
   }, [product]);
 
   function handleClickOutside(e) {
@@ -115,7 +80,6 @@ export const AddToCartModal = ({
                   Price: {product?.product_price ? 
                   <b>₹{Number(product?.product_price).toFixed(2)}</b> : 
                   <b>₹{Number(product?.price).toFixed(2)}</b>} 
-                  {/* <b>₹{Number(product?.price).toFixed(2)}</b> */}
                 </p>
               </div>
               <img

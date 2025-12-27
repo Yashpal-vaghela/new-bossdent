@@ -8,7 +8,6 @@ import BASE_URL from "../api/config";
 import Indian_states_cities_list from 'indian-states-cities-list';
 import { AddToCart } from "../redux/cartSlice";
 import { toast } from "react-toastify";
-import { Success } from "./payment/Success";
 import Loader2 from "../component/Loader2";
 
 const checkoutSchema = yup.object().shape({
@@ -22,16 +21,9 @@ const checkoutSchema = yup.object().shape({
     zipcode: yup.string().matches(/^[0-9]{6}$/, "Zipcode must be 6 digits").required("Zipcode Field is required."),
     payment_method:yup.string().required("Please choose payment method is required")
 })
-
 export const Checkout = () => {
-    const [paymentMethod,setPaymentMethod] = useState({});
-    const [paymentSuccess,setPaymentSuccess] = useState(false);
-    const [paymentStatus,setPaymentStatus] = useState(false);
-    const [orderId,setOrderId] = useState("");
-    const [Loading,setLoading] = useState(false);
     const [apiloading,setApiLoading] = useState(false);
     const token = useSelector((state)=>state.auth.token);
-    // const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
     const [States,setStates] = useState([]);
     const [codoption,setcodOption] = useState(false);
     const user = useSelector((state)=>state.user.user);
@@ -58,22 +50,17 @@ export const Checkout = () => {
         validateOnChange:true,
         validateOnBlur:false,
         onSubmit: async ()=>{
-          // console.log("formik",formik?.values);
             if(formik?.values.payment_method && formik?.values){
               try{
-                // setLoading(true);  
                 setApiLoading(true);                
-                const orderResponse = await axios.post(`${BASE_URL}/create-order`,formik.values,{
+                 await axios.post(`${BASE_URL}/create-order`,formik.values,{
                   headers:{
                     Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
                     "Content-Type": "application/json",
                   },
                 }).then(async (res)=>{
-                  const newOrderId = res.data.order_id.toString();
-                  setOrderId(newOrderId);
 
                   if(formik?.values.payment_method === "PhonePe"){
-                    // setLoading(true);
                     setApiLoading(true);
                     const paymentResponse = await fetch(`${BASE_URL}/phonepe/new-initiate`,{
                           method: "POST",
@@ -86,7 +73,6 @@ export const Checkout = () => {
                             user_id:user.length !== 0 && user.user_id,
                             amount:Number(`${(Number(res.data.order_total) + Number(deliverydata)) * 100}`),
                             mobile:user.length !== 0 && user.phone_number.slice(2),
-                            // customerDetails:formik?.values
                           })
                     });
                     if(!paymentResponse.ok){
@@ -97,22 +83,15 @@ export const Checkout = () => {
                    
                     const paymentData = await paymentResponse.json();
                     if(paymentData.phonepe_response.success && paymentData.phonepe_response && paymentData.phonepe_response.data.instrumentResponse && paymentData.phonepe_response.data.instrumentResponse.redirectInfo){
-                      // setLoading(false);
                       setApiLoading(false);
-                      // console.log("payment",paymentData);
                       const paymentUrl = paymentData.phonepe_response.data.instrumentResponse.redirectInfo.url;
-                      // console.log("payment",paymentUrl,window)
                       window.open(paymentUrl);
 
                       paymentIntervalRef.current = setInterval(()=>{
                         checkPaymentStatus(paymentData.phonepe_response.data.merchantId,paymentData.x_verify,paymentData.phonepe_response.data.merchantTransactionId,res.data.order_id);
                       },10000);
                       dispatch(AddToCart({items:[],cart_count:0,cart_total:0}));
-                      // DeletCartItems();
                     }
-                    // setTimeout(()=>{
-                    //   setLoading(false);
-                    // },2000)
                   }else{
                     DeletCartItems();
                     navigate("/payment/success");
@@ -138,13 +117,10 @@ export const Checkout = () => {
             "x-merchant-id":merchantId
           }
         });
-        // console.log("Status:", res.data);
-         setPaymentStatus(res.data.paymentStatus);
         if (res.data.payment_status === "COMPLETED") {
           toast.success("Payment Successful!");
           clearInterval(paymentIntervalRef.current);
           paymentIntervalRef.current = null; 
-          // setLoading(false);
           setApiLoading(false);
           navigate("/payment/success");
         }
@@ -152,12 +128,10 @@ export const Checkout = () => {
           toast.error("Payment Failed!");
           clearInterval(paymentIntervalRef.current);
           paymentIntervalRef.current = null;
-          // setLoading(false);
-          setLoading(false);
+          setApiLoading(false);
           navigate("/payment/success");
         }
         localStorage.setItem("orderId",JSON.stringify(orderId));
-        setPaymentSuccess(true);
       }catch(err){
         console.log("Poll error", err);
       }
@@ -180,7 +154,6 @@ export const Checkout = () => {
     }
     useEffect(()=>{
       setStates(Indian_states_cities_list?.STATES_OBJECT);
-      // console.log("cartData",cartData);
       window.scrollTo({ top: 0, behavior: "smooth" });
       if(Number(cartData?.cart_total) <= 10000){
         setcodOption(true);
@@ -204,16 +177,6 @@ export const Checkout = () => {
         </div>
       </section>
       {apiloading && <Loader2></Loader2>}
-      {/* {
-        Loading && (
-          <div className="loader-overlay">
-            <div className="loader">
-              <img src="/img/favicon1.png" className="img-fluid" alt="loader-img"></img>
-              <div className="loader-border"></div>
-            </div>
-          </div>
-        )
-      } */}
       <section className="checkout-page-section text-white">
         <div className="container">
           <div className="row">

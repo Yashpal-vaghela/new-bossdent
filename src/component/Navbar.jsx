@@ -4,7 +4,6 @@ import axios from "axios";
 import LoginDialogBox from "./LoginDialogBox";
 import { useDispatch, useSelector } from "react-redux";
 import React from "react";
-// import Loader1 from "./Loader1";
 import BASE_URL from "../api/config";
 import { AddToken } from "../redux/authSlice";
 
@@ -18,7 +17,6 @@ const Navbar = () => {
   const cartTotal = useSelector((state) => state.cart.cartTotal);
   const token = useSelector((state) => state.auth.token);
   const wishlistCounter = useSelector((state) => state.wishlist.wishlistCount);
-  // const [token,setToken] = useState(localStorage.getItem("auth_token"));
   const text = "* Free shipping on order above 2300 *";
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -88,12 +86,11 @@ const Navbar = () => {
             element.style.padding = "0px 0px 5px 0px";
           });
           navbarlogoElements.classList.remove("d-lg-none");
-          searchInputMobile !== null && searchIcon == true ? (
+          searchInputMobile !== null && searchIcon === true ? (
             searchInputMobile.classList.add("d-flex")
           ) : (
             <></>
           );
-          // searchIcon == true ? a.classList.add("d-none") : <></>;
           navbarContactElement != null ? (
             navbarContactElement.classList.add("navbarcontact-position-sticky")
           ) : (
@@ -108,7 +105,7 @@ const Navbar = () => {
           ) : (
             <></>
           );
-          searchInputMobile !== null && searchIcon == true ? (
+          searchInputMobile !== null && searchIcon === true ? (
             searchInputMobile.classList.add("d-none")
           ) : (
             <></>
@@ -127,7 +124,7 @@ const Navbar = () => {
         ) : (
           <></>
         );
-        searchInputMobile !== null && searchIcon == true ? (
+        searchInputMobile !== null && searchIcon === true ? (
           searchInputMobile.classList.add("d-none")
         ) : (
           <></>
@@ -520,9 +517,6 @@ const Navbar = () => {
           </div>
         </div>
         <LoginDialogBox></LoginDialogBox>
-        {/* <div className="d-flex navbar-bottom-highlight d-flex justify-content-center align-items-center">
-          <p>*Free shipping on order above 2300*</p>
-        </div> */}
         <div className="navbar-bottom-highlight d-none d-lg-block">
           <div className="ticker">
             <div className="ticker-track">

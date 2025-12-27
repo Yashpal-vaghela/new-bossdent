@@ -1,5 +1,4 @@
 import { createSlice} from "@reduxjs/toolkit";
-// import BASE_URL from "../api/config";
 
 const orderSlice = createSlice({
     name:"order",

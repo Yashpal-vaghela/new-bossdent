@@ -26,7 +26,6 @@ export const TermAndCondition = () => {
           <ul>
             <li className="terms-heading text-heading">Terms and conditions</li>
           </ul>
-          {/* <h1>Terms and Conditions</h1> */}
           <p>Welcome to bossdentindia.com!</p>
           <p>
             These terms and conditions outline the rules and regulations for the

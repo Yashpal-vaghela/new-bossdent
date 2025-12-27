@@ -1,14 +1,12 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import { Link, useLocation, useNavigate} from "react-router-dom";
-import { AddToCart, fetchCart } from "../redux/cartSlice";
-import { AddToWishlist, fetchWishList, WishlistCounter, wishlistId } from "../redux/wishlistSlice";
-// import { fetchUser } from "../redux/userSlice";
+import { Link, useLocation} from "react-router-dom";
+import { AddToCart, } from "../redux/cartSlice";
+import { AddToWishlist,  WishlistCounter, wishlistId } from "../redux/wishlistSlice";
 import { AddToken } from "../redux/authSlice";
 
 export const ProfileSideBar = () => {
     const location = useLocation();
-    // const navigate = useNavigate();
     const dispatch = useDispatch();
     const handleLogout = () => {
       const controller = new AbortController();
@@ -18,13 +16,6 @@ export const ProfileSideBar = () => {
       dispatch(WishlistCounter(0));
       dispatch(wishlistId(0));
       dispatch(AddToken("null"))
-      // setTimeout(()=>{
-      //   dispatch(AddToken(localStorage.getItem("auth_token")))
-      // },500)
-      
-      // dispatch(fetchCart(undefined,{signal:controller.signal}));
-      // dispatch(fetchWishList(undefined,{signal:controller.signal}));
-      // dispatch(fetchUser(undefined,{signal:controller.signal}));
       return() =>{
         controller.abort();
       }

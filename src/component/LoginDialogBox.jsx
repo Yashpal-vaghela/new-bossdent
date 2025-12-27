@@ -4,7 +4,7 @@ import BASE_URL from "../api/config";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { fetchCart } from "../redux/cartSlice";
 import { fetchWishList } from "../redux/wishlistSlice";
 import { fetchUser } from "../redux/userSlice";
@@ -18,7 +18,6 @@ const LoginDialogBox = () => {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const location = useLocation();
   const navigate = useNavigate();
-  const token = useSelector((state) => state.auth.token);
   const dispatch = useDispatch();
 
   const handleRequestOTP = async (e, action) => {
@@ -171,12 +170,12 @@ const LoginDialogBox = () => {
       }
     }
   };
-const modalRef = useRef(null);
+  const modalRef = useRef(null);
   const handleClose = () => {
-      const modal =
-    window.bootstrap.Modal.getInstance(modalRef.current) ||
+    const modal = window.bootstrap.Modal.getInstance(modalRef.current) ||
     new window.bootstrap.Modal(modalRef.current);
-  modal.hide();
+    console.log("modal",modal)
+    modal.hide();
   };
   return (
     <div
@@ -201,7 +200,7 @@ const modalRef = useRef(null);
             ></button>
           </div>
           <div className="modal-body">
-            {step == 1 ? (
+            {step === 1 ? (
               <>
                 <div className="d-flex justify-content-between align-items-center ">
                   <h5 className="modal-title">
@@ -276,14 +275,6 @@ const modalRef = useRef(null);
                     />
                   ))}
                 </div>
-                {/* <div class="otp-inputs">
-                    <input type="text" maxlength="1" />
-                    <input type="text" maxlength="1" />
-                    <input type="text" maxlength="1" />
-                    <input type="text" maxlength="1" />
-                    <input type="text" maxlength="1" />
-                    <input type="text" maxlength="1" />
-                </div> */}
                 <div className="text-center my-5 resend-wrapper">
                   {!showResend ? (
                     <div className="timer">{formattedTime}</div>
@@ -307,7 +298,6 @@ const modalRef = useRef(null);
                     Need help? <Link to="#">Connect with us</Link>
                   </p>
                 </div>
-                {/* <div class="timer">{`${Math.floor(time / 60)}`.padStart(2,0)}:{`${time % 60}`.padStart(2,0)}</div> */}
               </>
             )}
           </div>

@@ -18,7 +18,6 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
   const [premiumProducts, setPremiumProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [apiloading,setApiLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [showVariationModal, setShowVariationModal] = useState(false);
   const [selectedProductForModal, setSelectedProductForModal] = useState(null);
   const wishlistData = useSelector((state) => state?.wishlist?.wishlist);
@@ -34,7 +33,6 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
       setPremiumProducts(product);
     } catch (error) {
       console.error("Error fetching the Premium Products:", error);
-      setError("Failed to load Premium Product.");
     } finally {
       setLoading(false);
     }

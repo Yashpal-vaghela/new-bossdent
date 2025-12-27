@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect,  useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BASE_URL from "../api/config";
 import axios from "axios";
@@ -18,7 +18,6 @@ import {
   wishlistId,
 } from "../redux/wishlistSlice";
 import { AddToCartModal } from "../component/AddToCartModal";
-import Loader1 from "../component/Loader1";
 import useValidateUser from "../component/useValidateUser";
 import Loader2 from "../component/Loader2";
 
@@ -40,8 +39,7 @@ const SingleProduct = () => {
   const validateUser = useValidateUser();
   const navigate = useNavigate();
 
-  const a =
-    cartData.length !== 0
+  const a = cartData.length !== 0
       ? cartData?.items.map((i) => {
           return {
             id: i?.variation_id === 0 ? i?.product_id : i?.variation_id,
@@ -68,7 +66,6 @@ const SingleProduct = () => {
       setloading(false);
       handleRelatedProducts(controller, res.data.data?.id);
     } catch (err) {
-      // setloading(false);
       if (err.name !== "AbortError") console.error(err);
     }
   };
@@ -83,41 +80,16 @@ const SingleProduct = () => {
     setQuantity(b);
   }, [cartData]);
 
-  const productImages = [
-    { img: "/img/product-img3.png" },
-    { img: "/img/singleProduct-img1.png" },
-    { img: "/img/singleProduct-img2.png" },
-    { img: "/img/singleProduct-img3.png" },
-  ];
-
   const handleShowQuantity = () => {
     setShowQuantity([]);
   };
   const handleQuantity = (e, id, action, item) => {
-    // console.log("acvtion", action);
-    // const AlreadyExistData = cartData.items.filter((i, index) => {
-    //   return i?.variation_id !== 0
-    //     ? typeof id === "object"
-    //       ? i?.variation_id === id?.id
-    //       : i?.variation_id === id && i?.product_id === singleProduct?.id
-    //     : i?.product_id === singleProduct?.id;
-    // });
     if (action === "variation") {
       if (!showQuantity.some((i) => i.variation_id === id)) {
         const filterdata = singleProduct?.variations.filter(
           (i) => i?.id === id
         );
         setShowQuantity((prev) => [...prev, ...filterdata]);
-        // Initialize quantity for this variation
-        // const qty = {...quantity,[id]:currentQty }
-        // if(AlreadyExistData.length > 0){
-        //   const payload = {
-        //     cart_id:AlreadyExistData[0].cart_id,
-        //     quantity:typeof id === "object" ? qty[id?.id]: qty[id],
-        //   }
-        //   console.warn("Edit",payload);
-        // }
-        // handleAddToCart(singleProduct,id,{...quantity,[id]:quantity},item?.attributes,"PLUS")
         const currentQty = quantity[id] || 1;
         setQuantity((prev) => ({
           ...prev,
@@ -136,7 +108,6 @@ const SingleProduct = () => {
       }
     } else {
       const filterData = singleProduct?.id === id;
-      // console.log("sing", singleProduct);
       setShowQuantity(filterData);
       const currentQty = quantity[id] || 1;
       setQuantity({ ...quantity, [id]: currentQty });
@@ -180,9 +151,7 @@ const SingleProduct = () => {
           const updatedShowQuantity = showQuantity.filter(
             (item) => item.id !== id
           );
-          // console.log("up", updatedShowQuantity);
           setShowQuantity(updatedShowQuantity);
-          // handleAddToCart(singleproduct, item,{ ...quantity, [id]: currentQty },item?.attributes);
           const newQuantities = { ...quantity };
           delete newQuantities[id];
           return setQuantity(newQuantities);
@@ -210,7 +179,6 @@ const SingleProduct = () => {
           );
           return setQuantity({ ...quantity, [id]: currentQty - 1 });
         } else {
-          // handleAddToCart(singleproduct, id, quantity, 0);
           setShowQuantity(false);
           return setQuantity(quantity);
         }
@@ -230,14 +198,12 @@ const SingleProduct = () => {
       toast.error("Please login to product add to cart!");
     } else {
       const AlreadyExistingdata = cartData?.items?.filter((i, index) => {
-        // console.log("i", i?.variation_id, i?.product_id);
         return i?.variation_id !== 0
           ? (typeof id === "object"
               ? i?.variation_id === id?.id
               : i?.variation_id === id) && i?.product_id === singleproduct?.id
           : i?.product_id === singleproduct?.id;
       });
-      // console.log("ass", AlreadyExistingdata, qty[id]);
       if (AlreadyExistingdata.length > 0) {
         const payload = {
           cart_id: AlreadyExistingdata[0]?.cart_id,
@@ -248,13 +214,6 @@ const SingleProduct = () => {
               ? qty[id]
               : AlreadyExistingdata[0]?.quantity + 1,
         };
-        // console.log(
-        //   "payload",
-        //   payload,
-        //   qty,
-        //   id?.id,
-        //   AlreadyExistingdata[0].quantity
-        // );
         handleEditApi(payload);
       } else {
         const payload = {
@@ -262,7 +221,6 @@ const SingleProduct = () => {
           variation_id: typeof id === "object" ? id?.id : id,
           quantity: typeof id === "object" ? qty[id?.id] : qty[id],
         };
-        // console.warn("finalAddtoCart", id, qty);
         handleAddApi(payload);
       }
       if (action === "/checkout") {
@@ -272,7 +230,6 @@ const SingleProduct = () => {
         }
       }
     }
-    // console.log("sin", singleProduct, id, qty, selectattributes, action);
   };
 
   const handleWishlist = async (e, product) => {
@@ -431,7 +388,6 @@ const SingleProduct = () => {
         toast.error("Your cart is empty!");
       }
     }
-    // console.log("variat", variation, action);
   };
 
   const handleEditApi = async (payload) => {
@@ -475,7 +431,6 @@ const SingleProduct = () => {
         dispatch(
           AddToCart({ ...res.data, items: [...cartData.items, res.data?.data] })
         );
-        // dispatch(AddToCart({...res.data,items:cartData.items}))
       })
       .catch((err) => {
         toast.error("Failed to add to cart.");
@@ -504,7 +459,7 @@ const SingleProduct = () => {
       </section>
       {apiloading && <Loader2></Loader2>}
       {loading ? (
-        <Loader1></Loader1>
+        <Loader2></Loader2>
       ) : (
         <>
           <section className="single-product-section">
@@ -518,9 +473,6 @@ const SingleProduct = () => {
             <div className="container position-relative">
               <div className="row">
                 <div className="card-header d-lg-none align-items-center gap-4 d-flex">
-                  {/* <span className="sale-title">
-                    Sale <b>50%</b>
-                  </span> */}
                   {singleProduct?.regular_price &&
                     singleProduct?.sale_price && (
                       <>
@@ -558,68 +510,11 @@ const SingleProduct = () => {
                 </div>
                 <div className="singleProduct-img-wrapper d-flex  d-lg-none h-100 mb-2 align-items-center">
                   <img
-                    // src={item?.img}
                     src={singleProduct?.image}
                     className="singleProduct-img  m-auto img-fluid"
                     alt="singleProduct-img"
                   ></img>
                 </div>
-                {/* <Swiper
-                  ref={swiperRef}
-                  spaceBetween={30}
-                  centeredSlides={true}
-                  autoplay="false"
-                  loop={productImages.length > 1}
-                  pagination={{ clickable: true }}
-                  navigation={true}
-                  thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
-                  modules={[Autoplay, Pagination, Thumbs, Navigation]}
-                  className="singleProductSwiper w-100 d-block d-lg-none"
-                >
-                  {productImages?.map((item, index) => {
-                    return (
-                      <SwiperSlide key={index}>
-                        <div className="singleProduct-img-wrapper d-flex h-100 mb-5 align-items-center">
-                          <img
-                            // src={item?.img}
-                            src={singleProduct?.image}
-                            className="singleProduct-img  m-auto img-fluid"
-                            alt="singleProduct-img"
-                          ></img>
-                        </div>
-                      </SwiperSlide>
-                    );
-                  })}
-                </Swiper> */}
-                {/* <Swiper
-                  onSwiper={(swiper) => setThumbsSwiper(swiper || [])}
-                  loop={productImages.length }
-                  spaceBetween={20}
-                  slidesPerView={4}
-                  freeMode={true}
-                  watchSlidesProgress={true}
-                  modules={[FreeMode, Navigation, Thumbs]}
-                  className="singleProductThumbSwiper w-100 d-block d-lg-none mb-md-4"
-                  breakpoints={{
-                    576: { slidesPerView: 4, spaceBetween: 0 },
-                    768: { slidesPerView: 5, spaceBetween: 15 },
-                    992: { slidesPerView: 4 },
-                  }}
-                >
-                  {productImages?.map((item, index) => {
-                    return (
-                      <SwiperSlide key={index}>
-                        <div className="singleProduct-img-wrapper d-flex">
-                          <img
-                            src={item?.img}
-                            className="singleProduct-img  m-auto img-fluid"
-                            alt="singleProduct-img"
-                          ></img>
-                        </div>
-                      </SwiperSlide>
-                    );
-                  })}
-                </Swiper> */}
                 <div className="col-lg-6 order-lg-1 order-2 ">
                   {singleProduct.length !== 0 ? (
                     <>
@@ -628,9 +523,6 @@ const SingleProduct = () => {
                         style={{ top: "80px" }}
                       >
                         <div className="card-header d-lg-flex align-items-center gap-4 d-none ">
-                          {/* <span className="sale-title">
-                            Sale <b>50%</b>
-                          </span> */}
                           {singleProduct?.regular_price &&
                             singleProduct?.sale_price && (
                               <>
@@ -682,7 +574,6 @@ const SingleProduct = () => {
                               className="btn btn-buyNow mt-3 w-100"
                               onClick={(e) => {
                                 navigate("/checkout");
-                                //  (e,product,selectedVariation,quantity,"/checkout")
                                 handleAddToCart(
                                   e,
                                   singleProduct,

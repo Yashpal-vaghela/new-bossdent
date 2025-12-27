@@ -136,14 +136,7 @@ export const ReturnExchange = () => {
                     name="contact_number"
                     type="number"
                     value={formik?.values?.contact_number || ""}
-                    // onChange={formik?.handleChange}
-                    // onBlur={formik?.handleBlur}
                   ></input>
-                  {/* {formik?.errors?.contact_number && (
-                    <span className="return-form-error">
-                      {formik?.errors?.contact_number}
-                    </span>
-                  )} */}
                 </div>
                 <div
                   className={`${

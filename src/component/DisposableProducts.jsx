@@ -16,7 +16,6 @@ import Loader2 from "./Loader2";
 const DisposableProducts = ({ token, getCartData, dispatch }) => {
   const [disposableProduct, SetDisposableProduct] = useState([]);
   const [apiloading, setApiLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [showVariationModal, setShowVariationModal] = useState(false);
   const [selectedProductForModal, setSelectedProductForModal] = useState(null);
 
@@ -30,7 +29,6 @@ const DisposableProducts = ({ token, getCartData, dispatch }) => {
       SetDisposableProduct(product);
     } catch (error) {
       console.error("Error fetching the Disposable Products:", error);
-      setError("Failed to load Disposable Product.");
     } finally {
       setApiLoading(false);
     }

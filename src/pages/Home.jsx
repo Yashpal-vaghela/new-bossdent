@@ -13,33 +13,23 @@ import DisposableProducts from "../component/DisposableProducts";
 import { ServiceSection } from "../component/ServiceSection";
 import { useDispatch, useSelector } from "react-redux";
 import CategorySection from "../component/CategorySection";
-import Loader1 from "../component/Loader1";
 import { DentalProductSection } from "../component/DentalProductSection";
 import Loader2 from "../component/Loader2";
 
 const Home = () => {
-  // const SearchProductData = [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }];
-  const token = useSelector((state)=>state.auth.token);
-  // const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
+  const token = useSelector((state) => state.auth.token);
   const { categories, loading } = useSelector((state) => state.category);
   const dispatch = useDispatch();
-  // const [loadingCategories, setLoadingCategories] = useState(true);
-  // const [errorCategories, setErrorCategories] = useState(null);
   const [dentalProducts, setDentalProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
-  // const [errorProducts, setErrorProducts] = useState(null);
-  const getCartData = useSelector((state)=>state.cart.cart);
-  // console.log("getCartData",getCartData);
-  // const visibleCategories = categories.slice(0,5);
-
+  const getCartData = useSelector((state) => state.cart.cart);
   const fetchProducts = async (controller, categorySlug = null) => {
-    // console.log("contr", controller);
     setLoadingProducts(true);
     try {
       let apiUrl = "";
-      if(categorySlug){
-        apiUrl += `${BASE_URL}/category/${categorySlug}`
-      }else{
+      if (categorySlug) {
+        apiUrl += `${BASE_URL}/category/${categorySlug}`;
+      } else {
         apiUrl += `${BASE_URL}/products`;
       }
       const response = await axios.get(apiUrl, { signal: controller.signal });
@@ -47,8 +37,6 @@ const Home = () => {
       setLoadingProducts(false);
     } catch (error) {
       console.error("Error fetching products:", error);
-      // setLoadingProducts(false);
-      // setErrorProducts("Failed to load products");
     }
   };
   useEffect(() => {
@@ -57,7 +45,6 @@ const Home = () => {
     fetchProducts(controller);
     return () => controller.abort();
   }, []);
-
   const visibleProducts = Array.isArray(dentalProducts)
     ? dentalProducts.length > 8
       ? dentalProducts.slice(0, 8)
@@ -76,24 +63,35 @@ const Home = () => {
           {loading ? (
             <Loader2></Loader2>
           ) : (
-            <DentalProductSection getCartData={getCartData} token={token} dispatch={dispatch} categories={categories} loadingProducts={loadingProducts} visibleProducts={visibleProducts}></DentalProductSection>
+            <DentalProductSection
+              getCartData={getCartData}
+              token={token}
+              dispatch={dispatch}
+              categories={categories}
+              loadingProducts={loadingProducts}
+              visibleProducts={visibleProducts}
+            ></DentalProductSection>
           )}
           {/* Banner Section  */}
           <section className="banner-img-section">
             <div className="container">
               <Link to="/products?category=retractors">
-                 <img
-                src="/img/banner-img.webp"
-                className="banner-img img-fluid"
-                alt="banner-img"
-              ></img>
+                <img
+                  src="/img/banner-img.webp"
+                  className="banner-img img-fluid"
+                  alt="banner-img"
+                ></img>
               </Link>
             </div>
           </section>
           {/* categories section  */}
           <CategorySection categories={categories}></CategorySection>
           {/* Exclusive Premium Products section */}
-          <PremiumProducts token={token} getCartData={getCartData} dispatch={dispatch} />
+          <PremiumProducts
+            token={token}
+            getCartData={getCartData}
+            dispatch={dispatch}
+          />
           <section className="Otherbanner-section">
             <div className="container">
               <div className="row align-items-center  justify-content-center justify-content-lg-center">
@@ -127,7 +125,11 @@ const Home = () => {
               </div>
             </div>
           </section>
-          <DisposableProducts token={token} getCartData={getCartData} dispatch={dispatch} />
+          <DisposableProducts
+            token={token}
+            getCartData={getCartData}
+            dispatch={dispatch}
+          />
         </>
       )}
     </div>

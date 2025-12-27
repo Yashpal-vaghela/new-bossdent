@@ -1,22 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-  Link,
-  useLocation,
-  useNavigate,
-  useSearchParams,
-} from "react-router-dom";
+import {Link, useNavigate, useSearchParams,} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import BASE_URL from "../api/config";
-import Loader1 from "../component/Loader1";
-// import { CartCounter } from "../redux/cartSlice";
 import { AddToCartModal } from "../component/AddToCartModal";
 import { toast } from "react-toastify";
-import {
-  AddToWishlist,
-  WishlistCounter,
-  wishlistId,
-} from "../redux/wishlistSlice";
+import {AddToWishlist,WishlistCounter,wishlistId} from "../redux/wishlistSlice";
 import { AddToCart, CartTotal } from "../redux/cartSlice";
 import useValidateUser from "../component/useValidateUser";
 import Loader2 from "../component/Loader2";
@@ -27,10 +16,7 @@ export const Product = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setloading] = useState(false);
   const [apiloading, setApiLoading] = useState(false);
-  // const [token] = useSelector((state)=>state.auth.token);
   const token = useSelector((state) => state.auth.token);
-  // console.log("token",token);
-  // const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
   const [showVariationModal, setShowVariationModal] = useState(false);
   const [selectedProductForModal, setSelectedProductForModal] = useState(null);
   const [sortOrder, setSortOrder] = useState("");
@@ -84,10 +70,8 @@ export const Product = () => {
         indexOfLastProduct
       );
       const totalPages = Math.ceil(allProducts.length / itemsPerPage);
-      // console.log("allProducts",allProducts,currentsProducts,)
       setTotalPages(totalPages);
       setProducts(currentsProducts);
-      // setFinalProducts(currentsProducts);
       if (res.data.data) {
         setloading(false);
       }
@@ -239,13 +223,11 @@ export const Product = () => {
                   }
                 );
                 setApiLoading(false);
-                // setLoading(false);
                 toast.success("Product updated in cart successfully!");
                 if (showVariationModal === true) {
                   setShowVariationModal((prev) => !prev);
                 }
                 dispatch(CartTotal(res.data.cart_total));
-                // dispatch(CartCounter(res.data.cart_count));
                 dispatch(AddToCart({ ...res.data, items: res.data.items }));
                 if (slug) {
                   navigate(slug);
@@ -262,7 +244,6 @@ export const Product = () => {
           product.variations.length !== 0 &&
           selectedAttributes === 0
         ) {
-          // console.warn("ProductVariationsData api call");
           setShowVariationModal((prev) => !prev);
           setSelectedProductForModal(product);
         } else {
@@ -292,15 +273,7 @@ export const Product = () => {
                     : selectedAttributes?.id,
                 quantity: quantity,
               };
-              // console.warn(
-              //   "addtocartData api call",
-              //   payload,
-              //   "select",
-              //   selectedAttributes,
-              //   product?.variations
-              // );
               setApiLoading(true);
-              // setLoading(true);
               try {
                 const res = await axios.post(
                   `${BASE_URL}/new-add-to-cart`,
@@ -318,10 +291,8 @@ export const Product = () => {
                   setShowVariationModal((prev) => !prev);
                 }
                 setApiLoading(false);
-                // setLoading(false);
                 toast.success("Product added to cart successfully!");
                 res !== undefined && dispatch(CartTotal(res.data.cart_total));
-                // dispatch(CartCounter(res.data.cart_count));
                 dispatch(
                   AddToCart({
                     ...res.data,
@@ -365,7 +336,6 @@ export const Product = () => {
             }
           )
           .then((res) => {
-            // const a = wishlistId.filter((i)=>i !== product?.id);
             toast.success("Product removed from wishlist.");
             const updatedWishlist = wishlistId1.filter(
               (id) => id !== product?.id
@@ -414,7 +384,7 @@ export const Product = () => {
                 </li>
                 <li className="breadcrumb-item active">
                   {searchParams.size !== 0 ? (
-                    <Link to="#">Category</Link>
+                    <Link to="/products?category">Category</Link>
                   ) : (
                     <Link to="/products">Products</Link>
                   )}

@@ -12,7 +12,6 @@ import {
   wishlistId,
 } from "../redux/wishlistSlice";
 import { AddToCart, CartTotal } from "../redux/cartSlice";
-import Loader1 from "../component/Loader1";
 import useValidateUser from "../component/useValidateUser";
 import Loader2 from "../component/Loader2";
 
@@ -328,7 +327,7 @@ const Wishlist = () => {
                             <button
                               className={`btn wishlist-addTocart ${item.stock}`}
                               onClick={(e) =>
-                                item.stock == "instock" ? (
+                                item.stock === "instock" ? (
                                   handleAddToCart(e, item, 0, 1)
                                 ) : (
                                   <></>

@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 export const Success = () => {
   const [paymentStatus, setPaymentStatus] = useState("");
   const token = useSelector((state)=>state.auth.token);
-  // const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
   const [orderId] = useState(JSON.parse(localStorage.getItem("orderId")));
   const navigate = useNavigate();
   const fetchPaymentCallBack = async (controller) => {

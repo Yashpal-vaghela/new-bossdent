@@ -73,9 +73,6 @@ const Footer = () => {
                   <li>
                     <Link to="/products">Products</Link>
                   </li>
-                  {/* <li>
-                    <Link to="#">Gallery</Link>
-                  </li> */}
                 </ul>
               </div>
               <div className="col-lg-3 col-md-3 col-4">

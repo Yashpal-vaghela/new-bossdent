@@ -4,9 +4,9 @@ import Product from '../pages/Product';
 import SingleProduct from '../pages/SingleProduct';
 import Cart from '../pages/Cart';
 import Wishlist from '../pages/Wishlist';
-import Login from '../pages/Login';
+// import Login from '../pages/Login';
 import Profile from '../pages/Profile';
-import Category from '../pages/Category';
+// import Category from '../pages/Category';
 import { TermAndCondition } from '../pages/TermAndCondition';
 import { PrivacyPolicy } from '../pages/PrivacyPolicy';
 import { RefundPolicy } from '../pages/RefundPolicy';
@@ -33,12 +33,12 @@ export const Allrouters = () => {
                 <Route path="/about" element={<About></About>}></Route>
                 <Route path="/products" element={<Product></Product>}></Route>
                 <Route path="/products/:slug" element={<SingleProduct></SingleProduct>}></Route>
-                <Route path="/category/:slug" element={<Category />}></Route>
+                {/* <Route path="/category/:slug" element={<Category />}></Route> */}
                 <Route path="/cart" element={<ProtectedOrderRoute><Cart></Cart></ProtectedOrderRoute>}></Route>
                 <Route path="/checkout" element={<ProtectedRoute><Checkout></Checkout></ProtectedRoute>}></Route>
                 <Route path="/wishlist" element={<ProtectedOrderRoute><Wishlist></Wishlist></ProtectedOrderRoute>}></Route>
                 <Route path="/contact" element={<Contact></Contact>}></Route>
-                <Route path="/login" element={<Login></Login>}></Route>
+                {/* <Route path="/login" element={<Login></Login>}></Route> */}
                 <Route path="/profile" element={<ProtectedOrderRoute><Profile></Profile></ProtectedOrderRoute>}></Route>
                 <Route path="/order-history" element={<ProtectedOrderRoute><OrderHistory></OrderHistory></ProtectedOrderRoute>}></Route>
                 <Route path="/order-history/:id" element={<ProtectedOrderRoute><OrderHistory></OrderHistory></ProtectedOrderRoute>}></Route>
@@ -53,6 +53,7 @@ export const Allrouters = () => {
                 <Route path="/refund-and-returns-policy" element={<RefundPolicy></RefundPolicy>}></Route>
                 <Route path="/return-exchange" element={<ProtectedOrderRoute><ReturnExchange></ReturnExchange></ProtectedOrderRoute>}></Route>
                 <Route path="/payment/success" element={<ProtectedOrderRoute><Success></Success></ProtectedOrderRoute>}></Route>
+                <Route path="/payment/failed" element={<ProtectedOrderRoute><Success></Success></ProtectedOrderRoute>}></Route>
                 <Route path="*" element={<Home/>}></Route>
             </Routes>
         </>

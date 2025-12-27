@@ -24,14 +24,6 @@ export const DentalProductSection = ({
   const handleCategoryClick = (slug) => {
     const controller = new AbortController();
     setSelectedCategory(slug);
-    // if(slug){
-    //   fetchProducts(controller, slug);
-    // }
-    // if (!slug) {
-    //   fetchProducts(controller);
-    // } else {
-    //   fetchProducts(controller, slug);
-    // }
     return () => controller.abort();
   };
   const handleAddToCart = async (e, product) => {
@@ -190,7 +182,6 @@ export const DentalProductSection = ({
                               ₹{item.price || item.regular_price || "0"}
                             </span>
                           )}
-                          {/* ₹{item.sale_price || item.price || "0"} */}
                         </p>
                       </div>
                       <img

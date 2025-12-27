@@ -41,8 +41,6 @@ export const ProfileEditFormModal = ({States,user,token}) => {
                     "Content-Type": "application/json",                
                 }
             }).then((res)=>{
-                // console.log("res",res.data);
-                // setUser1({user:res.data.user_data});
                 dispatch(AddToUser(res?.data?.user_data));
                 // const modalEl = document.getElementById("EditformModal");
                 document.getElementById("EditformModal")?.classList.remove("show");

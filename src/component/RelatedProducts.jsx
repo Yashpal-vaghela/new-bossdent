@@ -1,4 +1,4 @@
-import React, { useRef,useState } from "react";
+import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination} from "swiper/modules";
 import "swiper/css";
@@ -7,8 +7,6 @@ import "swiper/css/navigation";
 import { Link } from "react-router-dom";
 
 export const RelatedProducts = ({relatedproducts,handleWishlist,wishlistId1,handleQuantity,handleAddToCartModal,handleShowQuantity}) => {
-  const swiperRef = useRef(null);
-
   return (
     <section className="related-product-section pt-3">
       <div className="container">
@@ -41,7 +39,6 @@ export const RelatedProducts = ({relatedproducts,handleWishlist,wishlistId1,hand
                           <span className="sale-title">
                             Sale {Math.round(((item?.regular_price - item?.sale_price) / item?.regular_price) * 100)}%
                           </span>
-                          {/* <span className="best-sale-title me-auto">Best Sale</span> */}
                         </>
                       )}
                       {
@@ -62,13 +59,6 @@ export const RelatedProducts = ({relatedproducts,handleWishlist,wishlistId1,hand
                       <div className="d-block">
                         <h4 className="related-product-title">{item?.name}</h4>
                         <p className="related-product-price">Starting at: ₹{Number(item?.price).toFixed(2)}</p>
-                        {/* <div className="rating-stars">
-                          <i className="fa-solid fa-star"></i>
-                          <i className="fa-solid fa-star"></i>
-                          <i className="fa-solid fa-star"></i>
-                          <i className="fa-solid fa-star"></i>
-                          <i className="fa-solid fa-star"></i>
-                        </div> */}
                       </div>
                       <img src="/img/addTocart-icon.svg" className="img-fluid" alt="addToCart-icon" onClick={(e)=>handleAddToCartModal(e,item,0,1,item.variations,item.type)}></img> 
                     </div>

@@ -18,7 +18,7 @@ export const fetchCart = createAsyncThunk("cart/fetchCart", async (_, { signal, 
         }
       );
 
-      return response.data; // { items, cart_total, cart_count }
+      return response.data; 
     } catch (err) {
       if(err.response?.status === 401 || err.response?.status === 403){
         localStorage.removeItem("auth_token");
@@ -46,22 +46,15 @@ const cartSlice = createSlice({
     },
     reducers:{
         AddToCart:(state,action)=>{
-            // state.cart = [...state,action.payload]
-            // console.log("action",state.cart,action.payload);
             state.cart = action.payload || {items:[]};
             state.deliveryCharge = state.cart.cart_total <= 2300 ? 90 : 0 || 0; 
             state.cartTotal = state.cart.cart_total || action.payload.cart_total;
             state.cartCount = state.cart.cart_count || action.payload.cart_count;
-            // state.cart.push(action.payload)
             return state;
         },
         DeleteCart:(state,action)=>{
           return state;
         },
-        // CartCounter:(state,action)=>{
-        //     state.cartCount = action.payload;
-        //     return state;
-        // },
         CartTotal:(state,action)=>{
             state.cartTotal = action.payload;
             return state;
@@ -78,23 +71,11 @@ const cartSlice = createSlice({
         })
         .addCase(fetchCart.fulfilled, (state, action) => {
             state.loading = false;
-            // console.log("state",action.payload?.cart_total <= 2300)
             // Set cart data from backend
             state.cart = action.payload?.cart || action.payload || [{items:[]}];
             state.cartTotal = action.payload?.cart_total || 0;
             state.cartCount = action.payload?.cart_count || 0;
             state.deliveryCharge = state.cartTotal <= 2300 ? 90 : 0 || 0; 
-            // Optional: if backend returns count/total
-            // if (action.payload.count) {
-            //     state.cartCount = action.payload.count;
-            // }
-
-            // if (action.payload.total) {
-            //     state.cartTotal = action.payload.total;
-            // }
-
-            // state.cart = action.payload?.cart || action.payload || [];
-            // state.cartTotal
         })
         .addCase(fetchCart.rejected, (state, action) => {
             state.loading = false;

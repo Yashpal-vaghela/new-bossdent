@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { HelpSideBar } from "../component/HelpSideBar";
-import Loader2 from '../component/Loader2';
 
 const Delivery = () => {
   const DeliveryInfo = [

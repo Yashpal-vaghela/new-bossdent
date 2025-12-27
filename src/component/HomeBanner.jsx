@@ -57,11 +57,11 @@ const HomeBanner = () => {
           ref={swiperRef}
           spaceBetween={30}
           centeredSlides={true}
-          autoplay="false"
-          // autoplay={{
-          //   delay: 3000,
-          //   disableOnInteraction: false,
-          // }}
+          // autoplay="false"
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+          }}
           loop={true}
           pagination={{
             clickable: true,

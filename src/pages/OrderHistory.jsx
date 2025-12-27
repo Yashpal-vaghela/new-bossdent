@@ -5,15 +5,12 @@ import axios from "axios";
 import BASE_URL from "../api/config";
 import { AddToOrder } from "../redux/orderSlice";
 import { ProfileSideBar } from "../component/ProfileSideBar";
-import Loader1 from "../component/Loader1";
 import Loader2 from "../component/Loader2";
 
 export const OrderHistory = () => {
   const [orderData, setOrderData] = useState([]);
   const [orderDetails, setOrderDetails] = useState([]);
   const token = useSelector((state) => state.auth.token);
-  // const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
-  // const [loading, setloading] = useState(true);
   const [apiloading, setApiLoading] = useState(false);
   const [page, setPage] = useState(1);
   const rowsPerPage = 5;
@@ -24,7 +21,6 @@ export const OrderHistory = () => {
   const params = useParams();
 
   const handlefetchOrderData = async (controller) => {
-    // setloading(true);
     setApiLoading(true);
     await axios
       .get(`${BASE_URL}/get-all-orders`, {
@@ -36,12 +32,10 @@ export const OrderHistory = () => {
       })
       .then((res) => {
         setApiLoading(false);
-        // setloading(false);
         setOrderData(res?.data?.orders);
         dispatch(AddToOrder(res?.data?.orders));
       })
       .catch((err) => {
-        // setloading(false);
         console.log("err", err);
       });
   };
@@ -61,7 +55,6 @@ export const OrderHistory = () => {
         setOrderDetails(res?.data?.order);
       })
       .catch((err) => {
-        // setloading(false);
         console.log("err", err);
       });
   };
@@ -130,7 +123,6 @@ export const OrderHistory = () => {
           </nav>
         </div>
       </section>
-      {/* {apiloading && <Loader2></Loader2>} */}
       {apiloading ? (
         <Loader2></Loader2>
       ) : (
@@ -256,7 +248,6 @@ export const OrderHistory = () => {
                               No Order Data found!
                             </td>
                           </tr>
-                          // <p>No Order Data found!</p>
                         )}
                       </tbody>
                       <tfoot>

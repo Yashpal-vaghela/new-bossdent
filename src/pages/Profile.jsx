@@ -1,36 +1,27 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link} from "react-router-dom";
 import BASE_URL from "../api/config";
 import { useDispatch, useSelector } from "react-redux";
 import Indian_states_cities_list from "indian-states-cities-list";
 import { ProfileEditFormModal } from "../component/ProfileEditFormModal";
 import { AddToOrder } from "../redux/orderSlice";
 import { ProfileSideBar } from "../component/ProfileSideBar";
-import Loader1 from "../component/Loader1";
-import useValidateUser from "../component/useValidateUser";
 import Loader2 from "../component/Loader2";
 
 const Profile = () => {
-  // const loginData1 = useSelector((state)=>state.user);
-  const { user, error } = useSelector((s) => s.user);
+  const { user} = useSelector((s) => s.user);
   const token = useSelector((state)=>state.auth.token);
-  // const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
   const [orderData, setOrderData] = useState([]);
   const [States, setStates] = useState([]);
-  const [loadMore, setLoadMore] = useState(false);
-  const [loading, setloading] = useState(true);
+  const [loadMore] = useState(false);
+  const [loading, setloading] = useState(false);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const visibleOrderData = loadMore ? orderData : orderData.slice(0, 5);
-  const validateUser = useValidateUser();
 
   const handlefetchOrderData = async (controller) => {
     setloading(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
-    // if (!token) {
-    //   validateUser();
-    // }
     await axios
       .get(`${BASE_URL}/get-all-orders`, {
         headers: {
@@ -58,11 +49,6 @@ const Profile = () => {
 
   useEffect(() => {
     const controller = new AbortController();
-    // if (error?.status === 401 || error?.status === 403) {
-    //   alert(error?.message || "Session expired. Please login again.");
-    //   // localStorage.removeItem("auth_token");
-    //   navigate("/login");
-    // }
     window.scrollTo({ top: 0, behavior: "smooth" });
     handlefetchOrderData(controller);
     setStates(Indian_states_cities_list?.STATES_OBJECT);
@@ -87,7 +73,6 @@ const Profile = () => {
         </div>
       </section>
       <section className="profile-section">
-        {/* {loading && <Loader2></Loader2>} */}
         {loading ? (
           <Loader2></Loader2>
         ) : (
@@ -108,11 +93,6 @@ const Profile = () => {
                   <div className="col-lg-6 col-12">
                     <div className="profile-content card">
                       <i className="fa-solid fa-circle-user"></i>
-                      {/* <img
-                    src="https://i.pravatar.cc/150"
-                    className="avatar img-fluid"
-                    alt="profile-img"
-                  ></img> */}
                       <h2 className="profile-username">
                         {Object.keys(user).length !== 0 ? (
                           <>
@@ -123,7 +103,6 @@ const Profile = () => {
                           "username"
                         )}
                       </h2>
-                      {/* <p className="profile-role">customer</p> */}
                       <button className="btn">
                         Edit Profile{" "}
                         <img

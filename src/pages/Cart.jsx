@@ -11,11 +11,9 @@ import { ConfirmationDialog } from "../component/ConfirmationDialog";
 
 const Cart = () => {
   const token = useSelector((state) => state.auth.token);
-  // const [token] = useState(JSON.parse(localStorage.getItem("auth_token")));
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [apiloading, setApiLoading] = useState(false);
-  const [loading, setloading] = useState("");
   const cartTotal = useSelector((state) => state.cart.cartTotal);
   const cartData = useSelector((state) => state.cart.cart);
   const deliverydata = useSelector((state) => state.cart.deliveryCharge);
@@ -24,7 +22,6 @@ const Cart = () => {
   const validateUser = useValidateUser();
 
   const handleClearCart = async () => {
-    setloading(true);
     setApiLoading(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
     await axios
@@ -40,9 +37,7 @@ const Cart = () => {
       )
       .then((res) => {
         setApiLoading(false);
-        setloading(false);
         dispatch(AddToCart({ ...res.data, items: [] }));
-        // dispatch(CartCounter(res.data.cart_count));
         dispatch(CartTotal(res.data.cart_total));
       })
       .catch((err) => console.log("err", err));
@@ -74,7 +69,6 @@ const Cart = () => {
           (item) => item.cart_id !== product?.cart_id
         );
         dispatch(AddToCart({ ...res.data, items: filterData }));
-        // dispatch(CartCounter(res.data.cart_count));
         dispatch(CartTotal(res.data.cart_total));
       })
       .catch((err) => console.log("err", err));
@@ -84,16 +78,13 @@ const Cart = () => {
       validateUser();
       toast.error("Please login to product update qty!")
     } else {
-      setloading(true);
-
+      setApiLoading(true)
       window.scrollTo({ top: 0, behavior: "smooth" });
       const cartItemUpdate = cartData?.items.find((item) => {
         return item?.variation_id !== 0
           ? item?.variation_id === product?.variation_id &&
               item.product_id === product.product_id
           : item.product_id === product.product_id;
-        // const isSameProduct = item.product_id === product.product_id;
-        //  isSameProduct;
       });
       let newQuantity =
         action === "PLUS"
@@ -115,7 +106,6 @@ const Cart = () => {
           },
         });
         setApiLoading(false);
-        setloading(false);
         toast.success(`${product?.product_name} quantity update successfully.`);
         dispatch(AddToCart(response.data));
         dispatch(CartTotal(response.data.cart_total));
@@ -187,7 +177,6 @@ const Cart = () => {
                                 className={`cart-item ${item?.stock_status}`}
                               >
                                 <div className="cart-item-product">
-                                  {/* <Link to={`/product/${item?.slug}`}></Link> */}
                                   <img
                                     src={item?.image}
                                     alt="cart-product-img"
@@ -251,14 +240,9 @@ const Cart = () => {
                                 <p className="cart-item-subtotal mb-0 d-md-block d-none">
                                   ₹ {item?.subtotal}
                                 </p>
-                                {/* <button className="cart-item-remove d-flex align-items-center justify-content-center d-md-none" onClick={(e)=>handledeleteCart(e,item?.cart_id)}>
-                                </button> */}
                                 <button
                                   className="cart-item-remove"
                                   onClick={(e) => confirmDelete(e, item)}
-                                  // onClick={(e) =>
-                                  //   handledeleteCart(e, item?.cart_id)
-                                  // }
                                 >
                                   <p className="d-flex mb-0 align-items-center justify-content-center d-md-none">
                                     Remove{" "}
@@ -304,27 +288,7 @@ const Cart = () => {
                     )}
                   </div>
                   <div className="col-lg-4">
-                    {/* <div className="cart-coupon-container">
-                        <div className="cart-coupon-title d-flex justify-content-between align-items-center">
-                          <h2>Best Coupons For You</h2>
-                          <Link
-                            to="#"
-                            className="cart-applycoupon-btn"
-                            onClick={handleModal}
-                          >
-                            All Coupons{" "}
-                            <i className="fa-solid fa-chevron-right"></i>
-                          </Link>
-                        </div>
-                        <input
-                          className="form-control"
-                          name="coupon"
-                          placeholder="Coupon code"
-                        ></input>
-                        <button className="btn btn-checkout">
-                          Apply Coupon Code
-                        </button>
-                      </div> */}
+                    
                     <div className="cart-total-container">
                       <h2 className="cart-total-title">Cart Total</h2>
                       <div className="cart-total-content">
@@ -339,13 +303,9 @@ const Cart = () => {
                             : `₹${Number(deliverydata).toFixed(2)}`}{" "}
                         </p>
                       </div>
-                      {/* <div className="cart-total-content">
-                          <p>Discount:</p>
-                          <p>Free</p>
-                        </div> */}
+
                       <div className="cart-total-content">
                         <p>Total:</p>
-                        {/* {finalTotal} */}
                         <p>
                           ₹
                           {(Number(cartTotal) + Number(deliverydata)).toFixed(
@@ -353,9 +313,6 @@ const Cart = () => {
                           )}
                         </p>
                       </div>
-                      {/* <p className="cart-applycoupon-notice">
-                          You’ll save <b>₹50.00</b> on this order!{" "}
-                        </p> */}
                       <Link to="/checkout">
                         <button className="btn btn-checkout">
                           Proceed to checkout

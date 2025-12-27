@@ -3,7 +3,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation } from "swiper/modules";
 import { Link } from "react-router-dom";
 
-const CategorySection = (categories,setLoadingCategories) => {
+const CategorySection = (categories) => {
   const swiperRef = useRef(null);
   const CategoryData = [
     {
@@ -22,7 +22,6 @@ const CategorySection = (categories,setLoadingCategories) => {
     { cat_name: "Trays", cat_img: "/img/cat-img10.webp", href: "/products?category=trays" },
     { cat_name: "Wedges", cat_img: "/img/cat-img11.webp", href: "/products?category=wedges" },
     { cat_name: "Polishing Kits", cat_img: "/img/cat-img12.webp", href: "/products?category=polishing-kits" },
-    // {cat_name:"Endo Categories",cat_img:"/img/cat-img6.png",href:""},
   ];
   return (
     <section className="category-section">
