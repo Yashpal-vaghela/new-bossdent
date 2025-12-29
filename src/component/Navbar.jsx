@@ -364,6 +364,21 @@ const Navbar = () => {
                   Contact Us
                 </Link>
               </li>
+              <li className="nav-item d-block d-lg-none">
+                {
+                  token !== "null" ? (
+                    <Link to="/profile" onClick={handleOffcanvas1}>
+                      Account
+                    </Link>
+                  ) : (
+                    <Link to="#"  data-bs-toggle="modal"
+                    data-bs-target="#exampleModal" onClick={handleOffcanvas1}>
+                      Account
+                    </Link>
+                  )
+                }
+                
+              </li>
             </ul>
             <Link
               to="/"

@@ -1,4 +1,4 @@
-import React, { useEffect,  useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BASE_URL from "../api/config";
 import axios from "axios";
@@ -39,7 +39,8 @@ const SingleProduct = () => {
   const validateUser = useValidateUser();
   const navigate = useNavigate();
 
-  const a = cartData.length !== 0
+  const a =
+    cartData.length !== 0
       ? cartData?.items.map((i) => {
           return {
             id: i?.variation_id === 0 ? i?.product_id : i?.variation_id,
@@ -83,42 +84,44 @@ const SingleProduct = () => {
   const handleShowQuantity = () => {
     setShowQuantity([]);
   };
-  const handleQuantity = (e, id, action, item) => {
-    if (action === "variation") {
-      if (!showQuantity.some((i) => i.variation_id === id)) {
-        const filterdata = singleProduct?.variations.filter(
-          (i) => i?.id === id
-        );
-        setShowQuantity((prev) => [...prev, ...filterdata]);
-        const currentQty = quantity[id] || 1;
-        setQuantity((prev) => ({
-          ...prev,
-          [id]: prev[id] || 1, // start from 1 if not already set
-        }));
+  const handleQuantity = (e, id, action, item, product) => {
+    if (product?.stock_status !== "outofstock") {
+      if (action === "variation") {
+        if (!showQuantity.some((i) => i.variation_id === id)) {
+          const filterdata = singleProduct?.variations.filter(
+            (i) => i?.id === id
+          );
+          setShowQuantity((prev) => [...prev, ...filterdata]);
+          const currentQty = quantity[id] || 1;
+          setQuantity((prev) => ({
+            ...prev,
+            [id]: prev[id] || 1, // start from 1 if not already set
+          }));
 
+          if (currentQty < 2) {
+            handleAddToCart(
+              singleProduct,
+              id,
+              { ...quantity, [id]: currentQty },
+              item?.attributes,
+              "PLUS"
+            );
+          }
+        }
+      } else {
+        const filterData = singleProduct?.id === id;
+        setShowQuantity(filterData);
+        const currentQty = quantity[id] || 1;
+        setQuantity({ ...quantity, [id]: currentQty });
         if (currentQty < 2) {
           handleAddToCart(
             singleProduct,
             id,
             { ...quantity, [id]: currentQty },
-            item?.attributes,
+            item,
             "PLUS"
           );
         }
-      }
-    } else {
-      const filterData = singleProduct?.id === id;
-      setShowQuantity(filterData);
-      const currentQty = quantity[id] || 1;
-      setQuantity({ ...quantity, [id]: currentQty });
-      if (currentQty < 2) {
-        handleAddToCart(
-          singleProduct,
-          id,
-          { ...quantity, [id]: currentQty },
-          item,
-          "PLUS"
-        );
       }
     }
   };
@@ -235,7 +238,7 @@ const SingleProduct = () => {
   const handleWishlist = async (e, product) => {
     if (token === "null" || !token) {
       validateUser();
-      toast.error("Please login to add product to wishlist!")
+      toast.error("Please login to add product to wishlist!");
     } else {
       const filterWishlistData = wishListData?.filter(
         (i) => i?.product_id === product?.id
@@ -686,12 +689,13 @@ const SingleProduct = () => {
                                     </>
                                   ) : (
                                     <button
-                                      className="btn btn-addToCart me-0 ms-auto d-flex align-items-center justify-content-between"
+                                      className={`btn btn-addToCart me-0 ms-auto d-flex align-items-center justify-content-between ${singleProduct.stock_status}`}
                                       onClick={(e) =>
                                         handleQuantity(
                                           e,
                                           item?.id,
                                           "variation",
+                                          item,
                                           item
                                         )
                                       }
@@ -742,7 +746,10 @@ const SingleProduct = () => {
                               <p>
                                 Pack Size:{" "}
                                 <b>
-                                  {singleProduct?.short_description.replace(/<\/?p>/g, "")}
+                                  {singleProduct?.short_description.replace(
+                                    /<\/?p>/g,
+                                    ""
+                                  )}
                                 </b>
                               </p>
                             )}
@@ -763,12 +770,16 @@ const SingleProduct = () => {
                                 <>
                                   <b className="text-decoration-line-through">
                                     ₹
-                                    {Number(singleProduct?.regular_price).toFixed(2)}
+                                    {Number(
+                                      singleProduct?.regular_price
+                                    ).toFixed(2)}
                                   </b>
                                   &nbsp;
                                   <b className="fw-bold">
                                     ₹
-                                    {Number(singleProduct?.sale_price).toFixed(2)}
+                                    {Number(singleProduct?.sale_price).toFixed(
+                                      2
+                                    )}
                                   </b>
                                 </>
                               ) : (
@@ -820,7 +831,8 @@ const SingleProduct = () => {
                                       e,
                                       singleProduct?.id,
                                       "without-variation",
-                                      0
+                                      0,
+                                      singleProduct
                                     )
                                   }
                                 >
@@ -840,10 +852,9 @@ const SingleProduct = () => {
                       </div>
                     </>
                   )}
-                  {
-                     singleProduct?.variations !== null &&
-                    singleProduct?.variations !== undefined && 
-                    visibleVariation.length >= 3 &&
+                  {singleProduct?.variations !== null &&
+                    singleProduct?.variations !== undefined &&
+                    visibleVariation.length > 3 &&
                     (loadMore === true ? (
                       <button
                         className="btn btn-loadMore mb-4 d-block m-auto"
@@ -858,9 +869,8 @@ const SingleProduct = () => {
                       >
                         <i className="fa-solid fa-angles-down"></i>
                       </button>
-                    ))
-                  }
-                 
+                    ))}
+
                   <div
                     className="single-variation-description-wrapper accordion"
                     id="accordionExample"

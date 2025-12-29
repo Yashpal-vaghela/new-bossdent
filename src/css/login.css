@@ -1150,6 +1150,10 @@
   }
 }
 @media (max-width: 576px) {
+  #logoutModal .modal-content{
+    width: 80%;
+    margin: auto;
+  }
   .setting-header h2 {
     font-size: 18px;
   }

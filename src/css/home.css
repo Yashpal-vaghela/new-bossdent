@@ -465,6 +465,9 @@
   .card .discount-badge{
     top:3px !important
   }
+  .premium-products-section .discount-badge{
+    top:0px !important;
+  }
   /* .dental-product-section h2{
         margin-bottom: 0px;
     } */
@@ -608,7 +611,7 @@
     grid-template-columns: repeat(2,1fr);
   }
   .premium-products-section .card .product-img{
-    padding: 20px 0px;
+    padding: 15px 8px;
   }
   .premium-products-section .shopping-bag-icon{
     padding: 9px;
@@ -680,6 +683,9 @@
   }
   .disposable-swiper .card-body .shopping-bag-icon{
     width: 21% !important;
+  }
+  .premium-products-section .section-title{
+    font-size: 20px !important;
   }
 }
 @media(min-width:992px){
