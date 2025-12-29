@@ -852,9 +852,10 @@ const SingleProduct = () => {
                       </div>
                     </>
                   )}
+                  {/* {console.log("vi",visibleVariation > 3,singleProduct)} */}
                   {singleProduct?.variations !== null &&
                     singleProduct?.variations !== undefined &&
-                    visibleVariation.length > 3 &&
+                    singleProduct?.variations.length > 3 &&
                     (loadMore === true ? (
                       <button
                         className="btn btn-loadMore mb-4 d-block m-auto"
