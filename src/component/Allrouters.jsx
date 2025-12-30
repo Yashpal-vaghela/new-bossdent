@@ -33,6 +33,7 @@ export const Allrouters = () => {
                 <Route path="/about" element={<About></About>}></Route>
                 <Route path="/products" element={<Product></Product>}></Route>
                 <Route path="/products/:slug" element={<SingleProduct></SingleProduct>}></Route>
+                <Route path="/payment/success" element={<Success></Success>}></Route>
                 {/* <Route path="/category/:slug" element={<Category />}></Route> */}
                 <Route path="/cart" element={<ProtectedOrderRoute><Cart></Cart></ProtectedOrderRoute>}></Route>
                 <Route path="/checkout" element={<ProtectedRoute><Checkout></Checkout></ProtectedRoute>}></Route>
@@ -52,7 +53,7 @@ export const Allrouters = () => {
                 <Route path="/terms-and-conditions" element={<TermAndCondition></TermAndCondition>}></Route>
                 <Route path="/refund-and-returns-policy" element={<RefundPolicy></RefundPolicy>}></Route>
                 <Route path="/return-exchange" element={<ProtectedOrderRoute><ReturnExchange></ReturnExchange></ProtectedOrderRoute>}></Route>
-                <Route path="/payment/success" element={<ProtectedOrderRoute><Success></Success></ProtectedOrderRoute>}></Route>
+                {/* <Route path="/payment/success" element={<ProtectedOrderRoute><Success></Success></ProtectedOrderRoute>}></Route> */}
                 <Route path="/payment/failed" element={<ProtectedOrderRoute><Success></Success></ProtectedOrderRoute>}></Route>
                 <Route path="*" element={<Home/>}></Route>
             </Routes>

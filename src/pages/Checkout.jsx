@@ -73,23 +73,23 @@ export const Checkout = () => {
                             user_id:user.length !== 0 && user.user_id,
                             amount:Number(`${(Number(res.data.order_total) + Number(deliverydata)) * 100}`),
                             mobile:user.length !== 0 && user.phone_number.slice(2),
+                            redirect_url: window.location.origin + "/payment/success"
                           })
                     });
                     if(!paymentResponse.ok){
                       const paymentErrorText = await paymentResponse.text();
                       throw new Error("Failed to initiate payment.", paymentErrorText);
                     }
-
-                   
                     const paymentData = await paymentResponse.json();
                     if(paymentData.phonepe_response.success && paymentData.phonepe_response && paymentData.phonepe_response.data.instrumentResponse && paymentData.phonepe_response.data.instrumentResponse.redirectInfo){
                       setApiLoading(false);
                       const paymentUrl = paymentData.phonepe_response.data.instrumentResponse.redirectInfo.url;
-                      window.open(paymentUrl);
-
-                      paymentIntervalRef.current = setInterval(()=>{
-                        checkPaymentStatus(paymentData.phonepe_response.data.merchantId,paymentData.x_verify,paymentData.phonepe_response.data.merchantTransactionId,res.data.order_id);
-                      },10000);
+                      //window.open(paymentUrl);
+                      window.location.href = paymentUrl;
+                      // paymentIntervalRef.current = setInterval(()=>{
+                      //   checkPaymentStatus(paymentData.phonepe_response.data.merchantId,paymentData.x_verify,paymentData.phonepe_response.data.merchantTransactionId,res.data.order_id);
+                      // },10000);
+                      localStorage.setItem("orderId", res.data.order_id);
                       dispatch(AddToCart({items:[],cart_count:0,cart_total:0}));
                     }
                   }else{
@@ -106,36 +106,45 @@ export const Checkout = () => {
             }
         }
     })
-    const checkPaymentStatus = async (merchantId,verifyToken,transactionId,orderId) =>{
-      setApiLoading(true);
-      try{
-        const res = await axios.post(`${BASE_URL}/phonepe/callback`,{"merchantTransactionId":transactionId},{
-          headers:{
-            Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
-            "Content-Type": "application/json",
-            "x-verify":verifyToken,
-            "x-merchant-id":merchantId
-          }
-        });
-        if (res.data.payment_status === "COMPLETED") {
-          toast.success("Payment Successful!");
-          clearInterval(paymentIntervalRef.current);
-          paymentIntervalRef.current = null; 
-          setApiLoading(false);
-          navigate("/payment/success");
-        }
-        if (res.data.payment_status === "FAILED" ) {
-          toast.error("Payment Failed!");
-          clearInterval(paymentIntervalRef.current);
-          paymentIntervalRef.current = null;
-          setApiLoading(false);
-          navigate("/payment/success");
-        }
-        localStorage.setItem("orderId",JSON.stringify(orderId));
-      }catch(err){
-        console.log("Poll error", err);
-      }
-    }
+    // useEffect(() => {
+    //   const orderId = JSON.parse(localStorage.getItem("orderId"));
+    //   if (!orderId) return;
+
+    //   const interval = setInterval(() => {
+    //     checkPaymentStatus(orderId);
+    //   }, 5000);
+
+    //   return () => clearInterval(interval);
+    // }, []);
+
+    // const checkPaymentStatus = async (orderId) =>{
+    //   setApiLoading(true);
+    //   try{
+    //     const res = await axios.get(`${BASE_URL}/phonepe/status?order_id=${orderId}`,{
+    //       headers:{
+    //         Authorization: `Bearer ${token}`,
+    //         "Content-Type": "application/json",
+    //       }
+    //     });
+    //     if (res.data.payment_status === "COMPLETED") {
+    //       toast.success("Payment Successful!");
+    //       clearInterval(paymentIntervalRef.current);
+    //       paymentIntervalRef.current = null; 
+    //       setApiLoading(false);
+    //       navigate("/payment/success");
+    //     }
+    //     if (res.data.payment_status === "FAILED" ) {
+    //       toast.error("Payment Failed!");
+    //       clearInterval(paymentIntervalRef.current);
+    //       paymentIntervalRef.current = null;
+    //       setApiLoading(false);
+    //       navigate("/payment/success");
+    //     }
+    //     localStorage.setItem("orderId",JSON.stringify(orderId));
+    //   }catch(err){
+    //     console.log("Poll error", err);
+    //   }
+    // }
     const DeletCartItems = async () =>{
       setApiLoading(true);
       await axios.post(`${BASE_URL}/delete-cart`,{},{

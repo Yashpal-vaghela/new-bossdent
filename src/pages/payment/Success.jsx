@@ -1,63 +1,86 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import BASE_URL from "../../api/config";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 export const Success = () => {
-  const [paymentStatus, setPaymentStatus] = useState("");
-  const token = useSelector((state)=>state.auth.token);
+  const [paymentStatus, setPaymentStatus] = useState("PROCESSING");
+  const token = useSelector((state) => state.auth.token);
   const [orderId] = useState(JSON.parse(localStorage.getItem("orderId")));
   const navigate = useNavigate();
-  const fetchPaymentCallBack = async (controller) => {
+  const intervalRef = useRef(null);
+
+  const fetchPaymentCallBack = async () => {
     try {
-      const response = await axios.get(
-        `${BASE_URL}/get-order-details/${orderId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
-            "Content-Type": "application/json",
-          },
-          signal:controller.signal
-        }
-      );
-      const status = response.data.order.status;
+      const response = await axios.get(`${BASE_URL}/phonepe/status?order_id=${orderId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
+          "Content-Type": "application/json",
+        },
+      });
+
+      const status = response.data.payment_status;
       setPaymentStatus(status);
+
+      // Stop polling if payment is completed or failed
+      if (status === "COMPLETED" || status === "FAILED") {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
     } catch (err) {
-      setPaymentStatus("failed");
+      setPaymentStatus("FAILED");
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
     }
   };
+
   useEffect(() => {
-    const controller = new AbortController();
-    if (orderId === undefined) {
+    if (!orderId) {
       navigate("/");
-    } else {
-      fetchPaymentCallBack(controller);
+      return;
     }
-    return () => controller.abort();
+
+    // Initial delay before first fetch (e.g., 2 seconds)
+    const timeout = setTimeout(fetchPaymentCallBack, 2000);
+
+    // Poll every 5 seconds
+    intervalRef.current = setInterval(fetchPaymentCallBack, 5000);
+
+    return () => {
+      clearInterval(timeout);
+      clearInterval(intervalRef.current);
+    };
   }, []);
+
   return (
     <div className="home-main pt-4">
       <section className="checkout-success-wrapper ">
         <div className="container">
           <h1 className="checkout-success-message">Thank You!</h1>
           <p>For Your Order</p>
-          {
-            (paymentStatus === "success" || paymentStatus === "Processing") && <h2>Your order was Successfully Placed.</h2>
-          }
-          {
-            paymentStatus === "On-hold" && <h2>Your Payment could not be verified.</h2>
-          }
+          {["COMPLETED", "PROCESSING"].includes(paymentStatus) && (
+            <h2>Your order was Successfully Placed.</h2>
+          )}
+          {paymentStatus === "FAILED" && <h2>Your Payment could not be verified.</h2>}
           <br />
-          {
-            paymentStatus === "success" || paymentStatus === "Processing"? <p className="order-status-success"><i className="fa-regular fa-circle-check"></i> Order Successfully Placed</p> : 
-            paymentStatus === "On-hold" ? <p className="order-status-failed"><i className="fa-regular fa-circle-xmark"></i>Payment Failed</p> : <></>
-          }
-          <p className="order-id">Your Order No:{orderId}</p>
+          {["COMPLETED", "PROCESSING"].includes(paymentStatus) ? (
+            <p className="order-status-success">
+              <i className="fa-regular fa-circle-check"></i> Order Successfully Placed
+            </p>
+          ) : paymentStatus === "FAILED" ? (
+            <p className="order-status-failed">
+              <i className="fa-regular fa-circle-xmark"></i> Payment Failed
+            </p>
+          ) : null}
+          <p className="order-id">Your Order No: {orderId}</p>
           <p className="contact-detalis">
             If you have any question regarding your order, you can contact at{" "}
-            <strong><Link to="mailto:zahndentaldepo@gmail.com">zahadental@gmail.com</Link> or call us at <Link to="tel:+917698828883">76988 28883</Link></strong>
+            <strong>
+              <Link to="mailto:zahndentaldepo@gmail.com">zahadental@gmail.com</Link> or call us at{" "}
+              <Link to="tel:+917698828883">76988 28883</Link>
+            </strong>
           </p>
           <div className="checkout-success">
             <div id="content">
