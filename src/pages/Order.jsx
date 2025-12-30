@@ -102,7 +102,7 @@ const Order = () => {
           </nav>
         </div>
       </section>
-      <section className="order-info-section">
+      <section className="order-info-section profile-section">
         <div className="container">
           <button
             className="navbar-toggler"
@@ -115,7 +115,7 @@ const Order = () => {
           </button>
           <div className="d-flex w-100 profile-content-wrapper align-items-start justify-content-between gap-3">
             <HelpSideBar></HelpSideBar>
-            <div className="rightside-bar col-lg-9">
+            <div className="rightside-bar col-lg-9 col-12">
               <h2 className="back-title">
                 <Link to="/help-center">
                   <i className="fa-solid fa-chevron-left"></i> Help

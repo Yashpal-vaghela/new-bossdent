@@ -281,7 +281,7 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
             No premium products available.
           </p>
         ) : (
-          <div className="grid-container my-3 mt-md-2 mb-md-2">
+          <div className="grid-container mt-1 mb-2 mt-sm-3 mt-md-2 mb-md-2">
             <div className="grid-item big card position-relative">
               {premiumProducts[6]?.regular_price &&
                 premiumProducts[6]?.sale_price && (

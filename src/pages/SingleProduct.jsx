@@ -85,6 +85,7 @@ const SingleProduct = () => {
     setShowQuantity([]);
   };
   const handleQuantity = (e, id, action, item, product) => {
+    // console.log("id", id, action, item, product);
     if (product?.stock_status !== "outofstock") {
       if (action === "variation") {
         if (!showQuantity.some((i) => i.variation_id === id)) {
@@ -112,12 +113,12 @@ const SingleProduct = () => {
         const filterData = singleProduct?.id === id;
         setShowQuantity(filterData);
         const currentQty = quantity[id] || 1;
-        setQuantity({ ...quantity, [id]: currentQty });
+        setQuantity({ ...quantity, [id]: currentQty});
         if (currentQty < 2) {
           handleAddToCart(
             singleProduct,
             id,
-            { ...quantity, [id]: currentQty },
+            { ...quantity, [id]: currentQty},
             item,
             "PLUS"
           );
@@ -204,9 +205,23 @@ const SingleProduct = () => {
         return i?.variation_id !== 0
           ? (typeof id === "object"
               ? i?.variation_id === id?.id
-              : i?.variation_id === id) && i?.product_id === singleproduct?.id
+              : i?.variation_id ===
+                (Object.keys(selectattributes).length !== 0
+                  ? id
+                  : selectattributes)) && i?.product_id === singleproduct?.id
           : i?.product_id === singleproduct?.id;
       });
+      console.log(
+        "singleProduct",
+        singleProduct,
+        id,
+        qty,
+        selectattributes,
+        action,
+        "Already",
+        AlreadyExistingdata,
+        showQuantity
+      );
       if (AlreadyExistingdata.length > 0) {
         const payload = {
           cart_id: AlreadyExistingdata[0]?.cart_id,
@@ -217,11 +232,19 @@ const SingleProduct = () => {
               ? qty[id]
               : AlreadyExistingdata[0]?.quantity + 1,
         };
-        handleEditApi(payload);
+        if(showQuantity.length !== 0){
+          handleEditApi(payload);
+        }
       } else {
+        // console.log("sel",Object.keys(selectattributes) )
         const payload = {
           product_id: singleProduct?.id,
-          variation_id: typeof id === "object" ? id?.id : id,
+          variation_id:
+            Object.keys(selectattributes).length !== 0
+              ? typeof id === "object"
+                ? id?.id
+                : id
+              : selectattributes,
           quantity: typeof id === "object" ? qty[id?.id] : qty[id],
         };
         handleAddApi(payload);

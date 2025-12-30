@@ -219,7 +219,7 @@ const DisposableProducts = ({ token, getCartData, dispatch }) => {
               768: { slidesPerView: 3 },
               992: { slidesPerView: 4 },
             }}
-            className="pt-3 pb-4 pt-md-3 pb-md-4 py-lg-3 py-xl-4 disposable-swiper"
+            className="pt-2 pb-4 pt-sm-3 pt-md-3 pb-md-4 py-lg-3 py-xl-4 disposable-swiper"
           >
             <div className="row py-3 py-md-4">
               {disposableProduct?.map((item, index) => {

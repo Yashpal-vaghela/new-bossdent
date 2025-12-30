@@ -527,7 +527,7 @@ body {
 @media (max-width: 991px) {
   .search-icon-wrapper {
     width: 100%;
-    margin: 25px 0px 0px;
+    margin: 15px 0px 0px;
     position: relative;
     /* display: none; */
   }
@@ -648,6 +648,9 @@ body {
   }
   .search-icon-wrapper .suggestion-main {
     width: 98% !important;
+  }
+    .navbar-bottom-highlight {
+    margin: 12px 0px 0px;
   }
 }
 @media (max-width: 768px) {

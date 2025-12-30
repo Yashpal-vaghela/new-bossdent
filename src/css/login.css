@@ -323,7 +323,13 @@
   font-weight: 600;
   background-color: #fff;
 }
-
+#EditformModal .modal-dialog{
+  margin: auto;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 @media (min-width: 991px) {
   .profile-content-wrapper .leftside-bar {
     background-color: transparent;
@@ -1308,7 +1314,7 @@
     margin-left: 4%;
   }
   .help-order-accordion{
-    width:91%
+    width:100%;
   }
 }
 @media (max-width: 768px) {
@@ -1333,6 +1339,9 @@
     font-size: 14px;
     letter-spacing: 0.3px;
   }
+   .help-content-wrapper .card a svg{
+    color:#fff
+   }
 }
 @media (max-width: 576px) {
   .help-center-section .d-flex {

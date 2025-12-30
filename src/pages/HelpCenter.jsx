@@ -139,6 +139,10 @@ export const HelpCenter = () => {
                         />
                       </svg>
                     </Link>
+                    <svg width="22" height="39" viewBox="0 0 22 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M2.21673 0.000114441L21.6084 19.3918L2.21673 38.7834L6.48499e-05 36.5668L17.1771 19.3918L0.00214767 2.21678L2.21673 0.000114441Z" fill="white"/>
+</svg>
+
                   </div>
                 </div>
               </div>

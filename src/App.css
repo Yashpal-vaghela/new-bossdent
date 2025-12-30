@@ -160,6 +160,9 @@
 .loader-wapper img{
   margin-top: -0.2%;
 }
+.payment-wrapper img{
+  margin-top: 0%;
+}
 .dotted-loader::before {
     content: "";
     position: absolute;

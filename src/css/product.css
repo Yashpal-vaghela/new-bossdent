@@ -290,6 +290,14 @@
   background: rgba(0,0,0,0.6);
   backdrop-filter: blur(1px);
 }
+.product-variation-modal .modal-dialog{
+  display: flex;
+  margin: auto;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+
+}
 .product-variation-modal .modal-content{
   background: #000;
   color:#fff;
