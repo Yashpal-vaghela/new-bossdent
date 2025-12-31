@@ -374,7 +374,7 @@ export const Product = () => {
 
   return (
     <React.Fragment>
-      <div className="home-main pt-3 pt-sm-4 pt-lg-0">
+      <div className="home-main product-main pt-1  pt-lg-0">
         <section className="Breadcrumbs-section">
           <div className="container">
             <nav aria-label="breadcrumb">
@@ -444,7 +444,7 @@ export const Product = () => {
                     <option value="low-high">low to high</option>
                   </select>
                 </div>
-                <div className="row justify-content-lg-start justify-content-md-center gap-3 gap-sm-0 mb-5">
+                <div className="row justify-content-lg-start justify-content-md-center justify-content-center gap-3 gap-sm-0 mb-5">
                   {products?.map((product, index) => {
                     const greaterPrice = Math.max(
                       Number(product.price) || 0,

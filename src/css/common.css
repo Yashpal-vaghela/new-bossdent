@@ -38,21 +38,7 @@ a {
   font-weight: 600;
   letter-spacing: 0.2px;
 }
-/* .Breadcrumbs-section{
-    background-image: url("../../public/img/breadcrumbs-bg.png");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    width:100%;
-    height: 100%;
-}
-.Breadcrumbs-section .container{
-    position: relative;
-    padding: 90px 0px 0px;
-    top:50%;
-} */
 .Breadcrumbs-section {
-  /* background: rgba(30, 30, 30, 1); */
   padding: 10px 0px;
   color: #fff;
   margin-bottom: 20px;
@@ -77,36 +63,69 @@ a {
 }
 .breadcrumb-item + .breadcrumb-item::before {
   content: var(--bs-breadcrumb-divider, ">");
-  /* content:var(--bs-breadcrumb-divider, " "); */
-  /* content:"";
-    background-image: url('../../public/img/arrow-left.png');
-    background-size: 100% 100%;
-    background-repeat: no-repeat; */
 }
-.cart-main,
+/* .cart-main,
 .wishlist-main {
   margin-top: 160px !important;
-}
+} */
 @media (max-width: 1200px) {
-  .cart-main,
+  /* .cart-main,
   .wishlist-main {
     margin-top: 155px !important;
+  } */
+  .Breadcrumbs-section nav{
+    margin-top: 15.8%;
   }
 }
 @media (max-width: 991px) {
-  .cart-main,
+  /* .cart-main,
   .wishlist-main {
     margin-top: 125px !important;
-  }
+  } */
+   /* .Breadcrumbs-section{
+    height: 209px;
+  } */
   .Breadcrumbs-section nav{
     margin-top: 21.5%;
+  }
+}
+@media(max-width:768px){
+  .Breadcrumbs-section nav{
+    margin-top: 18.5%;
+    width: 96%;
+  }
+  .Breadcrumbs-section{
+    background-position: bottom;
+    height: 175px;
+    /* height: auto; */
   }
 }
 @media (max-width: 576px) {
   .cart-main,
   .wishlist-main {
-    margin-top: 130px !important;
+    margin-top: 150px !important;
   }
+  .Breadcrumbs-section nav{
+    margin-top: 15.5%;
+    margin-bottom: 15px;
+    width: 80%;
+  }
+  .Breadcrumbs-section{
+    height: auto;
+  }
+}
+@media(max-width:480px){
+  /* .Breadcrumbs-section{
+    height: auto;
+  } */
+  .Breadcrumbs-section nav{
+    margin-top: 19.5%;
+    width: 70%;
+  }
+  .Breadcrumbs-section .breadcrumb .breadcrumb-item{
+    font-size: 12px;
+  }
+  
 }
 /* loader css */
 .Loader-wrapper {
@@ -124,6 +143,5 @@ a {
 @keyframes blinker {
   50% {
     opacity: 0;
-    /* background-color:rgba(0,0,0,1); */
   }
 }

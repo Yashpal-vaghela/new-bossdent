@@ -158,7 +158,7 @@ const Navbar = () => {
         <nav className="navbar navbar-top navbar-dark navbar-expand-lg">
           <div className="container position-relative">
             <Link to="/" className="navbar-logo mb-2 mb-lg-1">
-              <img src="/img/boss-dent-logo.webp" className="img-fluid" width="180" height="150" alt="logo"></img>
+              <img src="/img/boss-dent-logo1.webp" className="img-fluid" width="200" height="150" alt="logo"></img>
             </Link>
             <button
               className="navbar-toggler"

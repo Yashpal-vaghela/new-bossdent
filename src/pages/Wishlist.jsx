@@ -237,7 +237,7 @@ const Wishlist = () => {
     }, 2000);
   }, []);
   return (
-    <div className="home-main wishlist-main">
+    <div className="home-main pt-1 wishlist-main">
       <section className="Breadcrumbs-section">
         <div className="container">
           <nav aria-label="breadcrumb">
@@ -288,8 +288,9 @@ const Wishlist = () => {
                       console.log("ietm", item);
                       return (
                         <React.Fragment key={index}>
-                          <div className="wishlist-item" key={index}>
-                            <div className="wishlist-item-wrapper">
+                          <div className="wishlist-item " key={index}>
+                            <div className="wishlist-item-wrapper ">
+                              {/* h-100 d-flex flex-column */}
                               <div className="wishlist-item-product">
                                 <img
                                   src={item?.image}
@@ -299,15 +300,21 @@ const Wishlist = () => {
                                   className="wishlist-product-img img-fluid"
                                 ></img>
                               </div>
-                              <p className="wishlist-item-name mb-1 d-md-none">
-                                {item?.name}
-                              </p>
-                              <p className="wishlist-item-price mb-md-0 mb-1 d-md-none">
-                                ₹{Number(item?.price).toFixed(2)}
-                              </p>
-                              <p className="wishlist-item-pack mb-md-0 mb-4 d-md-none">
-                                {item?.short_description}
-                              </p>
+
+                              <div
+                                className="d-flex flex-column align-item-stretch h-100 d-md-none"
+                                style={{ flex: 1 }}
+                              >
+                                <p className="wishlist-item-name mb-1 d-md-none">
+                                  {item?.name}
+                                </p>
+                                <p className="wishlist-item-price mb-md-0 mb-1 d-md-none">
+                                  ₹{Number(item?.price).toFixed(2)}
+                                </p>
+                                <p className="wishlist-item-pack mb-md-0 mb-4 d-md-none">
+                                  {item?.short_description}
+                                </p>
+                              </div>
                             </div>
                             <p className="wishlist-item-name mb-1 d-md-block d-none">
                               {item?.name}
@@ -334,7 +341,14 @@ const Wishlist = () => {
                                 )
                               }
                             >
-                              Add to Cart
+                              <span className="d-md-none d-lg-block">Add to Cart</span>
+                              <img
+                                className="d-md-flex justify-content-center m-auto d-lg-none d-none img-fluid"
+                                alt="cart-icon"
+                                src="/img/cart-icon.svg"
+                                width="25"
+                                height="25"
+                              ></img>
                             </button>
                             <button
                               className="wishlist-item-remove"

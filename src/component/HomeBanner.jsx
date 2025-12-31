@@ -68,7 +68,7 @@ const HomeBanner = () => {
           }}
           navigation={true}
           modules={[Autoplay, Pagination]}
-          className="mySwiper"
+          className="mySwiper pb-3 pb-sm-0"
         >
           {bannerImages.map((item, index) => {
             return (

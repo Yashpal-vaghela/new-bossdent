@@ -3,6 +3,14 @@ import { Link, useLocation } from "react-router-dom";
 
 export const HelpSideBar = () => {
   const location = useLocation();
+   const handleOffcanvas1 = () => {
+    var x = document.getElementById("close");
+    if (window.innerWidth <= 991) {
+      if (x?.display !== "none") {
+        return x.click();
+      }
+    }
+  };
   return (
     <div
       className="leftside-bar help-side-bar offcanvas offcanvas-start col-lg-3 col-7"
@@ -27,7 +35,7 @@ export const HelpSideBar = () => {
               location.pathname === "/help-center/order" ? "active" : ""
             }
           >
-            <Link to="/help-center/order">
+            <Link to="/help-center/order" onClick={handleOffcanvas1}>
               <svg
                 className="order-svg"
                 width="24"
@@ -57,7 +65,7 @@ export const HelpSideBar = () => {
               location.pathname === "/help-center/delivery" ? "active" : ""
             }
           >
-            <Link to="/help-center/delivery">
+            <Link to="/help-center/delivery" onClick={handleOffcanvas1}>
               <svg
                 className="delivery-svg"
                 width="26"
@@ -86,7 +94,7 @@ export const HelpSideBar = () => {
               location.pathname === "/help-center/payment-info" ? "active" : ""
             }
           >
-            <Link to="/help-center/payment-info">
+            <Link to="/help-center/payment-info" onClick={handleOffcanvas1}>
               <svg
                 className="payment-svg"
                 width="24"
@@ -123,7 +131,7 @@ export const HelpSideBar = () => {
               location.pathname === "/help-center/return" ? "active" : ""
             }
           >
-            <Link to="/help-center/return">
+            <Link to="/help-center/return" onClick={handleOffcanvas1}>
               <svg
               className="return-svg"
                 width="24"

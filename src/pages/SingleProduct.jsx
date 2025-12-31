@@ -465,7 +465,7 @@ const SingleProduct = () => {
   };
 
   return (
-    <div className="home-main pt-1 pt-md-4 ">
+    <div className="home-main pt-1  pt-lg-0">
       <section className="Breadcrumbs-section">
         <div className="container">
           <nav aria-label="breadcrumb">

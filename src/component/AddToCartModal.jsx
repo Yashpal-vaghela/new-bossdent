@@ -93,11 +93,11 @@ export const AddToCartModal = ({
             <div className="modal-variation-wrapper mb-3">
                 {
                     variation?.length > 0 && <>
-                        <label className="form-label">Select {variation?.map((i,index)=>Object.keys(i?.attributes)[index])[0]}</label>
-                        <select className="modal-variation-select form-select" name={Object.keys(variation[0]?.attributes)[0]} onChange={(e)=>handleAttributeSelect(e)}>
+                        <label className="form-label">Select {variation?.map((i,index)=>Object.keys(i?.attributes)[index])[0]?.replace(/^pa_/, '')}</label>
+                        <select className="modal-variation-select form-select" name={Object.keys(variation[0]?.attributes || {})[0]?.replace('pa_', '')} onChange={(e)=>handleAttributeSelect(e)}>
                             {variation !== undefined ?
                             <>  
-                              <option>Select {variation?.map((i,index)=>Object.keys(i?.attributes)[index])[0]}</option>
+                              <option>Select {variation?.map((i,index)=>Object.keys(i?.attributes)[index])[0]?.replace(/^pa_/, '')}</option>
                               {variation?.map((sizeKey,index) => {
                                   return (
                                       <option key={index}  value={Object.values(sizeKey?.attributes)[0]} >

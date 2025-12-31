@@ -85,7 +85,7 @@ const Delivery = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   return (
-    <div className="home-main pt-4">
+    <div className="home-main pt-4 pt-lg-0">
       <section className="Breadcrumbs-section">
         <div className="container">
           <nav aria-label="breadcrumb">

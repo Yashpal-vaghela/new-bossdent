@@ -170,7 +170,7 @@ export const Checkout = () => {
     },[user])
 
   return (
-    <div className="home-main pt-3 cart-main">
+    <div className="home-main pt-3  cart-main">
       <section className="Breadcrumbs-section">
         <div className="container">
           <nav aria-label="breadcrumb">
@@ -327,6 +327,7 @@ export const Checkout = () => {
             <div className="col-lg-4">
               <div className="cart-total-container">
                 <h2 className="cart-total-title">Cart Total</h2>
+                {console.log("cartData",cartData)}
                 {
                   cartData?.items !== undefined && cartData?.items.length !== 0  ? cartData?.items.map((i,index)=>{
                     return(

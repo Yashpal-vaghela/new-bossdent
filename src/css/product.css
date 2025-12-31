@@ -14,7 +14,6 @@
 }
 
 .product-section .card.outofstock {
- 
   /* background-color: rgba(0, 0, 0, 0.3); */
   position: relative;
   z-index: 0;
@@ -462,6 +461,13 @@
     } */
 }
 @media (max-width: 576px) {
+  /* .product-main{
+    margin-top: 146px;
+  } */
+  .product-title{
+    min-height: auto;
+    margin-bottom: 0px;
+  }
   .product-section .card .heart-icon {
     padding: 8px;
     right: 0%;
@@ -473,4 +479,5 @@
   .product-section .card .card-body {
     padding: 10px 5px;
   }
+  
 }

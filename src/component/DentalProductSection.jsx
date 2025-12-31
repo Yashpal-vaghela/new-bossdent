@@ -171,15 +171,15 @@ export const DentalProductSection = ({
                           {item.sale_price ? (
                             <>
                               <span className="text-muted text-decoration-line-through me-2">
-                                ₹{item.regular_price}
+                                ₹{Number(item.regular_price).toFixed(2)}
                               </span>
                               <span className="fw-bold text-white">
-                                ₹{item.sale_price}
+                                ₹{Number(item.sale_price).toFixed(2)}
                               </span>
                             </>
                           ) : (
                             <span className="fw-bold text-white">
-                              ₹{item.price || item.regular_price || "0"}
+                              ₹{Number(item.price || item.regular_price || "0").toFixed(2)}
                             </span>
                           )}
                         </p>

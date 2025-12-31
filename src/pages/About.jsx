@@ -11,7 +11,7 @@ export const About = () => {
     },
     {
       id: 2,
-      img: "/img/about-img2.webp",
+      img: "/img/about-img21.webp",
       title: "Face Masks",
       description: "a reliable barrier for hygiene and safety",
     },
@@ -44,7 +44,7 @@ export const About = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   return (
-    <div className="home-main pt-4">
+    <div className="home-main pt-1">
       <section className="Breadcrumbs-section">
         <div className="container">
           <nav aria-label="breadcrumb">

@@ -59,7 +59,7 @@ export const Settings = () => {
     setStates(Indian_states_cities_list?.STATES_OBJECT);
   }, []);
   return (
-    <div className="home-main pt-4">
+    <div className="home-main pt-1 pt-lg-0">
       <section className="Breadcrumbs-section">
         <div className="container">
           <nav aria-label="breadcrumb">

@@ -50,9 +50,11 @@ const Footer = () => {
               <div className="col-lg-4">
                 <Link to="/">
                   <img
-                    src="/img/logo2.svg"
+                    src="/img/boss-dent-logo1.webp"
+                    // src="/img/logo2.svg"
                     className="footer-logo img-fluid mb-3"
                     alt="logo"
+                    width="200"
                   ></img>
                 </Link>
                 <p className="footer-content">
@@ -144,7 +146,7 @@ const Footer = () => {
           </div>
           <div className="footer-copyright-wrapper d-md-flex d-grid justify-content-between align-items-center">
             <p className="mb-0 order-md-1 order-2">
-              2025 © all right reserved by BossDentIndia
+              2026 © all right reserved by BossDentIndia
             </p>
             <div className="footer-copyright order-md-2 order-1">
               <Link to="tel:+917698828883">+91 76988 28883</Link>

@@ -1371,6 +1371,9 @@
   .help-center-section .navbar-toggler{
     margin-bottom: 0px;
   }
+  .help-content-wrapper .card svg{
+    display: block;
+  }
   /* .help-center-section .rightside-bar .row{
     display: block !important;
   } */

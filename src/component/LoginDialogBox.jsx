@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import BASE_URL from "../api/config";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -9,6 +9,7 @@ import { fetchCart } from "../redux/cartSlice";
 import { fetchWishList } from "../redux/wishlistSlice";
 import { fetchUser } from "../redux/userSlice";
 import { AddToken } from "../redux/authSlice";
+import Loader2 from "./Loader2";
 
 const LoginDialogBox = () => {
   const [formvalue, setformValue] = useState("");
@@ -19,6 +20,7 @@ const LoginDialogBox = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [apiloading, setApiLoading] = useState(false);
 
   const handleRequestOTP = async (e, action) => {
     if (formvalue?.phone_number || formvalue !== "") {
@@ -26,6 +28,7 @@ const LoginDialogBox = () => {
         setStep(2);
         setTime(60);
         setShowResend(false);
+        setApiLoading(true);
         await axios
           .post(`${BASE_URL}/login/request-otp`, formvalue, {
             headers: {
@@ -35,10 +38,12 @@ const LoginDialogBox = () => {
             },
           })
           .then((response) => {
+            setApiLoading(false);
             console.log("response", response);
           })
           .catch((err) => console.log("err", err));
       } else {
+        setApiLoading(true);
         await axios
           .post(`${BASE_URL}/login/resend-otp`, formvalue, {
             headers: {
@@ -47,7 +52,10 @@ const LoginDialogBox = () => {
                 "Basic ODA3M2FiM2JjODo3ZTlmNTFlZDc5YjIxMTlmYTJmZA==",
             },
           })
-          .then((res) => console.log("res", res))
+          .then((res) => {
+            setApiLoading(false);
+            console.log("res", res);
+          })
           .catch((err) => console.error("error", err));
       }
     } else {
@@ -127,6 +135,7 @@ const LoginDialogBox = () => {
       const finalOtp = newOtp.join("");
 
       try {
+        setApiLoading(true);
         const res = await axios.post(`${BASE_URL}/login/verify-otp`, {
           phone_number: formvalue.phone_number,
           otp: finalOtp,
@@ -156,6 +165,7 @@ const LoginDialogBox = () => {
 
         // navigate("/profile");
         toast.success("OTP verified successfully!");
+        setApiLoading(false);
         const controller = new AbortController();
         dispatch(fetchCart(undefined, { signal: controller.signal }));
         dispatch(fetchWishList(undefined, { signal: controller.signal }));
@@ -165,6 +175,7 @@ const LoginDialogBox = () => {
           controller.abort(); // cleanup on unmount
         };
       } catch (err) {
+        setApiLoading(false);
         toast.error("Invaild OTP, Please Enter correct OTP.");
         // console.error("❌ OTP Verification Failed:", err);
       }
@@ -172,138 +183,142 @@ const LoginDialogBox = () => {
   };
   const modalRef = useRef(null);
   const handleClose = () => {
-    const modal = window.bootstrap.Modal.getInstance(modalRef.current) ||
-    new window.bootstrap.Modal(modalRef.current);
-    console.log("modal",modal)
+    const modal =
+      window.bootstrap.Modal.getInstance(modalRef.current) ||
+      new window.bootstrap.Modal(modalRef.current);
+    console.log("modal", modal);
     modal.hide();
   };
   return (
-    <div
-      className="modal fade"
-      id="exampleModal"
-      tabIndex="-1"
-      aria-labelledby="exampleModalLabel"
-      // aria-hidden="true"
-      // data-bs-backdrop="static"
-      data-bs-keyboard="false"
-      ref={modalRef}
-    >
-      <div className="modal-dialog modal-dialog-centered">
-        <div className="modal-content">
-          <div className="modal-header">
-            <button
-              type="button"
-              className="btn-close"
-              // data-bs-dismiss="modal"
-              aria-label="Close"
-              onClick={handleClose}
-            ></button>
-          </div>
-          <div className="modal-body">
-            {step === 1 ? (
-              <>
-                <div className="d-flex justify-content-between align-items-center ">
-                  <h5 className="modal-title">
-                    <img
-                      src="/img/singin.svg"
-                      className="img-fluid mx-3"
-                      alt="sign-in-icon"
-                      width="20"
-                      height="20"
-                    ></img>
-                    Sign in
-                  </h5>
-                  <img
-                    src="/img/logo2.svg"
-                    className="img-fluid"
-                    alt="logo"
-                  ></img>
-                </div>
-                <div className="form-wrapper phone-box">
-                  <span>+91</span>
-                  <input
-                    className="form-control w-100"
-                    placeholder="Phone number"
-                    type="number"
-                    name="phone_number"
-                    value={formvalue?.phone_number || ""}
-                    onChange={handleChange}
-                    maxLength={10}
-                  ></input>
-                </div>
-                <button
-                  className="btn btn-sendOTP text-white"
-                  onClick={(e) => handleRequestOTP(e, "login")}
-                >
-                  Login
-                </button>
-              </>
-            ) : (
-              <>
-                <div className="d-flex justify-content-between align-items-center">
-                  <div className="d-block">
+    <React.Fragment>
+      {apiloading && <Loader2></Loader2>}
+      <div
+        className="modal fade"
+        id="exampleModal"
+        tabIndex="-1"
+        aria-labelledby="exampleModalLabel"
+        // aria-hidden="true"
+        // data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        ref={modalRef}
+      >
+        <div className="modal-dialog modal-dialog-centered">
+          <div className="modal-content">
+            <div className="modal-header">
+              <button
+                type="button"
+                className="btn-close"
+                // data-bs-dismiss="modal"
+                aria-label="Close"
+                onClick={handleClose}
+              ></button>
+            </div>
+            <div className="modal-body">
+              {step === 1 ? (
+                <>
+                  <div className="d-flex justify-content-between align-items-center ">
                     <h5 className="modal-title">
                       <img
-                        src="/img/requestOTP-icon.svg"
-                        className="img-fluid mx-2"
+                        src="/img/singin.svg"
+                        className="img-fluid mx-3"
                         alt="sign-in-icon"
-                        width="25"
-                        height="25"
+                        width="20"
+                        height="20"
                       ></img>
-                      OTP Verification
+                      Sign in
                     </h5>
-                    <p className="mb-0 ms-2">
-                      Enter 6- Digit OTP sent to whatsapp
+                    <img
+                      src="/img/logo2.svg"
+                      className="img-fluid"
+                      alt="logo"
+                    ></img>
+                  </div>
+                  <div className="form-wrapper phone-box">
+                    <span>+91</span>
+                    <input
+                      className="form-control w-100"
+                      placeholder="Phone number"
+                      type="number"
+                      name="phone_number"
+                      value={formvalue?.phone_number || ""}
+                      onChange={handleChange}
+                      maxLength={10}
+                    ></input>
+                  </div>
+                  <button
+                    className="btn btn-sendOTP text-white"
+                    onClick={(e) => handleRequestOTP(e, "login")}
+                  >
+                    Login
+                  </button>
+                </>
+              ) : (
+                <>
+                  <div className="d-flex justify-content-between align-items-center">
+                    <div className="d-block">
+                      <h5 className="modal-title">
+                        <img
+                          src="/img/requestOTP-icon.svg"
+                          className="img-fluid mx-2"
+                          alt="sign-in-icon"
+                          width="25"
+                          height="25"
+                        ></img>
+                        OTP Verification
+                      </h5>
+                      <p className="mb-0 ms-2">
+                        Enter 6- Digit OTP sent to whatsapp
+                      </p>
+                    </div>
+                    <img
+                      src="/img/logo2.svg"
+                      className="img-fluid"
+                      alt="logo"
+                    ></img>
+                  </div>
+                  <div className="otp-inputs mt-4 d-flex ">
+                    {otp.map((value, i) => (
+                      <input
+                        key={i}
+                        type="text"
+                        maxLength="1"
+                        className="otp-box"
+                        value={value}
+                        onChange={(e) => handleSubmitOTP(e, i)}
+                        onKeyDown={(e) => handleBackspace(e, i)}
+                      />
+                    ))}
+                  </div>
+                  <div className="text-center my-5 resend-wrapper">
+                    {!showResend ? (
+                      <div className="timer">{formattedTime}</div>
+                    ) : (
+                      <button
+                        className="btn btn-sendOTP text-white"
+                        onClick={(e) => handleRequestOTP(e, "resend")}
+                      >
+                        Resend OTP
+                      </button>
+                    )}
+                    <p className="mb-2">or</p>
+                    <Link
+                      to="#"
+                      onClick={() => setStep(1)}
+                      className="d-inline-block mb-2"
+                    >
+                      Edit Number
+                    </Link>
+                    <p className="mb-2">
+                      Need help? <Link to="#">Connect with us</Link>
                     </p>
                   </div>
-                  <img
-                    src="/img/logo2.svg"
-                    className="img-fluid"
-                    alt="logo"
-                  ></img>
-                </div>
-                <div className="otp-inputs mt-4 d-flex ">
-                  {otp.map((value, i) => (
-                    <input
-                      key={i}
-                      type="text"
-                      maxLength="1"
-                      className="otp-box"
-                      value={value}
-                      onChange={(e) => handleSubmitOTP(e, i)}
-                      onKeyDown={(e) => handleBackspace(e, i)}
-                    />
-                  ))}
-                </div>
-                <div className="text-center my-5 resend-wrapper">
-                  {!showResend ? (
-                    <div className="timer">{formattedTime}</div>
-                  ) : (
-                    <button
-                      className="btn btn-sendOTP text-white"
-                      onClick={(e) => handleRequestOTP(e, "resend")}
-                    >
-                      Resend OTP
-                    </button>
-                  )}
-                  <p className="mb-2">or</p>
-                  <Link
-                    to="#"
-                    onClick={() => setStep(1)}
-                    className="d-inline-block mb-2"
-                  >
-                    Edit Number
-                  </Link>
-                  <p className="mb-2">
-                    Need help? <Link to="#">Connect with us</Link>
-                  </p>
-                </div>
-              </>
-            )}
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </React.Fragment>
   );
 };
 

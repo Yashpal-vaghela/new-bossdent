@@ -6,7 +6,7 @@ export const PrivacyPolicy = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   return (
-    <div className="home-main pt-4 pb-2">
+    <div className="home-main pt-1 pt-lg-0 pb-2">
       <section className="Breadcrumbs-section">
         <div className="container">
           <nav aria-label="breadcrumb">

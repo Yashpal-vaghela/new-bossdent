@@ -52,7 +52,7 @@ const Home = () => {
     : [];
 
   return (
-    <div className="home-main overflow-hidden">
+    <div className="home-main overflow-hidden pt-1 pt-sm-0">
       {loadingProducts ? (
         <Loader2></Loader2>
       ) : (
@@ -130,6 +130,33 @@ const Home = () => {
             getCartData={getCartData}
             dispatch={dispatch}
           />
+          {/* <section className="follow-section">
+            <div className="container">
+              <h2 className="text-white fs-2 text-center section-title">Follow us on Instagram</h2>
+              <div className="row">
+                <div className="col-lg-3 col-md-3 col-4">
+                  <Link to="#" c>
+                    <img src="/img/instagram-post.png" className="img-fluid" alt="instagram-post"></img>
+                  </Link>
+                </div>
+                <div className="col-lg-3 col-md-3 col-4">
+                  <Link to="#">
+                    <img src="/img/instagram-post.png" className="img-fluid" alt="instagram-post"></img>
+                  </Link>
+                </div>
+                <div className="col-lg-3 col-md-3 col-4">
+                  <Link to="#">
+                    <img src="/img/instagram-post.png" className="img-fluid" alt="instagram-post"></img>
+                  </Link>
+                </div>
+                <div className="col-lg-3 col-md-3 col-4">
+                  <Link to="#">
+                    <img src="/img/instagram-post.png" className="img-fluid" alt="instagram-post"></img>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </section> */}
         </>
       )}
     </div>

@@ -1,7 +1,7 @@
 .about-section h2{
     color:#fff;
     line-height: 1.6;
-    font-size: 38px;
+    font-size: 36px;
     letter-spacing: 0.5px;
 }
 .about-section p,
@@ -97,7 +97,7 @@
 @media(max-width:991px){
     .about-section h2{
         text-align: center;
-        font-size: 30px;
+        font-size: 28px;
         margin-bottom: 12px;
     }
     .about-section p, .dental-supply-info-section p, .trusted-section p{
@@ -159,7 +159,7 @@
 }
 @media(max-width:576px){
     .about-section h2{
-        font-size: 22px;
+        font-size: 20px;
     }
     .about-section p{
         text-align: justify;
