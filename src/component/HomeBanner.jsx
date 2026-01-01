@@ -16,7 +16,7 @@ const HomeBanner = () => {
     },
     { img: "/img/Mask-banner.webp", link: "/products?category=all-masks" },
     {
-      img: "/img/Cheek-Reatractors.webp",
+      img: "/img/Cheek-Reatractors1.webp",
       link: "/products?category=retractors",
     },
     {
