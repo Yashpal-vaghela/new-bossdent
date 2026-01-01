@@ -33,7 +33,11 @@ const CategorySection = (categories) => {
           spaceBetween={0}
           slidesPerView={6}
           centeredSlides={false}
-          autoplay="false"
+          // autoplay="false"
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+          }}
           grabCursor={true}
           pagination={{
             clickable: true,

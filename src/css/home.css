@@ -1,5 +1,5 @@
 .home-main {
-  margin-top: 180px;
+  margin-top: 189px;
 }
 .banner-section .swiper-pagination-bullet {
   width: var(
@@ -91,7 +91,7 @@
   list-style: none;
   /* width:75%; */
   flex-wrap: wrap;
-  margin: 25px auto;
+  margin: 0px auto 5px;
   line-height: normal;
   font-size: 14px;
   letter-spacing: 0.3px;
@@ -240,6 +240,8 @@
 .RecentSearch-section {
   padding: 40px 0px 30px;
 }
+/* follow-section */
+/* .follow-section  */
 /* common css */
 .product-card-title {
   font-size: 14px;
@@ -346,7 +348,7 @@
   /* premium section */
   .premium-products-section .product-cart-wrapper {
     /* padding: 15px 0px; */
-    padding: 5px 5px;
+    padding: 8px 5px;
   }
   .premium-products-section .card .product-img {
     padding: 5px 5px;
@@ -402,7 +404,7 @@
   }
   .home-main {
     /* margin-top: 100px; */
-    margin-top: 146px;
+    margin-top: 152px;
   }
   .product-cart-wrapper {
     padding: 10px 0px;
@@ -528,7 +530,7 @@
     padding: 8px;
   }
   .home-main {
-    margin-top: 147px;
+    margin-top: 150px;
   }
   /* service section */
   .contact-content-wrapper {
@@ -634,7 +636,7 @@
 @media (max-width: 576px) {
   /* common section */
   .home-main {
-    margin-top: 145px;
+    margin-top: 150px;
   }
   .section-title {
     font-size: 20px !important;
@@ -642,6 +644,9 @@
   }
   .card .discount-badge {
     top: 3px !important;
+    padding: 3px 5px !important;
+    font-size: 12px;
+    margin: 0.15rem !important;
   }
   .product-cart-wrapper .btn {
     border-radius: 8px;
@@ -655,8 +660,15 @@
   }
   .dental-product-section .card-body .shopping-bag-icon,
   .search-product-card .card-body .shopping-bag-icon {
-    width: 23%;
-    padding: 9px;
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+  }
+  .mySwiper .swiper-pagination-bullet{
+    background: #fff;
+  }
+  .product-price{
+    font-size: 13px;
   }
   /* service section */
   .contact-link-section .row {
@@ -667,14 +679,24 @@
     padding-left: 12px;
     padding-right: 12px;
     padding-top: 5px !important;
+    --bs-gutter-x:0.8rem;
   }
   .dental-product-section .section-title{
     font-size: 20px !important;
   }
+  .dental-product-section .card-img-top{
+    padding: 20px 0px 0px;
+  }
+  .dental-product-section .card .discount-badge{
+    left:-2%
+  }
   .product-filter-category-list .product-category {
     padding: 0px 10px;
     font-size: 12px;
-    margin: 0px 0px 15px;
+    margin: 0px 0px 10px;
+  }
+  .product-filter-category-list{
+    margin: 10px auto 0px;
   }
   /* category section */
   .category-title {
@@ -693,6 +715,9 @@
   .category-section .card-img-top {
     padding: 15px 0px 0px;
   }
+  .category-section p{
+    font-size: 12px;
+  }
   .category-section .swiper-horizontal > .swiper-pagination-bullets,
   .swiper-pagination-bullets.swiper-pagination-horizontal {
     bottom: var(--swiper-pagination-bottom, -5px);
@@ -702,7 +727,8 @@
     font-size: 20px !important;
   }
   .premium-products-section .discount-badge {
-    top: 0px !important;
+    top: 3px !important;
+    left:1.4%;
   }
   .premium-products-section .btn-view {
     padding: 5px 6px;
@@ -715,9 +741,16 @@
   .premium-products-section h1 {
     margin-bottom: 0px;
   }
+  .premium-products-section .product-card-wrapper .product-card-title{
+    font-size: 14px;
+  }
   .premium-products-section .shopping-bag-icon {
-    padding: 10px;
-    width: 25%;
+    padding: 6px;
+    width: 32px !important;
+    height: 32px;
+  }
+  .premium-products-section .big a img{
+    margin: 15px auto 8px;
   }
   /* other banner section */
   .Otherbanner-section .col-lg-4 {
@@ -728,20 +761,34 @@
     padding: 5px;
   }
   .disposable-swiper .card-body .shopping-bag-icon {
-    width: 21% !important;
+    width: 32px !important;
+    height: 32px;
+    padding: 7px;
+  }
+  .disposable-swiper .card .card-body .d-block{
+    height:85px;
   }
   /* recentsearch section */
   .RecentSearch-section .row {
     padding-left: 12px;
     padding-right: 12px;
   }
+  .search-product-card{
+    height: 100%;
+  }
+  .search-product-card .discount-badge{
+    margin: 0.15rem 0.3rem !important;
+  }
   .RecentSearch-section .card-img-top {
     padding: 30px 10px 8px;
   }
-  .RecentSearch-section .card-body .shopping-bag-icon {
+  .RecentSearch-section .section-title{
+    font-size: 20px !important;
+  }
+  /* .RecentSearch-section .card-body .shopping-bag-icon {
     width: 25%;
     padding: 10px;
-  }
+  } */
   .RecentSearch-section .swiper-pagination {
     display: none !important;
   }
