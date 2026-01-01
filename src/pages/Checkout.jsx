@@ -170,7 +170,7 @@ export const Checkout = () => {
     },[user])
 
   return (
-    <div className="home-main pt-3  cart-main">
+    <div className="home-main pt-0  cart-main">
       <section className="Breadcrumbs-section">
         <div className="container">
           <nav aria-label="breadcrumb">

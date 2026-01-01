@@ -162,7 +162,6 @@ const LoginDialogBox = () => {
           document.body.style.overflow = "";
           document.body.style.paddingRight = "";
         }
-
         // navigate("/profile");
         toast.success("OTP verified successfully!");
         setApiLoading(false);
@@ -183,11 +182,18 @@ const LoginDialogBox = () => {
   };
   const modalRef = useRef(null);
   const handleClose = () => {
-    const modal =
-      window.bootstrap.Modal.getInstance(modalRef.current) ||
-      new window.bootstrap.Modal(modalRef.current);
+    // const modal = window.bootstrap.Modal.getInstance(modalRef.current) || new window.bootstrap.Modal(modalRef.current);
+    const modal = document.getElementById("exampleModal");
+    const isModalOpen = modal && modal.classList.contains("show");
+    if (isModalOpen) {
+      modal.classList.remove("show");
+      modal.style.display = "none";
+      document.querySelector(".modal-backdrop")?.remove();
+      document.body.classList.remove("modal-open");
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
+    }
     console.log("modal", modal);
-    modal.hide();
   };
   return (
     <React.Fragment>

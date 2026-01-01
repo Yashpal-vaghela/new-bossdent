@@ -119,7 +119,7 @@ const Cart = () => {
   },[])
 
   return (
-    <div className="home-main pt-1 pt-lg-0 cart-main">
+    <div className="home-main pt-0 pt-lg-0 cart-main">
       <section className="Breadcrumbs-section pt-2 pt-sm-2 pb-2">
         <div className="container">
           <nav aria-label="breadcrumb">

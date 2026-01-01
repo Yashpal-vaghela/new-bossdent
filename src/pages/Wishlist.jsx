@@ -237,7 +237,7 @@ const Wishlist = () => {
     }, 2000);
   }, []);
   return (
-    <div className="home-main pt-1 wishlist-main">
+    <div className="home-main pt-0">
       <section className="Breadcrumbs-section">
         <div className="container">
           <nav aria-label="breadcrumb">

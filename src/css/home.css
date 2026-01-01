@@ -1,5 +1,5 @@
 .home-main {
-  margin-top: 189px;
+  margin-top: 194px;
 }
 .banner-section .swiper-pagination-bullet {
   width: var(
@@ -404,7 +404,7 @@
   }
   .home-main {
     /* margin-top: 100px; */
-    margin-top: 152px;
+    margin-top: 155px;
   }
   .product-cart-wrapper {
     padding: 10px 0px;
@@ -530,7 +530,7 @@
     padding: 8px;
   }
   .home-main {
-    margin-top: 150px;
+    margin-top: 157px;
   }
   /* service section */
   .contact-content-wrapper {
@@ -636,7 +636,7 @@
 @media (max-width: 576px) {
   /* common section */
   .home-main {
-    margin-top: 150px;
+    margin-top: 154px;
   }
   .section-title {
     font-size: 20px !important;

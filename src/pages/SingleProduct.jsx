@@ -39,15 +39,14 @@ const SingleProduct = () => {
   const validateUser = useValidateUser();
   const navigate = useNavigate();
 
-  const a =
-    cartData.length !== 0
-      ? cartData?.items.map((i) => {
+  const a = cartData.length !== 0 ? cartData?.items.map((i) => {
           return {
             id: i?.variation_id === 0 ? i?.product_id : i?.variation_id,
             quantity: i.quantity,
           };
         })
       : [];
+
   const b = a.reduce((acc, item) => {
     acc[item.id] = item.quantity;
     return acc;
@@ -211,17 +210,17 @@ const SingleProduct = () => {
                   : selectattributes)) && i?.product_id === singleproduct?.id
           : i?.product_id === singleproduct?.id;
       });
-      console.log(
-        "singleProduct",
-        singleProduct,
-        id,
-        qty,
-        selectattributes,
-        action,
-        "Already",
-        AlreadyExistingdata,
-        showQuantity
-      );
+      // console.log(
+      //   "singleProduct",
+      //   singleProduct,
+      //   id,
+      //   qty,
+      //   selectattributes,
+      //   action,
+      //   "Already",
+      //   AlreadyExistingdata,
+      //   showQuantity
+      // );
       if (AlreadyExistingdata.length > 0) {
         const payload = {
           cart_id: AlreadyExistingdata[0]?.cart_id,
@@ -465,7 +464,7 @@ const SingleProduct = () => {
   };
 
   return (
-    <div className="home-main pt-1  pt-lg-0">
+    <div className="home-main pt-0  pt-lg-0">
       <section className="Breadcrumbs-section">
         <div className="container">
           <nav aria-label="breadcrumb">
@@ -694,6 +693,7 @@ const SingleProduct = () => {
                                         >
                                           -
                                         </button>
+                                        {console.log("qun",quantity)}
                                         <span>{quantity[item?.id] || 1}</span>
                                         <button
                                           onClick={(e) =>

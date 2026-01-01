@@ -220,11 +220,12 @@
 .product-content-wrapper .product-price {
   line-height: 1.6;
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 700;
 }
 .product-content-wrapper .product-price b{
  padding: 0px 4px 0px 1px;
  text-decoration: line-through;
+ font-weight: 400;
 }
 .product-content-wrapper .product-review {
   margin-bottom: 0px;
@@ -285,11 +286,13 @@
 .single-product-section .modal,
 .wishlist-section .modal,
 .premium-products-section .modal, */
-.product-variation-modal .modal{
+.product-variation-modal .modal,
+.contact-details-modal .modal{
   background: rgba(0,0,0,0.6);
   backdrop-filter: blur(1px);
 }
-.product-variation-modal .modal-dialog{
+.product-variation-modal .modal-dialog,
+.contact-details-modal .modal-dialog{
   display: flex;
   margin: auto;
   align-items: center;
@@ -297,18 +300,21 @@
   height: 100%;
 
 }
-.product-variation-modal .modal-content{
+.product-variation-modal .modal-content,
+.contact-details-modal .modal-content{
   background: #000;
   color:#fff;
   border: 1.5px solid #fff;
   border-radius: 12px;
   gap:0px;
 }
-.product-variation-modal .modal-header{
+.product-variation-modal .modal-header,
+.contact-details-modal .modal-header{
   border-bottom: none;
   padding: 0.5rem 0.6rem 0px;
 }
-.product-variation-modal .modal-header .btn-close{
+.product-variation-modal .modal-header .btn-close,
+.contact-details-modal .modal-header .btn-close{
   /* background: transparent url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'><path d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/></svg>") center / 1em auto no-repeat; */
   opacity: 1;
   background-color: rgba(217, 217, 217, 1);
@@ -316,10 +322,12 @@
   margin: 5px 0px 5px auto;
   font-size: 12px;
 }
-.product-variation-modal .modal-body{
+.product-variation-modal .modal-body,
+.contact-details-modal .modal-body{
   padding: 0rem 0.8rem 0.6rem;
 }
-.product-variation-modal .modal-title{
+.product-variation-modal .modal-title,
+.contact-details-modal .modal-title{
   font-size: 28px;
   line-height: 1.9;
   font-weight: 700;

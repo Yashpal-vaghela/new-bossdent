@@ -44,7 +44,7 @@ export const About = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
   return (
-    <div className="home-main pt-1">
+    <div className="home-main pt-0">
       <section className="Breadcrumbs-section">
         <div className="container">
           <nav aria-label="breadcrumb">
