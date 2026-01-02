@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import HomeBanner from "../component/HomeBanner";
 import { Link } from "react-router-dom";
-
 import axios from "axios";
 import BASE_URL from "../api/config";
-
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";

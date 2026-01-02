@@ -44,15 +44,21 @@ export const Allrouters = () => {
                 <Route path="/order-history" element={<ProtectedOrderRoute><OrderHistory></OrderHistory></ProtectedOrderRoute>}></Route>
                 <Route path="/order-history/:id" element={<ProtectedOrderRoute><OrderHistory></OrderHistory></ProtectedOrderRoute>}></Route>
                 <Route path="/settings" element={<ProtectedOrderRoute><Settings></Settings></ProtectedOrderRoute>}></Route>
-                <Route path="/help-center" element={<ProtectedOrderRoute><HelpCenter></HelpCenter></ProtectedOrderRoute>}></Route>
-                <Route path="/help-center/order" element={<ProtectedOrderRoute><Order></Order></ProtectedOrderRoute>}></Route>
-                <Route path="/help-center/delivery" element={<ProtectedOrderRoute><Delivery></Delivery></ProtectedOrderRoute>}></Route>
-                <Route path="/help-center/payment-info" element={<ProtectedOrderRoute><PaymentInfo></PaymentInfo></ProtectedOrderRoute>}></Route>
-                <Route path="/help-center/return" element={<ProtectedOrderRoute><Return></Return></ProtectedOrderRoute>}></Route>
+                {/* <Route path="/help-center" element={<ProtectedOrderRoute><HelpCenter></HelpCenter></ProtectedOrderRoute>}></Route>
+                <Route path="/help-center/order" element={<ProtectedOrderRoute><Order></Order></ProtectedOrderRoute>}></Route> */}
+                {/* <Route path="/help-center/delivery" element={<ProtectedOrderRoute><Delivery></Delivery></ProtectedOrderRoute>}></Route> */}
+                {/* <Route path="/help-center/payment-info" element={<ProtectedOrderRoute><PaymentInfo></PaymentInfo></ProtectedOrderRoute>}></Route> */}
+                <Route path="/help-center" element={<HelpCenter></HelpCenter>}></Route>
+                <Route path="/help-center/order" element={<Order></Order>}></Route>
+                <Route path="/help-center/delivery" element={<Delivery></Delivery>}></Route>
+                <Route path="/help-center/payment-info" element={<PaymentInfo></PaymentInfo>}></Route>
+                {/* <Route path="/help-center/return" element={<ProtectedOrderRoute><Return></Return></ProtectedOrderRoute>}></Route> */}
+                <Route path="/help-center/return" element={<Return></Return>}></Route>
                 <Route path="/privacy-policy" element={<PrivacyPolicy></PrivacyPolicy>}></Route>
                 <Route path="/terms-and-conditions" element={<TermAndCondition></TermAndCondition>}></Route>
                 <Route path="/refund-and-returns-policy" element={<RefundPolicy></RefundPolicy>}></Route>
-                <Route path="/return-exchange" element={<ProtectedOrderRoute><ReturnExchange></ReturnExchange></ProtectedOrderRoute>}></Route>
+                {/* <Route path="/return-exchange" element={<ProtectedOrderRoute><ReturnExchange></ReturnExchange></ProtectedOrderRoute>}></Route> */}
+                <Route path="/return-exchange" element={<ReturnExchange></ReturnExchange>}></Route>
                 {/* <Route path="/payment/success" element={<ProtectedOrderRoute><Success></Success></ProtectedOrderRoute>}></Route> */}
                 <Route path="/payment/failed" element={<ProtectedOrderRoute><Success></Success></ProtectedOrderRoute>}></Route>
                 <Route path="*" element={<Home/>}></Route>
