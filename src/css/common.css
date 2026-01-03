@@ -16,6 +16,12 @@
 .txt-white {
   color: #fff;
 }
+.text-grident{
+    background: linear-gradient(286.49deg, #c3942f 22.55%, #d89c27 32.43%, #dfc86f 42.86%, #dfc86f 50%, #d89c27 67.57%, #c99c30 77.45%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    color: transparent !important;
+}
 a {
   text-decoration: none;
   color: transparent;

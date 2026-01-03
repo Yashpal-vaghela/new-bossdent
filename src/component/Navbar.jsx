@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import LoginDialogBox from "./LoginDialogBox";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,6 +20,8 @@ const Navbar = () => {
   const text = "* Free shipping on order above 2300 *";
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+
   const handleSearchChange = async (e) => {
     const query = e.target.value;
     setSearchQuery(query);
@@ -136,10 +138,8 @@ const Navbar = () => {
         navbarlogoElements.classList.add("d-lg-none");
       }
     };
-    dispatch(
-      AddToken(JSON.parse(localStorage.getItem("auth_token")) || "null")
-    );
-    console.log("loca", JSON.parse(localStorage.getItem("auth_token")));
+    dispatch(AddToken(JSON.parse(localStorage.getItem("auth_token")) || "null"));
+    // console.log("loca", JSON.parse(localStorage.getItem("auth_token")));
     const handleResize = () => {
       handleScroll();
     };
@@ -314,18 +314,19 @@ const Navbar = () => {
           <div className="offcanvas-body container align-items-center">
             <ul className="navbar-nav me-auto me-lg-0">
               <li className="nav-item">
-                <Link to="/" onClick={handleOffcanvas1}>
+                <Link to="/" onClick={handleOffcanvas1} className={`${location.pathname === "/" ? "text-grident fw-semibold":""}`}>
                   Home
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/products" onClick={handleOffcanvas1}>
+                <Link to="/products" onClick={handleOffcanvas1} className={`${location.pathname === "/products" ? "text-grident fw-semibold":""}`}>
                   Product
                 </Link>
               </li>
               <li className="nav-item dropdown">
                 <Link
-                  className="nav-link dropdown-toggle"
+                  // className="nav-link dropdown-toggle"
+                  className={`nav-link dropdown-toggle ${location.pathname === "/products?category" ? "text-grident fw-semibold":""}`}
                   to="#"
                   role="button"
                   data-bs-toggle="dropdown"
@@ -355,29 +356,27 @@ const Navbar = () => {
                 </ul>
               </li>
               <li className="nav-item">
-                <Link to="/about" onClick={handleOffcanvas1}>
+                <Link to="/about" onClick={handleOffcanvas1} className={`${location.pathname === "/about" ? "text-grident fw-semibold":""}`}>
                   About Us
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/contact" onClick={handleOffcanvas1}>
+                <Link to="/contact" onClick={handleOffcanvas1} className={`${location.pathname === "/contact" ? "text-grident fw-semibold":""}`}>
                   Contact Us
                 </Link>
               </li>
               <li className="nav-item d-block d-lg-none">
                 {
                   token !== "null" ? (
-                    <Link to="/profile" onClick={handleOffcanvas1}>
+                    <Link to="/profile" onClick={handleOffcanvas1} className={`${location.pathname === "/profile" ? "text-grident fw-semibold":""}`}>
                       Account
                     </Link>
                   ) : (
-                    <Link to="#"  data-bs-toggle="modal"
-                    data-bs-target="#exampleModal" onClick={handleOffcanvas1}>
+                    <Link to="#"  data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={handleOffcanvas1} >
                       Account
                     </Link>
                   )
                 }
-                
               </li>
             </ul>
             <Link

@@ -6,11 +6,11 @@ export const AddToCartModal = ({
   product,
   stockStatus,
   onAddToCart,
+  handleCardModalError
 }) => {
   const [quantity, setQuantity] = useState(1);
   const [selectedAttributes, setSelectedAttributes] = useState({});
   const modalRef = useRef();
-
   const [variation, setVariations] = useState([]);
 
   useEffect(() => {
@@ -29,6 +29,7 @@ export const AddToCartModal = ({
   const handleAttributeSelect = (e) =>{
     const {name,value} = e.target;
     setSelectedAttributes({...selectedAttributes,[name]:value})
+    handleCardModalError("without-error")
   }
   const getMatchedVariation = () => {
     if (!Object.values(selectedAttributes)[0]) return null;
@@ -92,7 +93,8 @@ export const AddToCartModal = ({
             </div>
             <div className="modal-variation-wrapper mb-3">
                 {
-                    variation?.length > 0 && <>
+                    variation?.length > 0 && 
+                    <>
                         <label className="form-label">Select {variation?.map((i,index)=>Object.keys(i?.attributes)[index])[0]?.replace(/^pa_/, '')}</label>
                         <select className="modal-variation-select form-select" name={Object.keys(variation[0]?.attributes || {})[0]?.replace('pa_', '')} onChange={(e)=>handleAttributeSelect(e)}>
                             {variation !== undefined ?
@@ -137,8 +139,9 @@ export const AddToCartModal = ({
                 setTimeout(()=>{
                   setQuantity(1);
                 },500)
-                
-                onAddToCart(e,product,selectedVariation,quantity)}}
+                setSelectedAttributes({});
+                onAddToCart(e,product,selectedVariation,quantity)
+              }}
             >
               Add To Cart
             </button>
@@ -147,9 +150,10 @@ export const AddToCartModal = ({
               className="btn btn-buynow"
               onClick={(e)=>{
                 const selectedVariation = getMatchedVariation();
-                 setTimeout(()=>{
+                setTimeout(()=>{
                   setQuantity(1);
-                },500)
+                },500);
+                setSelectedAttributes({});
                 onAddToCart(e,product,selectedVariation,quantity,"/checkout")
               }}
             >

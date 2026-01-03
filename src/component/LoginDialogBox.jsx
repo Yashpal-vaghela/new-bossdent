@@ -193,7 +193,7 @@ const LoginDialogBox = () => {
       document.body.style.overflow = "";
       document.body.style.paddingRight = "";
     }
-    console.log("modal", modal);
+    // console.log("modal", modal);
   };
   return (
     <React.Fragment>

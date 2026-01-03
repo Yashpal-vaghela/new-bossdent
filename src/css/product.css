@@ -333,6 +333,9 @@
   font-weight: 700;
   color:#fff
 }
+.contact-details-modal .modal-title{
+  font-weight: 600;
+}
 .product-variation-modal .modal-category-title {
   color:rgba(163, 163, 163, 1);
   font-size: 18px;

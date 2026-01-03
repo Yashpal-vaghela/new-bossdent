@@ -20,6 +20,7 @@ import {
 import { AddToCartModal } from "../component/AddToCartModal";
 import useValidateUser from "../component/useValidateUser";
 import Loader2 from "../component/Loader2";
+import { ContactModal } from "../component/ContactModal";
 
 const SingleProduct = () => {
   const { slug } = useParams();
@@ -35,11 +36,14 @@ const SingleProduct = () => {
   const [showVariationModal, setShowVariationModal] = useState(false);
   const [selectedProductForModal, setSelectedProductForModal] = useState(null);
   const [loading, setloading] = useState(true);
+  const [showContactModal, setShowContactModal] = useState(false);
   const [apiloading, setApiLoading] = useState(false);
   const validateUser = useValidateUser();
   const navigate = useNavigate();
 
-  const a = cartData.length !== 0 ? cartData?.items.map((i) => {
+  const a =
+    cartData.length !== 0
+      ? cartData?.items.map((i) => {
           return {
             id: i?.variation_id === 0 ? i?.product_id : i?.variation_id,
             quantity: i.quantity,
@@ -56,6 +60,7 @@ const SingleProduct = () => {
     ? singleProduct?.variations
     : singleProduct?.variations?.slice(0, 3);
   const dispatch = useDispatch();
+
   const SingleProductData = async (controller) => {
     setloading(true);
     try {
@@ -109,19 +114,23 @@ const SingleProduct = () => {
           }
         }
       } else {
-        const filterData = singleProduct?.id === id;
-        setShowQuantity(filterData);
-        const currentQty = quantity[id] || 1;
-        setQuantity({ ...quantity, [id]: currentQty});
-        // handleCardError("without-error");
-        if (currentQty < 2) {
-          handleAddToCart(
-            singleProduct,
-            id,
-            { ...quantity, [id]: currentQty},
-            item,
-            "PLUS"
-          );
+        if (product?.id !== 4070) {
+          const filterData = singleProduct?.id === id;
+          setShowQuantity(filterData);
+          const currentQty = quantity[id] || 1;
+          setQuantity({ ...quantity, [id]: currentQty });
+          // handleCardError("without-error");
+          if (currentQty < 2) {
+            handleAddToCart(
+              singleProduct,
+              id,
+              { ...quantity, [id]: currentQty },
+              item,
+              "PLUS"
+            );
+          }
+        } else {
+          setShowContactModal((prev) => !prev);
         }
       }
     }
@@ -131,7 +140,6 @@ const SingleProduct = () => {
     e.preventDefault();
     if (singleProduct?.variations && singleProduct?.variations.length > 0) {
       const currentQty = quantity[item?.id] || 1;
-      
       if (action === "PLUS") {
         handleAddToCart(
           singleproduct,
@@ -235,7 +243,7 @@ const SingleProduct = () => {
               ? qty[id]
               : AlreadyExistingdata[0]?.quantity + 1,
         };
-        if(showQuantity.length !== 0){
+        if (showQuantity.length !== 0) {
           handleEditApi(payload);
         }
       } else {
@@ -352,51 +360,29 @@ const SingleProduct = () => {
           ? i?.variation_id === selectedAttributes?.variation_id
           : true && i?.product_id === product?.id;
       });
-      if (AlreadyExistsData.length > 0) {
-        if (
-          product?.variation &&
-          product.variations.length !== 0 &&
-          selectedAttributes === 0
-        ) {
-          console.warn("ProductVariData Edit api call");
+
+      if (product?.variations && product.variations.length !== 0 && selectedAttributes === 0){ 
           setShowVariationModal((prev) => !prev);
           setSelectedProductForModal(product);
-        } else {
-          if (selectedAttributes === null && selectedAttributes !== undefined) {
-            toast.error(
-              `please select ${
-                product?.variations?.map(
-                  (i, index) => Object.keys(i?.attributes)[index]
-                )[0]
-              }`
-            );
-          } else {
+      }else {
+        if(selectedAttributes === null && selectedAttributes !== undefined){
+          handleCardModalError("error");
+          //  toast.error(
+          //     `please select ${
+          //       product?.variations?.map(
+          //         (i, index) => Object.keys(i?.attributes)[index]
+          //       )[0]
+          //     }`
+          //   );
+        }else{
+          if(AlreadyExistsData.length > 0){
             const payload = {
               cart_id: AlreadyExistsData[0]?.cart_id,
               quantity: AlreadyExistsData[0]?.quantity + quantity,
             };
             console.warn("EditCartData api call", payload);
             handleEditApi(payload);
-          }
-        }
-      } else {
-        if (
-          product?.variations &&
-          product.variations.length !== 0 &&
-          selectedAttributes === 0
-        ) {
-          setShowVariationModal((prev) => !prev);
-          setSelectedProductForModal(product);
-        } else {
-          if (selectedAttributes === null && selectedAttributes !== undefined) {
-            toast.error(
-              `please select ${
-                product?.variations?.map(
-                  (i, index) => Object.keys(i?.attributes)[index]
-                )[0]
-              }`
-            );
-          } else {
+          }else{
             const payload = {
               product_id: product?.id,
               variation_id:
@@ -411,12 +397,7 @@ const SingleProduct = () => {
         }
       }
     }
-    if (variation === "/checkout") {
-      navigate(`${variation}`);
-      if (cartData?.items?.length === 0) {
-        toast.error("Your cart is empty!");
-      }
-    }
+   
   };
 
   const handleEditApi = async (payload) => {
@@ -466,37 +447,56 @@ const SingleProduct = () => {
         console.log("err", err);
       });
   };
-  const handleCheckout = (e,product,id,qty) => {
-    console.log("e",e,product,id,qty);
-    if(product.variations !== null){
-      handleCardError("error")
-    }else{
+  const handleCheckout = (e, product, id, qty) => {
+    // console.log("e", e, product, id, qty);
+    if (product.variations !== null) {
+      handleCardError("error");
+    } else {
       handleCardError("without-error");
-      handleAddToCart(product,id,qty,0);
-      setTimeout(()=>{
-        navigate("/checkout");
-      },1000);
-      console.log("addtocart")
+      if(id !== 4070){
+        handleAddToCart(product, id, qty, 0);
+        setTimeout(() => {
+          navigate("/checkout");
+        }, 1000);
+        console.log("addtocart");
+      }else{
+        setShowContactModal((prev)=>!prev);
+      }
+    
+    }
+  };
+  const handleCardError = (action) => {
+    //  const card = document.getElementsByClassName("single-variation-wrapper");
+    const card1 = document.querySelectorAll(".btn-addToCart");
+    console.log("set error to select variations", card1, action);
+    if (action === "error") {
+      console.log("card1", card1);
+      card1.forEach((i) => {
+        i.style.border = "1.4px solid red";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    } else if (action === "without-error") {
+      card1.forEach((i) => {
+        i.style.border = "1.4px solid rgba(239, 239, 239, 1)";
+      });
+    }
+  };
+  const handleCardModalError = (action) =>{
+    const card1 = document.querySelectorAll(".modal-variation-select");
+    console.log("set error to select variations", card1, action);
+    if (action === "error") {
+      console.log("card1", card1);
+      card1.forEach((i) => {
+        i.style.border = "1.4px solid red";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    } else if (action === "without-error") {
+      card1.forEach((i) => {
+        i.style.border = "1.4px solid rgba(239, 239, 239, 1)";
+      });
     }
   }
 
-  const handleCardError = (action) =>{
-    //  const card = document.getElementsByClassName("single-variation-wrapper");
-    const card1 = document.querySelectorAll(".btn-addToCart");
-    console.log("set error to select variations",card1,action);
-    if(action === "error"){
-      console.log("card1",card1)
-      card1.forEach((i)=>{
-        i.style.border = "1.4px solid red";
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      })
-    }else if(action === "without-error"){
-      card1.forEach((i)=>{
-        i.style.border = "1.4px solid rgba(239, 239, 239, 1)";
-      })
-    }
-      
-  }
   return (
     <div className="home-main pt-0  pt-lg-0">
       <section className="Breadcrumbs-section">
@@ -528,6 +528,7 @@ const SingleProduct = () => {
               product={selectedProductForModal}
               onAddToCart={handleAddToCartModal}
               variations={selectedProductForModal?.variation}
+               handleCardModalError={handleCardModalError}
             ></AddToCartModal>
             <div className="container position-relative">
               <div className="row">
@@ -550,7 +551,6 @@ const SingleProduct = () => {
                         </span>
                       </>
                     )}
-
                   {wishlistId1.includes(singleProduct?.id) ? (
                     <img
                       className="heart-icon img-fluid ms-auto"
@@ -641,7 +641,14 @@ const SingleProduct = () => {
                               //     "/checkout"
                               //   );
                               // }}
-                              onClick={(e)=>handleCheckout(e,singleProduct,singleProduct?.id,quantity)}
+                              onClick={(e) =>
+                                handleCheckout(
+                                  e,
+                                  singleProduct,
+                                  singleProduct?.id,
+                                  quantity
+                                )
+                              }
                             >
                               Buy Now
                             </button>
@@ -653,7 +660,10 @@ const SingleProduct = () => {
                     <></>
                   )}
                 </div>
-                <div className="col-lg-6 order-lg-2 order-1 mt-3 mt-sm-0" id="singleCardWrapper">
+                <div
+                  className="col-lg-6 order-lg-2 order-1 mt-3 mt-sm-0"
+                  id="singleCardWrapper"
+                >
                   {singleProduct?.variations &&
                     visibleVariation?.map((item, index) => {
                       return (
@@ -728,7 +738,7 @@ const SingleProduct = () => {
                                         >
                                           -
                                         </button>
-                                        {console.log("qun",quantity)}
+                                        {console.log("qun", quantity)}
                                         <span>{quantity[item?.id] || 1}</span>
                                         <button
                                           onClick={(e) =>
@@ -974,6 +984,7 @@ const SingleProduct = () => {
             handleAddToCartModal={handleAddToCartModal}
             handleShowQuantity={handleShowQuantity}
           ></RelatedProducts>
+          <ContactModal isOpen={showContactModal} setOpen={setShowContactModal}></ContactModal>
         </>
       )}
     </div>
