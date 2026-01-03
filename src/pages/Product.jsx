@@ -76,7 +76,10 @@ export const Product = () => {
         setloading(false);
       }
     } catch (err) {
-      if (err.name !== "AbortError") console.error(err);
+      if (err.name !== "AbortError") {
+        console.error(err);
+        setloading(false);
+      }
     }
   };
 
