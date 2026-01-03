@@ -97,7 +97,7 @@ const SingleProduct = () => {
             ...prev,
             [id]: prev[id] || 1, // start from 1 if not already set
           }));
-
+          handleCardError("without-error");
           if (currentQty < 2) {
             handleAddToCart(
               singleProduct,
@@ -113,6 +113,7 @@ const SingleProduct = () => {
         setShowQuantity(filterData);
         const currentQty = quantity[id] || 1;
         setQuantity({ ...quantity, [id]: currentQty});
+        // handleCardError("without-error");
         if (currentQty < 2) {
           handleAddToCart(
             singleProduct,
@@ -130,6 +131,7 @@ const SingleProduct = () => {
     e.preventDefault();
     if (singleProduct?.variations && singleProduct?.variations.length > 0) {
       const currentQty = quantity[item?.id] || 1;
+      
       if (action === "PLUS") {
         handleAddToCart(
           singleproduct,
@@ -138,6 +140,7 @@ const SingleProduct = () => {
           item?.attributes,
           action
         );
+        handleCardError("without-error");
         return setQuantity({ ...quantity, [item?.id]: currentQty + 1 });
       } else if (action === "MINUS") {
         if (currentQty > 1) {
@@ -148,6 +151,7 @@ const SingleProduct = () => {
             item?.attributes,
             action
           );
+          handleCardError("without-error");
           return setQuantity({ ...quantity, [item?.id]: currentQty - 1 });
         } else {
           // remove product when quantity < 1
@@ -248,12 +252,12 @@ const SingleProduct = () => {
         };
         handleAddApi(payload);
       }
-      if (action === "/checkout") {
-        navigate(`${action}`);
-        if (cartData?.items?.length === 0) {
-          toast.error("Your cart is empty!");
-        }
-      }
+      // if (action === "/checkout") {
+      //   navigate(`${action}`);
+      //   if (cartData?.items?.length === 0) {
+      //     toast.error("Your cart is empty!");
+      //   }
+      // }
     }
   };
 
@@ -462,7 +466,37 @@ const SingleProduct = () => {
         console.log("err", err);
       });
   };
+  const handleCheckout = (e,product,id,qty) => {
+    console.log("e",e,product,id,qty);
+    if(product.variations !== null){
+      handleCardError("error")
+    }else{
+      handleCardError("without-error");
+      handleAddToCart(product,id,qty,0);
+      setTimeout(()=>{
+        navigate("/checkout");
+      },1000);
+      console.log("addtocart")
+    }
+  }
 
+  const handleCardError = (action) =>{
+    //  const card = document.getElementsByClassName("single-variation-wrapper");
+    const card1 = document.querySelectorAll(".btn-addToCart");
+    console.log("set error to select variations",card1,action);
+    if(action === "error"){
+      console.log("card1",card1)
+      card1.forEach((i)=>{
+        i.style.border = "1.4px solid red";
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      })
+    }else if(action === "without-error"){
+      card1.forEach((i)=>{
+        i.style.border = "1.4px solid rgba(239, 239, 239, 1)";
+      })
+    }
+      
+  }
   return (
     <div className="home-main pt-0  pt-lg-0">
       <section className="Breadcrumbs-section">
@@ -597,16 +631,17 @@ const SingleProduct = () => {
                           <div className="singleProduct-info-wrapper">
                             <button
                               className="btn btn-buyNow mt-3 w-100"
-                              onClick={(e) => {
-                                navigate("/checkout");
-                                handleAddToCart(
-                                  e,
-                                  singleProduct,
-                                  singleProduct?.id,
-                                  quantity,
-                                  "/checkout"
-                                );
-                              }}
+                              // onClick={(e) => {
+                              //   navigate("/checkout");
+                              //   handleAddToCart(
+                              //     e,
+                              //     singleProduct,
+                              //     singleProduct?.id,
+                              //     quantity,
+                              //     "/checkout"
+                              //   );
+                              // }}
+                              onClick={(e)=>handleCheckout(e,singleProduct,singleProduct?.id,quantity)}
                             >
                               Buy Now
                             </button>
@@ -618,7 +653,7 @@ const SingleProduct = () => {
                     <></>
                   )}
                 </div>
-                <div className="col-lg-6 order-lg-2 order-1 mt-3 mt-sm-0">
+                <div className="col-lg-6 order-lg-2 order-1 mt-3 mt-sm-0" id="singleCardWrapper">
                   {singleProduct?.variations &&
                     visibleVariation?.map((item, index) => {
                       return (

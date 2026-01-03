@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { AddToCart } from "../redux/cartSlice";
 import Loader2 from "./Loader2";
 import useValidateUser from "./useValidateUser";
+import { AddToCartModal } from "./AddToCartModal";
 
 export const DentalProductSection = ({
   getCartData,
@@ -15,76 +16,160 @@ export const DentalProductSection = ({
   categories,
   loadingProducts,
   visibleProducts,
+  fetchProduct,
 }) => {
   const [showAll, setShowAll] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [apiloading, setApiLoading] = useState(false);
+  const [showVariationModal, setShowVariationModal] = useState(false);
+  const [selectedProductForModal, setSelectedProductForModal] = useState(null);
+  const [visibleProduct, setVisibleProduct] = useState(visibleProducts);
   const visibleCategories = showAll ? categories : categories.slice(0, 5);
   const validateUser = useValidateUser();
-  const handleCategoryClick = (slug) => {
+  const handleCategoryClick = async (e, slug) => {
+    console.log("slug", slug, slug);
     const controller = new AbortController();
     setSelectedCategory(slug);
+    let apiUrl = "";
+    if (slug) {
+      apiUrl += `${BASE_URL}/category/${slug}`;
+    } else {
+      apiUrl += `${BASE_URL}/products`;
+    }
+    setApiLoading(true);
+    await axios
+      .get(apiUrl)
+      .then((res) => {
+        let visiblePro = "";
+        if (Array.isArray(res.data.data)) {
+          if (res.data.data.length > 4 && res.data.data.length < 8) {
+            visiblePro = res.data.data.slice(0, 4);
+          } else if (res.data.data.length > 8) {
+            visiblePro = res.data.data.slice(0, 8);
+          } else {
+            visiblePro = res.data.data;
+          }
+        } else {
+          visiblePro = [];
+        }
+        setApiLoading(false);
+        setVisibleProduct(visiblePro);
+        console.log("res", res.data.data, visiblePro);
+      })
+      .catch((err) => console.log("err", err));
+
     return () => controller.abort();
   };
-  const handleAddToCart = async (e, product) => {
-    // console.log("add",e,product)
+  const handleAddToCart = async (e, product, selectedAttributes, quantity) => {
+    console.log("add", e, product, selectedAttributes, quantity);
     if (token === "null" || !token) {
       validateUser();
-      toast.error("Please login to product add to cart!")
+      toast.error("Please login to product add to cart!");
     } else {
-      const filterCartData = getCartData?.items.filter(
-        (i) => i?.product_id === product?.id
-      );
-      if (filterCartData.length > 0) {
-        const payload = {
-          cart_id: filterCartData[0]?.cart_id,
-          quantity: Number(filterCartData[0].quantity) + 1,
-        };
-        setApiLoading(true);
-        await axios
-          .post(`${BASE_URL}/update-cart`, payload, {
-            headers: {
-              Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
-              "Content-Type": "application/json",
-            },
-          })
-          .then((res) => {
-            setApiLoading(false);
-            // console.log("res",res.data);
-            toast.success("Product updated in cart successfully!");
-            dispatch(AddToCart({ ...res.data, items: res.data.items }));
-          })
-          .catch((err) => {
-            console.log("err", err);
-          });
+      const AlreadyExistsData = getCartData?.items.filter((i) => {
+        return i?.variation_id !== 0
+          ? typeof selectedAttributes === "object"
+            ? i?.variation_id === selectedAttributes?.id
+            : i?.variation_id === selectedAttributes
+          : true && i?.product_id === product?.id;
+      });
+      if (
+        product?.variations &&
+        product?.variations.length !== 0 &&
+        selectedAttributes === 0
+      ) {
+        console.warn("open modal ProductVariationsData Edit api call");
+        setShowVariationModal((prev) => !prev);
+        setSelectedProductForModal(product);
       } else {
-        const payload = {
-          product_id: product?.id,
-          variation_id: 0,
-          quantity: 1,
-        };
-        setApiLoading(true);
-        await axios
-          .post(`${BASE_URL}/new-add-to-cart`, payload, {
-            headers: {
-              Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
-              "Content-Type": "application/json",
-            },
-          })
-          .then((res) => {
-            setApiLoading(false);
-            // console.log("res",res.data,getCartData);
-            toast.success("Product added to cart successfully!");
-            dispatch(
-              AddToCart({
-                ...res.data,
-                items: [...getCartData.items, res.data?.data],
-              })
+        if (selectedAttributes === null && selectedAttributes !== undefined) {
+          toast.error(
+            `Please select ${
+              product?.variations?.map(
+                (i, index) => Object.keys(i?.attributes)[index]
+              )[0]
+            }`
+          );
+        } else {
+          if (selectedAttributes === undefined) {
+            toast.error(
+              `please select ${
+                product?.variations?.map(
+                  (i, index) => Object.keys(i?.attributes)[index]
+                )[1]
+              }`
             );
-          })
-          .catch((err) => {
-            console.log("err", err);
-          });
+          } else {
+            if (AlreadyExistsData.length > 0) {
+              const payload = {
+                cart_id: AlreadyExistsData[0]?.cart_id,
+                quantity: AlreadyExistsData[0]?.quantity + quantity,
+              };
+              setApiLoading(true);
+              // console.log("EditCartData api call")
+              try {
+                const res = await axios.post(
+                  `${BASE_URL}/update-cart`,
+                  payload,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${token}`
+                        .replace(/\s+/g, " ")
+                        .trim(),
+                      "Content-Type": "application/json",
+                    },
+                  }
+                );
+                setApiLoading(false);
+                toast.success("Product updated in cart successfully!");
+                if (showVariationModal === true) {
+                  setShowVariationModal((prev) => !prev);
+                }
+                dispatch(AddToCart({ ...res.data, items: res.data.items }));
+              } catch (err) {
+                console.log("error", err);
+              }
+            } else {
+              const payload = {
+                product_id: product?.id,
+                variation_id:
+                  selectedAttributes === 0
+                    ? selectedAttributes
+                    : selectedAttributes?.id,
+                quantity: quantity,
+              };
+              setApiLoading(true);
+              // console.log("AddtoCartData api call",payload);
+              try {
+                const res = await axios.post(
+                  `${BASE_URL}/new-add-to-cart`,
+                  payload,
+                  {
+                    headers: {
+                      Authorization: `Bearer ${token}`
+                        .replace(/\s+/g, " ")
+                        .trim(),
+                      "Content-Type": "application/json",
+                    },
+                  }
+                );
+                if (showVariationModal === true) {
+                  setShowVariationModal((prev) => !prev);
+                }
+                setApiLoading(false);
+                toast.success("Product added to cart successfully!");
+                dispatch(
+                  AddToCart({
+                    ...res.data,
+                    items: [...getCartData.items, res.data?.data],
+                  })
+                );
+              } catch (err) {
+                console.log("error", err);
+              }
+            }
+          }
+        }
       }
     }
   };
@@ -93,6 +178,13 @@ export const DentalProductSection = ({
     <>
       {apiloading && <Loader2></Loader2>}
       <section className="dental-product-section">
+        <AddToCartModal
+          isOpen={showVariationModal}
+          onClose={() => setShowVariationModal(false)}
+          product={selectedProductForModal}
+          onAddToCart={handleAddToCart}
+          variations={selectedProductForModal?.variation}
+        ></AddToCartModal>
         <div className="container">
           <h2 className="text-white fs-2 text-center section-title">
             Our Dental Products Range
@@ -103,23 +195,23 @@ export const DentalProductSection = ({
                 className={`product-category ${
                   selectedCategory === null ? "active" : ""
                 }`}
-                onClick={() => handleCategoryClick(null)}
+                onClick={(e) => handleCategoryClick(e, null)}
               >
-                <Link to="/products">All Products</Link>
+                All Products
+                {/* <Link to="/products"></Link> */}
               </li>
               {visibleCategories?.map((category, index) => {
-                console.log("categ", category);
                 return (
                   <li
                     key={index}
                     className={`product-category ${
                       selectedCategory === category.slug ? "active" : ""
                     }`}
-                    onClick={() => handleCategoryClick(category.slug)}
+                    onClick={(e) => handleCategoryClick(e, category.slug)}
                   >
-                    <Link to={`/products?category=${category?.slug}`}>
-                      {category.name}
-                    </Link>
+                    {category.name}
+                    {/* <Link to={`/products?category=${category?.slug}`}>
+                    </Link> */}
                   </li>
                 );
               })}
@@ -136,8 +228,8 @@ export const DentalProductSection = ({
           <div className="row pt-1 pt-md-3 justify-content-center">
             {loadingProducts ? (
               <p>Loading products...</p>
-            ) : visibleProducts.length > 0 ? (
-              visibleProducts.map((item, index) => (
+            ) : visibleProduct.length > 0 ? (
+              visibleProduct.map((item, index) => (
                 <div
                   className="col-lg-3 col-md-4 col-sm-6 col-6"
                   key={item.id || index}
@@ -179,7 +271,10 @@ export const DentalProductSection = ({
                             </>
                           ) : (
                             <span className="fw-bold text-white">
-                              ₹{Number(item.price || item.regular_price || "0").toFixed(2)}
+                              ₹
+                              {Number(
+                                item.price || item.regular_price || "0"
+                              ).toFixed(2)}
                             </span>
                           )}
                         </p>
@@ -188,7 +283,7 @@ export const DentalProductSection = ({
                         className="shopping-bag-icon img-fluid"
                         alt="shopping-bag"
                         src="/img/lightShopping-bag-icon.svg"
-                        onClick={(e) => handleAddToCart(e, item)}
+                        onClick={(e) => handleAddToCart(e, item, 0, 1)}
                       />
                     </div>
                   </div>

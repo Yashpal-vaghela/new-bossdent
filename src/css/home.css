@@ -103,6 +103,7 @@
   border-right: 1.5px solid rgba(180, 204, 180, 1);
   padding: 0px 20px;
   margin: 12px 0px;
+  cursor: pointer;
 }
 .product-filter-category-list .product-category a {
   color: #fff;
@@ -114,7 +115,7 @@
 .product-filter-category-list .product-category:last-child a {
   color: rgba(128, 128, 128, 1);
 }
-.product-filter-category-list .product-category.active a {
+.product-filter-category-list .product-category.active  {
   background: linear-gradient(
     286.49deg,
     #c3942f 22.55%,

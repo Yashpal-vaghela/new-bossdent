@@ -20,6 +20,7 @@ const Home = () => {
   const dispatch = useDispatch();
   const [dentalProducts, setDentalProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
+
   const getCartData = useSelector((state) => state.cart.cart);
   const fetchProducts = async (controller, categorySlug = null) => {
     setLoadingProducts(true);
@@ -48,6 +49,32 @@ const Home = () => {
       ? dentalProducts.slice(0, 8)
       : dentalProducts
     : [];
+  const OtherBanner = [
+    {
+      id: 1,
+      img: "/img/other-banner-img1.webp",
+      slug: "/products/dispensing-gun-110",
+    },
+    {
+      id: 2,
+      img: "/img/other-banner-img2.webp",
+      slug: "/products/patient-bibs",
+    },
+    {
+      id: 3,
+      img: "/img/other-banner-img3.webp",
+      slug: "/products/micro-applicator-tips",
+    },
+  ];
+
+  const SocialData = [
+    { id: 1, img: "/img/instagram-post11.jpg" },
+    { id: 2, img: "/img/instagram-post9.jpg" },
+    { id: 3, img: "/img/instagram-post12.jpg" },
+    { id: 4, img: "/img/instagram-post10.jpg" },
+    { id: 5, img: "/img/instagram-post8.jpg" },
+    { id: 6, img: "/img/instagram-post13.jpg" },
+  ];
 
   return (
     <div className="home-main overflow-hidden pt-0 pt-sm-0">
@@ -68,6 +95,7 @@ const Home = () => {
               categories={categories}
               loadingProducts={loadingProducts}
               visibleProducts={visibleProducts}
+              fetchProduct={fetchProducts}
             ></DentalProductSection>
           )}
           {/* Banner Section  */}
@@ -92,34 +120,23 @@ const Home = () => {
           />
           <section className="Otherbanner-section">
             <div className="container">
-              <div className="row align-items-center  justify-content-center justify-content-lg-center">
-                <div className="col-lg-4 col-md-4 col-12">
-                  <Link to="/products/dispensing-gun-110">
-                    <img
-                      src="/img/other-banner-img1.webp"
-                      className="other-banner-img img-fluid"
-                      alt="other-banner-img"
-                    ></img>
-                  </Link>
-                </div>
-                <div className="col-lg-4 col-md-4 col-sm-5 col-6">
-                  <Link to="/products/patient-bibs">
-                    <img
-                      src="/img/other-banner-img2.webp"
-                      className="other-banner-img img-fluid"
-                      alt="other-banner-img"
-                    ></img>
-                  </Link>
-                </div>
-                <div className="col-lg-4 col-md-4 col-sm-5 col-6">
-                  <Link to="/products/micro-applicator-tips">
-                    <img
-                      src="/img/other-banner-img3.webp"
-                      className="other-banner-img img-fluid"
-                      alt="other-banner-img"
-                    ></img>
-                  </Link>
-                </div>
+              <div className="row align-items-center justify-content-center justify-content-lg-center">
+                {[...OtherBanner]
+                  .sort(() => 0.5 - Math.random())
+                  .slice(0, 3)
+                  .map((item, index) => {
+                    return (
+                      <div className="col-lg-4 col-md-4 col-12" key={index}>
+                        <Link to={item?.slug}>
+                          <img
+                            src={item?.img}
+                            className="other-banner-img img-fluid"
+                            alt="other-banner-img"
+                          ></img>
+                        </Link>
+                      </div>
+                    );
+                  })}
               </div>
             </div>
           </section>
@@ -130,28 +147,24 @@ const Home = () => {
           />
           {/* <section className="follow-section">
             <div className="container">
-              <h2 className="text-white fs-2 text-center section-title">Follow us on Instagram</h2>
+              <h2 className="text-white fs-2 text-center section-title">
+                Follow us on Instagram
+              </h2>
               <div className="row">
-                <div className="col-lg-3 col-md-3 col-4">
-                  <Link to="#" >
-                    <img src="/img/instagram-post1.jpg" className="img-fluid" alt="instagram-post"></img>
-                  </Link>
-                </div>
-                <div className="col-lg-3 col-md-3 col-4">
-                  <Link to="#">
-                    <img src="/img/instagram-post2.jpg" className="img-fluid" alt="instagram-post"></img>
-                  </Link>
-                </div>
-                <div className="col-lg-3 col-md-3 col-4">
-                  <Link to="#">
-                    <img src="/img/instagram-post3.jpg" className="img-fluid" alt="instagram-post"></img>
-                  </Link>
-                </div>
-                <div className="col-lg-3 col-md-3 col-4">
-                  <Link to="#">
-                    <img src="/img/instagram-post.png" className="img-fluid" alt="instagram-post"></img>
-                  </Link>
-                </div>
+                {SocialData?.map((item, index) => {
+                  return (
+                    <div className="col-lg-2 col-md-3 col-4" key={index} >
+                      <Link to="#" >
+                        <img
+                          src={item?.img}
+                          className="img-fluid h-100"
+                          alt="instagram-post"
+                          style={{border:"1px solid #fff"}}
+                        ></img>
+                      </Link>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </section> */}

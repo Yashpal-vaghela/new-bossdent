@@ -149,7 +149,7 @@ const Cart = () => {
           <>
             <section className="cart-section">
               <div className="container">
-                <div className="row my-4 my-sm-5 text-white">
+                <div className="row my-4 my-sm-0 my-md-5 text-white">
                   <div className="col-lg-8">
                     <div className="cart-container">
                       <div className="cart-header">
@@ -201,9 +201,13 @@ const Cart = () => {
                                   </p>
                                   <div className="cart-item-quantity justify-content-center  d-flex d-md-none">
                                     <button
-                                      onClick={(e) =>
-                                        handleUpdateQty(e, item, "MINUS")
-                                      }
+                                     onClick={(e) =>
+                                      item?.quantity != 1 && handleUpdateQty(e, item, "MINUS")
+                                    }
+                                      // onClick={(e) =>
+                                      //   handleUpdateQty(e, item, "MINUS")
+                                      // }
+                                      className={`${item?.quantity == 1 ? "disactive": ""}`}
                                     >
                                       -
                                     </button>
@@ -223,8 +227,9 @@ const Cart = () => {
                                 <div className="cart-item-quantity justify-content-start d-md-flex d-none">
                                   <button
                                     onClick={(e) =>
-                                      handleUpdateQty(e, item, "MINUS")
+                                      item?.quantity != 1 && handleUpdateQty(e, item, "MINUS")
                                     }
+                                    className={`${item?.quantity == 1 ? "disactive": ""}`}
                                   >
                                     -
                                   </button>
