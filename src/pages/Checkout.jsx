@@ -132,7 +132,7 @@ export const Checkout = () => {
                   );
                 }
               } else {
-                // DeletCartItems();
+                DeletCartItems();
                 navigate("/payment/success");
               }
             });

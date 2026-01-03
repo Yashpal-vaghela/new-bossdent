@@ -97,7 +97,7 @@ const Delivery = () => {
                 <Link to="/help-center">Help</Link>
               </li>
               <li className="breadcrumb-item active">
-                <Link to="/help-center/order">Order</Link>
+                <Link to="/help-center/delivery">Shipping & Delivery</Link>
               </li>
             </ol>
           </nav>
