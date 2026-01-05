@@ -29,19 +29,13 @@ function App() {
   const token = useSelector((state)=>state.auth.token);
   
   useEffect(() => {
-    if (!token) return;
-      const controller = new AbortController();
+    const controller = new AbortController();
+    if (token){  
       dispatch(fetchUser(undefined, { signal: controller.signal }));
       dispatch(fetchCart(undefined, { signal: controller.signal }));
       dispatch(fetchWishList(undefined, { signal: controller.signal }));
-    return () => {
-      controller.abort(); // cleanup on unmount
     };
-  }, []);
-  
-  useEffect(() => {
-    const controller = new AbortController();
-    dispatch(fetchCategories(undefined, { signal: controller.signal }));
+      dispatch(fetchCategories(undefined, { signal: controller.signal }));
     return () => {
       controller.abort(); // cleanup on unmount
     };
