@@ -784,7 +784,10 @@ div:where(.swal2-container) div:where(.swal2-popup) {
   font-size: 1.1em;
   font-weight: bold;
 }
-
+.payment-type{
+  margin-bottom: 10px;
+  font-weight: 600;
+}
 .contact-detalis {
   font-size: 1.1em;
   margin: 20px 0;

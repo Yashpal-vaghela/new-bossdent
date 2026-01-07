@@ -54,6 +54,32 @@ export const Checkout = () => {
     zipcode: Object.keys(user).length !== 0 ? user?.zipcode : "",
     payment_method: "",
   };
+  const fetchPincodeDetails = async (pincode) =>{
+    try{
+      const res = await axios.get(`https://api.postalpincode.in/pincode/${pincode}`);
+      console.log("res",res.data);
+      if( res.data &&
+      res.data[0].Status === "Success" &&
+      res.data[0].PostOffice.length > 0){
+        const postOffice = res.data[0].PostOffice[0]
+      }else{
+        // toast.error("Invalid Pincode");
+        formik.setFieldTouched("zipcode", true);
+        formik.setFieldError("zipcode", "Invalid pincode");
+        // formik.setFieldValue("zipcode", "");
+      // formik.setFieldValue("state", "");
+      }
+      // if(res.data && res.data)
+    }catch(err){
+      console.error("Pincode API error:", err);
+      formik.setFieldTouched("zipcode", true);
+      formik.setFieldError(
+        "zipcode",
+        "Unable to fetch pincode details. Try again."
+      );
+      
+    }
+  }
   const formik = useFormik({
     initialValues,
     enableReinitialize: true,
@@ -64,11 +90,18 @@ export const Checkout = () => {
       if (formik?.values.payment_method && formik?.values) {
         try {
           setApiLoading(true);
-          console.log("formik", formik?.values);
+         
+          let payload = {}
+          if(formik?.values.payment_method === "COD"){
+            payload = {...formik?.values,delivery_charge:Number(deliverydata),handling_charge:25}
+          }else{
+            payload = formik?.values
+          }
+           console.log("formik", formik?.values,"payload",payload);
           await axios
             .post(
               "https://admin.bossdentindia.com/wp-json/test/v1/create-order",
-              formik.values,
+              payload,
               {
                 headers: {
                   Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
@@ -134,6 +167,8 @@ export const Checkout = () => {
               } else {
                 DeletCartItems();
                 navigate("/payment/success");
+                localStorage.setItem("orderId", res.data.order_id);
+                localStorage.setItem("payment_method",JSON.stringify(formik?.values?.payment_method))
               }
             });
           // if (formik?.values.payment_method === "PhonePe") {
@@ -217,6 +252,7 @@ export const Checkout = () => {
     if (cartData.items.length !== 0 && cartData.items.length === 1) {
       console.log("cart", cartData.items.category_ids);
     }
+    // fetchPincodeDetails()
   }, []);
   useEffect(() => {
     setStates(Indian_states_cities_list?.STATES_OBJECT);
@@ -439,9 +475,17 @@ export const Checkout = () => {
                       name="zipcode"
                       placeholder="Zipcode"
                       value={formik?.values?.zipcode || ""}
-                      onChange={formik?.handleChange}
+                      // onChange={formik?.handleChange}
                       onBlur={formik?.handleBlur}
                       maxLength="6"
+                      onChange={(e)=>{
+                        const value = e.target.value.replace(/\D/g, "");
+                        formik.setFieldValue("zipcode", value);
+
+                        if(value.length === 6){
+                          fetchPincodeDetails(value)
+                        }
+                      }}
                     ></input>
                     {formik?.errors?.zipcode && (
                       <p className="text-danger my-1 my-lg-0 my-xl-1">

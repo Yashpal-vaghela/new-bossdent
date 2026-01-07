@@ -9,6 +9,7 @@ export const Success = () => {
   const [paymentStatus, setPaymentStatus] = useState("PROCESSING");
   const token = useSelector((state) => state.auth.token);
   const [orderId] = useState(JSON.parse(localStorage.getItem("orderId")));
+  const [payment_method] = useState(JSON.parse(localStorage.getItem("payment_method")));
   const navigate = useNavigate();
   const intervalRef = useRef(null);
 
@@ -41,17 +42,20 @@ export const Success = () => {
       navigate("/");
       return;
     }
+    console.log("payment",payment_method)
+    if(payment_method !== "COD"){
+      // Initial delay before first fetch (e.g., 2 seconds)
+      const timeout = setTimeout(fetchPaymentCallBack, 2000);
 
-    // Initial delay before first fetch (e.g., 2 seconds)
-    const timeout = setTimeout(fetchPaymentCallBack, 2000);
+      // Poll every 5 seconds
+      intervalRef.current = setInterval(fetchPaymentCallBack, 5000);
 
-    // Poll every 5 seconds
-    intervalRef.current = setInterval(fetchPaymentCallBack, 5000);
+      return () => {
+        clearInterval(timeout);
+        clearInterval(intervalRef.current);
+      };
+    }
 
-    return () => {
-      clearInterval(timeout);
-      clearInterval(intervalRef.current);
-    };
   }, []);
 
   return (
@@ -75,6 +79,7 @@ export const Success = () => {
             </p>
           ) : null}
           <p className="order-id">Your Order No: {orderId}</p>
+          <p className="payment-type">Payment Method: {payment_method}</p>
           <p className="contact-detalis">
             If you have any question regarding your order, you can contact at{" "}
             <strong>

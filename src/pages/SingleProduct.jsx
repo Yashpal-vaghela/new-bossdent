@@ -82,7 +82,9 @@ const SingleProduct = () => {
   }, [slug]);
 
   useEffect(() => {
-    setQuantity(b);
+    if (token === "null" || !token) {
+      setQuantity(b);
+    }
   }, [cartData]);
 
   const handleShowQuantity = () => {
@@ -90,47 +92,52 @@ const SingleProduct = () => {
   };
   const handleQuantity = (e, id, action, item, product) => {
     // console.log("id", id, action, item, product);
-    if (product?.stock_status !== "outofstock") {
-      if (action === "variation") {
-        if (!showQuantity.some((i) => i.variation_id === id)) {
-          const filterdata = singleProduct?.variations.filter(
-            (i) => i?.id === id
-          );
-          setShowQuantity((prev) => [...prev, ...filterdata]);
-          const currentQty = quantity[id] || 1;
-          setQuantity((prev) => ({
-            ...prev,
-            [id]: prev[id] || 1, // start from 1 if not already set
-          }));
-          handleCardError("without-error");
-          if (currentQty < 2) {
-            handleAddToCart(
-              singleProduct,
-              id,
-              { ...quantity, [id]: currentQty },
-              item?.attributes,
-              "PLUS"
+    if (token === "null" || !token) {
+      validateUser();
+      toast.error("Please login to product add to cart!");
+    } else {
+      if (product?.stock_status !== "outofstock") {
+        if (action === "variation") {
+          if (!showQuantity.some((i) => i.variation_id === id)) {
+            const filterdata = singleProduct?.variations.filter(
+              (i) => i?.id === id
             );
-          }
-        }
-      } else {
-        if (product?.id !== 4070) {
-          const filterData = singleProduct?.id === id;
-          setShowQuantity(filterData);
-          const currentQty = quantity[id] || 1;
-          setQuantity({ ...quantity, [id]: currentQty });
-          // handleCardError("without-error");
-          if (currentQty < 2) {
-            handleAddToCart(
-              singleProduct,
-              id,
-              { ...quantity, [id]: currentQty },
-              item,
-              "PLUS"
-            );
+            setShowQuantity((prev) => [...prev, ...filterdata]);
+            const currentQty = quantity[id] || 1;
+            setQuantity((prev) => ({
+              ...prev,
+              [id]: prev[id] || 1, // start from 1 if not already set
+            }));
+            handleCardError("without-error");
+            if (currentQty < 2) {
+              handleAddToCart(
+                singleProduct,
+                id,
+                { ...quantity, [id]: currentQty },
+                item?.attributes,
+                "PLUS"
+              );
+            }
           }
         } else {
-          setShowContactModal((prev) => !prev);
+          if (product?.id !== 4070) {
+            const filterData = singleProduct?.id === id;
+            setShowQuantity(filterData);
+            const currentQty = quantity[id] || 1;
+            setQuantity({ ...quantity, [id]: currentQty });
+            // handleCardError("without-error");
+            if (currentQty < 2) {
+              handleAddToCart(
+                singleProduct,
+                id,
+                { ...quantity, [id]: currentQty },
+                item,
+                "PLUS"
+              );
+            }
+          } else {
+            setShowContactModal((prev) => !prev);
+          }
         }
       }
     }
@@ -361,11 +368,15 @@ const SingleProduct = () => {
           : true && i?.product_id === product?.id;
       });
 
-      if (product?.variations && product.variations.length !== 0 && selectedAttributes === 0){ 
-          setShowVariationModal((prev) => !prev);
-          setSelectedProductForModal(product);
-      }else {
-        if(selectedAttributes === null && selectedAttributes !== undefined){
+      if (
+        product?.variations &&
+        product.variations.length !== 0 &&
+        selectedAttributes === 0
+      ) {
+        setShowVariationModal((prev) => !prev);
+        setSelectedProductForModal(product);
+      } else {
+        if (selectedAttributes === null && selectedAttributes !== undefined) {
           handleCardModalError("error");
           //  toast.error(
           //     `please select ${
@@ -374,15 +385,15 @@ const SingleProduct = () => {
           //       )[0]
           //     }`
           //   );
-        }else{
-          if(AlreadyExistsData.length > 0){
+        } else {
+          if (AlreadyExistsData.length > 0) {
             const payload = {
               cart_id: AlreadyExistsData[0]?.cart_id,
               quantity: AlreadyExistsData[0]?.quantity + quantity,
             };
             console.warn("EditCartData api call", payload);
             handleEditApi(payload);
-          }else{
+          } else {
             const payload = {
               product_id: product?.id,
               variation_id:
@@ -397,7 +408,6 @@ const SingleProduct = () => {
         }
       }
     }
-   
   };
 
   const handleEditApi = async (payload) => {
@@ -453,16 +463,15 @@ const SingleProduct = () => {
       handleCardError("error");
     } else {
       handleCardError("without-error");
-      if(id !== 4070){
+      if (id !== 4070) {
         handleAddToCart(product, id, qty, 0);
         setTimeout(() => {
           navigate("/checkout");
         }, 1000);
         console.log("addtocart");
-      }else{
-        setShowContactModal((prev)=>!prev);
+      } else {
+        setShowContactModal((prev) => !prev);
       }
-    
     }
   };
   const handleCardError = (action) => {
@@ -481,7 +490,7 @@ const SingleProduct = () => {
       });
     }
   };
-  const handleCardModalError = (action) =>{
+  const handleCardModalError = (action) => {
     const card1 = document.querySelectorAll(".modal-variation-select");
     console.log("set error to select variations", card1, action);
     if (action === "error") {
@@ -495,7 +504,7 @@ const SingleProduct = () => {
         i.style.border = "1.4px solid rgba(239, 239, 239, 1)";
       });
     }
-  }
+  };
 
   return (
     <div className="home-main pt-0  pt-lg-0">
@@ -528,7 +537,7 @@ const SingleProduct = () => {
               product={selectedProductForModal}
               onAddToCart={handleAddToCartModal}
               variations={selectedProductForModal?.variation}
-               handleCardModalError={handleCardModalError}
+              handleCardModalError={handleCardModalError}
             ></AddToCartModal>
             <div className="container position-relative">
               <div className="row">
@@ -738,7 +747,7 @@ const SingleProduct = () => {
                                         >
                                           -
                                         </button>
-                                        {console.log("qun", quantity)}
+                                        {console.log("qun---", quantity)}
                                         <span>{quantity[item?.id] || 1}</span>
                                         <button
                                           onClick={(e) =>
@@ -858,6 +867,7 @@ const SingleProduct = () => {
                             </p>
                           </div>
                           <div className="col-lg-4 col-md-6 col-6 px-1">
+                            {console.log("qun", quantity)}
                             {showQuantity === true ? (
                               <>
                                 <div className="singleProduct-quantity withvar">
@@ -984,7 +994,10 @@ const SingleProduct = () => {
             handleAddToCartModal={handleAddToCartModal}
             handleShowQuantity={handleShowQuantity}
           ></RelatedProducts>
-          <ContactModal isOpen={showContactModal} setOpen={setShowContactModal}></ContactModal>
+          <ContactModal
+            isOpen={showContactModal}
+            setOpen={setShowContactModal}
+          ></ContactModal>
         </>
       )}
     </div>
