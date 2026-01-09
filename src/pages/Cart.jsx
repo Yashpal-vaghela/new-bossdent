@@ -202,12 +202,12 @@ const Cart = () => {
                                   <div className="cart-item-quantity justify-content-center  d-flex d-md-none">
                                     <button
                                      onClick={(e) =>
-                                      item?.quantity != 1 && handleUpdateQty(e, item, "MINUS")
+                                      Number(item?.quantity) !== 1 && handleUpdateQty(e, item, "MINUS")
                                     }
                                       // onClick={(e) =>
                                       //   handleUpdateQty(e, item, "MINUS")
                                       // }
-                                      className={`${item?.quantity == 1 ? "disactive": ""}`}
+                                      className={`${Number(item?.quantity) === 1 ? "disactive": ""}`}
                                     >
                                       -
                                     </button>
@@ -227,9 +227,9 @@ const Cart = () => {
                                 <div className="cart-item-quantity justify-content-start d-md-flex d-none">
                                   <button
                                     onClick={(e) =>
-                                      item?.quantity != 1 && handleUpdateQty(e, item, "MINUS")
+                                      Number(item?.quantity) !== 1 && handleUpdateQty(e, item, "MINUS")
                                     }
-                                    className={`${item?.quantity == 1 ? "disactive": ""}`}
+                                    className={`${Number(item?.quantity) === 1 ? "disactive": ""}`}
                                   >
                                     -
                                   </button>

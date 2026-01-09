@@ -37,6 +37,7 @@ export const Success = () => {
     }
   };
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     if (!orderId) {
       navigate("/");
@@ -63,12 +64,12 @@ export const Success = () => {
       <section className="checkout-success-wrapper ">
         <div className="container">
           <h1 className="checkout-success-message">Thank You!</h1>
-          <p>For Your Order</p>
+          <p className="mb-3">For Your Order</p>
           {["COMPLETED", "PROCESSING"].includes(paymentStatus) && (
             <h2>Your order was Successfully Placed.</h2>
           )}
           {paymentStatus === "FAILED" && <h2>Your Payment could not be verified.</h2>}
-          <br />
+          {/* <br /> */}
           {["COMPLETED", "PROCESSING"].includes(paymentStatus) ? (
             <p className="order-status-success">
               <i className="fa-regular fa-circle-check"></i> Order Successfully Placed

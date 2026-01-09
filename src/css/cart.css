@@ -791,6 +791,7 @@ div:where(.swal2-container) div:where(.swal2-popup) {
 .contact-detalis {
   font-size: 1.1em;
   margin: 20px 0;
+  letter-spacing: 0.4px;
 }
 .contact-detalis strong {
   font-weight: 400;
@@ -928,7 +929,11 @@ div:where(.swal2-container) div:where(.swal2-popup) {
 .buttons .btn {
   background-color: #152238;
 }
-
+@media(max-width:1200px){
+  .checkout-success-wrapper{
+    width: 70%;
+  }
+}
 @media (max-width: 992px) {
   .page-content .container {
     max-width: 1230px;
@@ -941,6 +946,35 @@ div:where(.swal2-container) div:where(.swal2-popup) {
   .receipt-table {
     width: 670px;
     margin: 0 auto;
+  }
+  .checkout-success-wrapper{
+    width: 80%;
+  }
+  .checkout-success-message{
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  .checkout-success-wrapper h2{
+    font-size: 24px;
+  }
+  .order-status-success{
+    font-size: 1.1rem;
+  }
+  .order-id{
+    font-size: 1rem;
+    margin-bottom: 5px;
+  }
+  .contact-detalis{
+    font-size: 1rem;
+    margin: 10px 0px;
+  }
+  .checkout-success h2{
+    font-size: 22px;
+    line-height: 1.6;
+  }
+  .buttons .btn{
+    font-size: 15px;
+    letter-spacing: 0.4px;
   }
 }
 
@@ -957,6 +991,13 @@ div:where(.swal2-container) div:where(.swal2-popup) {
   .receipt-table {
     width: 100%;
   }
+  .checkout-success-wrapper{
+    width: 85%;
+    /* padding: 40px 20px; */
+  }
+  /* .checkout-success-wrapper  .container{
+    margin: auto 0px;
+  } */
 }
 
 @media (max-width: 576px) {
@@ -966,5 +1007,39 @@ div:where(.swal2-container) div:where(.swal2-popup) {
 
   .page-content .container .navbar {
     font-size: 16px;
+  }
+  .checkout-success-wrapper{
+    width: 95%;
+  }
+  .checkout-success-message{
+    font-size: 1.8rem;
+  }
+  .checkout-success-wrapper h2{
+    font-size: 20px;
+  }
+  .order-status-success{
+    font-size: 1rem;
+  }
+  .order-id{
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .payment-type{
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .contact-detalis{
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    line-height: 1.6;
+  }
+  .checkout-success h2{
+    font-size: 16px;
+  }
+  .checkout-success p{
+    font-size: 14px;
+  }
+  .buttons .btn{
+    font-size: 14px;
   }
 }

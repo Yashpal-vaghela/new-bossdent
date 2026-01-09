@@ -69,6 +69,7 @@ const Navbar = () => {
     }
   };
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     const handleScroll = () => {
       const topNav = document.querySelector(".navbar-top");

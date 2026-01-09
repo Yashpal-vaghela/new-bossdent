@@ -25,6 +25,7 @@ const HomeBanner = () => {
     },
   ];
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     bannerImages.forEach((src) => {
       const link = document.createElement("link");

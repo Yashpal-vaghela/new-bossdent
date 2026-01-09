@@ -75,7 +75,7 @@ export const OrderHistory = () => {
     for (let i = 1; i <= totalPages; i++) {
       if (i === 1 || i === totalPages || (i >= page - 1 && i <= page + 1)) {
         buttons.push(
-          <li className="page-item">
+          <li className="page-item" key={`${i}`}>
             <button
               key={i}
               onClick={() => handlePageChange(i)}
@@ -96,6 +96,7 @@ export const OrderHistory = () => {
     }
     return buttons;
   };
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     const controller = new AbortController();
     if (Object.keys(params)[0] !== undefined) {
@@ -398,12 +399,19 @@ export const OrderHistory = () => {
                                     <div className="summary-total-row">
                                       <span>Shipping</span>
                                       <p>
-                                        {orderDetails?.shipping_charge ===
+                                       {orderDetails?.shipping_charge ===
                                         "0.00"
                                           ? "Free"
-                                          : orderDetails?.shipping_charge}
+                                          :  `₹${orderDetails?.shipping_charge}`}
                                       </p>
                                     </div>
+                                    {
+                                      orderDetails?.handling_charge !== "0.00" ? 
+                                      <div className="summary-total-row">
+                                        <span>Pay Extra on COD</span>
+                                        <p style={{color:"#00c16e"}}>₹{Number(orderDetails?.handling_charge).toFixed(2)} </p>
+                                      </div>:<></>
+                                    }
                                     <div className="summary-total-row total align-items-center">
                                       <span>Total</span>
                                       <p>₹{orderDetails?.total}</p>

@@ -80,10 +80,11 @@ export const Product = () => {
         setloading(false);
       }
     } catch (err) {
-      if (err.name !== "AbortError") {
-        console.error(err);
-        setloading(false);
-      }
+      console.log("err",err)
+      // if (err.name !== "AbortError") {
+      //   console.error(err);
+      //   setloading(false);
+      // }
     }
   };
 
@@ -101,6 +102,7 @@ export const Product = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     const controller = new AbortController();
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -179,7 +181,7 @@ export const Product = () => {
           ? i?.variation_id === selectedAttributes?.id
           : true && i?.product_id === product?.id;
       });
-      console.log("slug", AlreadyExistsData);
+      // console.log("slug", AlreadyExistsData);
       if (product?.id !== 4070) {
         if (AlreadyExistsData.length > 0) {
           if (

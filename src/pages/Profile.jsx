@@ -47,6 +47,7 @@ const Profile = () => {
     return `${day} ${month}, ${year}`;
   };
 
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     const controller = new AbortController();
     window.scrollTo({ top: 0, behavior: "smooth" });

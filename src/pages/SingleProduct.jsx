@@ -74,6 +74,7 @@ const SingleProduct = () => {
       if (err.name !== "AbortError") console.error(err);
     }
   };
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     const controller = new AbortController();
     SingleProductData(controller);
@@ -707,7 +708,7 @@ const SingleProduct = () => {
                               </p>
                               <p>
                                 Stock Status:{" "}
-                                <b>{singleProduct?.stock_status}</b>
+                                <b>{item?.stock_status}</b>
                               </p>
                             </div>
                             <div className="col-lg-4 col-md-6 col-6 px-1">

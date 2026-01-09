@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useFormik } from "formik";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
@@ -14,23 +14,12 @@ const checkoutSchema = yup.object().shape({
   first_name: yup.string().required("First Name Field is required"),
   last_name: yup.string().required("Last Name Field is required"),
   address: yup.string().required("Address Field is required"),
-  email: yup
-    .string()
-    .email("Email is not valid")
-    .required("Email Field is required"),
+  email: yup.string().email("Email is not valid").required("Email Field is required"),
   city: yup.string().required("City Field is required"),
-  phone: yup
-    .string()
-    .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
-    .required("Phone Number Field is required"),
+  phone: yup.string().matches(/^[0-9]{10}$/, "Phone number must be 10 digits").required("Phone Number Field is required"),
   state: yup.string().required("State Field is required."),
-  zipcode: yup
-    .string()
-    .matches(/^[0-9]{6}$/, "Zipcode must be 6 digits")
-    .required("Zipcode Field is required."),
-  payment_method: yup
-    .string()
-    .required("Please choose payment method is required"),
+  zipcode: yup.string().matches(/^[0-9]{6}$/, "Zipcode must be 6 digits").required("Zipcode Field is required."),
+  payment_method: yup.string().required("Please choose payment method is required"),
 });
 export const Checkout = () => {
   const [apiloading, setApiLoading] = useState(false);
@@ -40,7 +29,7 @@ export const Checkout = () => {
   const user = useSelector((state) => state.user.user);
   const cartData = useSelector((state) => state.cart.cart);
   const deliverydata = useSelector((state) => state.cart.deliveryCharge);
-  const paymentIntervalRef = useRef(null);
+  // const paymentIntervalRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const initialValues = {
@@ -54,32 +43,35 @@ export const Checkout = () => {
     zipcode: Object.keys(user).length !== 0 ? user?.zipcode : "",
     payment_method: "",
   };
-  const fetchPincodeDetails = async (pincode) =>{
-    try{
-      const res = await axios.get(`https://api.postalpincode.in/pincode/${pincode}`);
-      console.log("res",res.data);
-      if( res.data &&
-      res.data[0].Status === "Success" &&
-      res.data[0].PostOffice.length > 0){
-        const postOffice = res.data[0].PostOffice[0]
-      }else{
+  const fetchPincodeDetails = async (pincode) => {
+    try {
+      const res = await axios.get(
+        `https://api.postalpincode.in/pincode/${pincode}`
+      );
+      console.log("res", res.data);
+      if (
+        res.data &&
+        res.data[0].Status === "Success" &&
+        res.data[0].PostOffice.length > 0
+      ) {
+        // const postOffice = res.data[0].PostOffice[0]
+      } else {
         // toast.error("Invalid Pincode");
         formik.setFieldTouched("zipcode", true);
         formik.setFieldError("zipcode", "Invalid pincode");
         // formik.setFieldValue("zipcode", "");
-      // formik.setFieldValue("state", "");
+        // formik.setFieldValue("state", "");
       }
       // if(res.data && res.data)
-    }catch(err){
+    } catch (err) {
       console.error("Pincode API error:", err);
       formik.setFieldTouched("zipcode", true);
       formik.setFieldError(
         "zipcode",
         "Unable to fetch pincode details. Try again."
       );
-      
     }
-  }
+  };
   const formik = useFormik({
     initialValues,
     enableReinitialize: true,
@@ -90,31 +82,16 @@ export const Checkout = () => {
       if (formik?.values.payment_method && formik?.values) {
         try {
           setApiLoading(true);
-         
-          let payload = {}
-          if(formik?.values.payment_method === "COD"){
-            payload = {...formik?.values,delivery_charge:Number(deliverydata),handling_charge:25}
-          }else{
-            payload = formik?.values
-          }
-           console.log("formik", formik?.values,"payload",payload);
-          await axios
-            .post(
-              "https://admin.bossdentindia.com/wp-json/test/v1/create-order",
-              payload,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
-                  "Content-Type": "application/json",
-                },
-              }
-            )
+          await axios.post(`${BASE_URL}/create-order`, formik.values, {
+              headers: {
+                Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
+                "Content-Type": "application/json",
+              },
+            })
             .then(async (res) => {
               if (formik?.values.payment_method === "PhonePe") {
                 setApiLoading(true);
-                const paymentResponse = await fetch(
-                  `${BASE_URL}/phonepe/new-initiate`,
-                  {
+                const paymentResponse = await fetch(`${BASE_URL}/phonepe/new-initiate`, {
                     method: "POST",
                     headers: {
                       "Content-Type": "application/json",
@@ -137,47 +114,25 @@ export const Checkout = () => {
                 );
                 if (!paymentResponse.ok) {
                   const paymentErrorText = await paymentResponse.text();
-                  throw new Error(
-                    "Failed to initiate payment.",
-                    paymentErrorText
-                  );
+                  throw new Error("Failed to initiate payment.",paymentErrorText);
                 }
                 const paymentData = await paymentResponse.json();
-                if (
-                  paymentData.phonepe_response.success &&
-                  paymentData.phonepe_response &&
-                  paymentData.phonepe_response.data.instrumentResponse &&
-                  paymentData.phonepe_response.data.instrumentResponse
-                    .redirectInfo
-                ) {
+                if (paymentData.phonepe_response.success && paymentData.phonepe_response &&paymentData.phonepe_response.data.instrumentResponse &&paymentData.phonepe_response.data.instrumentResponse.redirectInfo) {
                   setApiLoading(false);
-                  const paymentUrl =
-                    paymentData.phonepe_response.data.instrumentResponse
-                      .redirectInfo.url;
+                  const paymentUrl = paymentData.phonepe_response.data.instrumentResponse.redirectInfo.url;
                   //window.open(paymentUrl);
                   window.location.href = paymentUrl;
                   // paymentIntervalRef.current = setInterval(()=>{
                   //   checkPaymentStatus(paymentData.phonepe_response.data.merchantId,paymentData.x_verify,paymentData.phonepe_response.data.merchantTransactionId,res.data.order_id);
                   // },10000);
                   localStorage.setItem("orderId", res.data.order_id);
-                  dispatch(
-                    AddToCart({ items: [], cart_count: 0, cart_total: 0 })
-                  );
+                  dispatch(AddToCart({ items: [], cart_count: 0, cart_total: 0 }));
                 }
               } else {
                 DeletCartItems();
                 navigate("/payment/success");
-                localStorage.setItem("orderId", res.data.order_id);
-                localStorage.setItem("payment_method",JSON.stringify(formik?.values?.payment_method))
               }
             });
-          // if (formik?.values.payment_method === "PhonePe") {
-
-          // } else {
-          //   console.log("formik",formik?.values);
-          //   // const payload = {...formik?.values,pay}
-          //     // await axios.post("https://admin.bossdentindia.com/wp-json/test/v1/create-order",)
-          // }
         } catch (err) {
           setApiLoading(false);
           toast.error(err?.message);
@@ -187,6 +142,7 @@ export const Checkout = () => {
       }
     },
   });
+
   // useEffect(() => {
   //   const orderId = JSON.parse(localStorage.getItem("orderId"));
   //   if (!orderId) return;
@@ -197,16 +153,18 @@ export const Checkout = () => {
 
   //   return () => clearInterval(interval);
   // }, []);
-
-  // const checkPaymentStatus = async (orderId) =>{
+  // const checkPaymentStatus = async (orderId) => {
   //   setApiLoading(true);
-  //   try{
-  //     const res = await axios.get(`${BASE_URL}/phonepe/status?order_id=${orderId}`,{
-  //       headers:{
-  //         Authorization: `Bearer ${token}`,
-  //         "Content-Type": "application/json",
+  //   try {
+  //     const res = await axios.get(
+  //       `${BASE_URL}/phonepe/status?order_id=${orderId}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //           "Content-Type": "application/json",
+  //         },
   //       }
-  //     });
+  //     );
   //     if (res.data.payment_status === "COMPLETED") {
   //       toast.success("Payment Successful!");
   //       clearInterval(paymentIntervalRef.current);
@@ -214,18 +172,18 @@ export const Checkout = () => {
   //       setApiLoading(false);
   //       navigate("/payment/success");
   //     }
-  //     if (res.data.payment_status === "FAILED" ) {
+  //     if (res.data.payment_status === "FAILED") {
   //       toast.error("Payment Failed!");
   //       clearInterval(paymentIntervalRef.current);
   //       paymentIntervalRef.current = null;
   //       setApiLoading(false);
   //       navigate("/payment/success");
   //     }
-  //     localStorage.setItem("orderId",JSON.stringify(orderId));
-  //   }catch(err){
+  //     localStorage.setItem("orderId", JSON.stringify(orderId));
+  //   } catch (err) {
   //     console.log("Poll error", err);
   //   }
-  // }
+  // };
   const DeletCartItems = async () => {
     setApiLoading(true);
     await axios
@@ -248,12 +206,7 @@ export const Checkout = () => {
         console.log("err", err);
       });
   };
-  useEffect(() => {
-    if (cartData.items.length !== 0 && cartData.items.length === 1) {
-      console.log("cart", cartData.items.category_ids);
-    }
-    // fetchPincodeDetails()
-  }, []);
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     setStates(Indian_states_cities_list?.STATES_OBJECT);
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -478,12 +431,12 @@ export const Checkout = () => {
                       // onChange={formik?.handleChange}
                       onBlur={formik?.handleBlur}
                       maxLength="6"
-                      onChange={(e)=>{
+                      onChange={(e) => {
                         const value = e.target.value.replace(/\D/g, "");
                         formik.setFieldValue("zipcode", value);
 
-                        if(value.length === 6){
-                          fetchPincodeDetails(value)
+                        if (value.length === 6) {
+                          fetchPincodeDetails(value);
                         }
                       }}
                     ></input>
@@ -556,7 +509,7 @@ export const Checkout = () => {
                   </label>
                 </div>
 
-                {codoption && (
+                {/* {codoption && (
                   <div className="form-check my-2">
                     <input
                       type="radio"
@@ -567,6 +520,25 @@ export const Checkout = () => {
                         cartData?.items?.length === 1 &&
                         cartData?.items[0].category_ids.some((i) => i === 116)
                       }
+                      onChange={formik?.handleChange}
+                    ></input>
+                    <label className="form-check-label d-flex  align-items-center justify-content-between">
+                      <img
+                        src="./img/payment_option2.svg"
+                        className="img-fluid"
+                        alt="Phone-pe-svg-icon"
+                      ></img>
+                      Cash On Delivery <b>Pay Extra ₹25 on COD</b>
+                    </label>
+                  </div>
+                )} */}
+                {codoption && (
+                  <div className="form-check my-2">
+                    <input
+                      type="radio"
+                      className="form-check-input"
+                      name="payment_method"
+                      value="COD"
                       onChange={formik?.handleChange}
                     ></input>
                     <label className="form-check-label d-flex  align-items-center justify-content-between">
