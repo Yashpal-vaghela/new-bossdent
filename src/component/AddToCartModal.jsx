@@ -30,6 +30,7 @@ export const AddToCartModal = ({
     const {name,value} = e.target;
     setSelectedAttributes({...selectedAttributes,[name]:value})
     handleCardModalError("without-error")
+   
   }
   const getMatchedVariation = () => {
     if (!Object.values(selectedAttributes)[0]) return null;
@@ -40,6 +41,19 @@ export const AddToCartModal = ({
       return Object.values(v?.attributes)[1] ? sizeMatch && packMatch : sizeMatch;
     });
   }
+
+  // const getMatchedVariation = () => {
+  //   if (!Object.keys(selectedAttributes).length) return null;
+
+  //   return product?.variations.find((variation) => {
+  //     return Object.entries(selectedAttributes).every(
+  //       ([attrName, selectedValue]) =>
+  //         variation.attributes?.[attrName] === selectedValue
+  //     );
+  //   }) || null;
+  // };
+
+
   const handleQuantity = (e,action) => {
     e.preventDefault();
     if(action === "PLUS"){
@@ -115,13 +129,13 @@ export const AddToCartModal = ({
             </div>
             {variation?.map((i,index)=>Object.keys(i?.attributes)[index])[1] !== undefined ?
                 <>
-                    <label className="form-label">Select {variation?.map((i,index)=>Object.keys(i?.attributes)[index])[1]}</label>
-                    <select className="modal-variation-select form-select" name={Object.keys(variation[0]?.attributes)[1]} onChange={(e)=>handleAttributeSelect(e)}> 
+                  <label className="form-label">Select {variation?.map((i,index)=>Object.keys(i?.attributes)[index])[1]}</label>
+                  <select className="modal-variation-select form-select" name={Object.keys(variation[0]?.attributes)[1]} onChange={(e)=>handleAttributeSelect(e)}> 
                         {variation &&
                           variation[0]?.attributes?.pack?.map((item, index) => (
                           <option key={index}  value={item}>{item}</option>
                         ))}
-                    </select>
+                  </select>
                 </> :
                 <div className="modal-quality-wrapper mt-4 mb-3 d-flex gap-4 align-items-center">
                     <button type="button" onClick={(e)=>handleQuantity(e,"MINUS")}>-</button>
@@ -139,7 +153,9 @@ export const AddToCartModal = ({
                 setTimeout(()=>{
                   setQuantity(1);
                 },500)
-                setSelectedAttributes({});
+                if(selectedVariation?.stock !== "outofstock"){
+                  setSelectedAttributes({});
+                }
                 onAddToCart(e,product,selectedVariation,quantity)
               }}
             >
@@ -147,13 +163,15 @@ export const AddToCartModal = ({
             </button>
             <button
               type="button"
-              className="btn btn-buynow"
+              className="btn btn-buynow"  
               onClick={(e)=>{
                 const selectedVariation = getMatchedVariation();
                 setTimeout(()=>{
                   setQuantity(1);
                 },500);
-                setSelectedAttributes({});
+                if(selectedVariation?.stock !== "outofstock"){
+                  setSelectedAttributes({});
+                }
                 onAddToCart(e,product,selectedVariation,quantity,"/checkout")
               }}
             >

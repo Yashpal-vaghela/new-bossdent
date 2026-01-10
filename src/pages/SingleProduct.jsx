@@ -92,7 +92,7 @@ const SingleProduct = () => {
     setShowQuantity([]);
   };
   const handleQuantity = (e, id, action, item, product) => {
-    // console.log("id", id, action, item, product);
+    console.log("id", id, action, item, product);
     if (token === "null" || !token) {
       validateUser();
       toast.error("Please login to product add to cart!");
@@ -103,13 +103,14 @@ const SingleProduct = () => {
             const filterdata = singleProduct?.variations.filter(
               (i) => i?.id === id
             );
-            setShowQuantity((prev) => [...prev, ...filterdata]);
             const currentQty = quantity[id] || 1;
             setQuantity((prev) => ({
               ...prev,
               [id]: prev[id] || 1, // start from 1 if not already set
             }));
-            handleCardError("without-error");
+            setShowQuantity((prev) => [...prev, ...filterdata]);
+            // console.log("cur",currentQty,filterdata,"showQUn",showQuantity)
+            // handleCardError("without-error");
             if (currentQty < 2) {
               handleAddToCart(
                 singleProduct,
@@ -119,6 +120,9 @@ const SingleProduct = () => {
                 "PLUS"
               );
             }
+            // else{
+            //   handleAddToCart(singleProduct,id,{...quantity,[id]:currentQty+quantity},item?.attributes,"PLUS")
+            // }
           }
         } else {
           if (product?.id !== 4070) {
@@ -126,6 +130,7 @@ const SingleProduct = () => {
             setShowQuantity(filterData);
             const currentQty = quantity[id] || 1;
             setQuantity({ ...quantity, [id]: currentQty });
+            // console.log("cur",currentQty,filterData,"showQUn",showQuantity)
             // handleCardError("without-error");
             if (currentQty < 2) {
               handleAddToCart(
@@ -140,6 +145,8 @@ const SingleProduct = () => {
             setShowContactModal((prev) => !prev);
           }
         }
+      }else{
+        toast.error(`${product?.sku} is outofstock`)
       }
     }
   };
@@ -245,15 +252,14 @@ const SingleProduct = () => {
         const payload = {
           cart_id: AlreadyExistingdata[0]?.cart_id,
           quantity:
-            typeof id === "object"
-              ? qty[id?.id]
+            typeof id === "object" ? qty[id?.id] : AlreadyExistingdata[0]?.quantity ?  AlreadyExistingdata[0]?.quantity + 1 
               : qty[id]
-              ? qty[id]
-              : AlreadyExistingdata[0]?.quantity + 1,
         };
-        if (showQuantity.length !== 0) {
-          handleEditApi(payload);
-        }
+        // console.log("payload",payload,typeof id);
+        handleEditApi(payload);
+        // if (showQuantity.length !== 0) {
+        //   handleEditApi(payload);
+        // }
       } else {
         // console.log("sel",Object.keys(selectattributes) )
         const payload = {
@@ -368,7 +374,6 @@ const SingleProduct = () => {
           ? i?.variation_id === selectedAttributes?.variation_id
           : true && i?.product_id === product?.id;
       });
-
       if (
         product?.variations &&
         product.variations.length !== 0 &&
@@ -379,13 +384,13 @@ const SingleProduct = () => {
       } else {
         if (selectedAttributes === null && selectedAttributes !== undefined) {
           handleCardModalError("error");
-          //  toast.error(
-          //     `please select ${
-          //       product?.variations?.map(
-          //         (i, index) => Object.keys(i?.attributes)[index]
-          //       )[0]
-          //     }`
-          //   );
+           toast.error(
+              `please select ${
+                product?.variations?.map(
+                  (i, index) => Object.keys(i?.attributes)[index]
+                )[0]
+              }`
+            );
         } else {
           if (AlreadyExistsData.length > 0) {
             const payload = {
@@ -469,7 +474,7 @@ const SingleProduct = () => {
         setTimeout(() => {
           navigate("/checkout");
         }, 1000);
-        console.log("addtocart");
+        // console.log("addtocart");
       } else {
         setShowContactModal((prev) => !prev);
       }
@@ -478,9 +483,9 @@ const SingleProduct = () => {
   const handleCardError = (action) => {
     //  const card = document.getElementsByClassName("single-variation-wrapper");
     const card1 = document.querySelectorAll(".btn-addToCart");
-    console.log("set error to select variations", card1, action);
+    // console.log("set error to select variations", card1, action);
     if (action === "error") {
-      console.log("card1", card1);
+      // console.log("card1", card1);
       card1.forEach((i) => {
         i.style.border = "1.4px solid red";
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -493,9 +498,9 @@ const SingleProduct = () => {
   };
   const handleCardModalError = (action) => {
     const card1 = document.querySelectorAll(".modal-variation-select");
-    console.log("set error to select variations", card1, action);
+    // console.log("set error to select variations", card1, action);
     if (action === "error") {
-      console.log("card1", card1);
+      // console.log("card1", card1);
       card1.forEach((i) => {
         i.style.border = "1.4px solid red";
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -676,6 +681,7 @@ const SingleProduct = () => {
                 >
                   {singleProduct?.variations &&
                     visibleVariation?.map((item, index) => {
+                      console.log("item",item)
                       return (
                         <div
                           className="single-variation-wrapper mb-3 mb-md-4"
@@ -691,10 +697,13 @@ const SingleProduct = () => {
                                 <p>
                                   Pack Size:{" "}
                                   <b>
-                                    {singleProduct?.short_description.replace(
-                                      /<\/?p>/g,
+                                    {/* {singleProduct?.short_description.replace(
+                                      /<\/?(p|ul|li)>/g,
                                       ""
-                                    )}
+                                    )}, */}
+                                    {singleProduct.short_description
+                                      .replace(/<\/li>\s*<li>/g, ", ")
+                                      .replace(/<\/?(p|ul|li)>/g, "")}
                                   </b>
                                 </p>
                               )}
@@ -748,7 +757,7 @@ const SingleProduct = () => {
                                         >
                                           -
                                         </button>
-                                        {console.log("qun---", quantity)}
+                                        {/* {console.log("qun---", quantity)} */}
                                         <span>{quantity[item?.id] || 1}</span>
                                         <button
                                           onClick={(e) =>
@@ -868,7 +877,7 @@ const SingleProduct = () => {
                             </p>
                           </div>
                           <div className="col-lg-4 col-md-6 col-6 px-1">
-                            {console.log("qun", quantity)}
+                            {/* {console.log("qun", quantity)} */}
                             {showQuantity === true ? (
                               <>
                                 <div className="singleProduct-quantity withvar">

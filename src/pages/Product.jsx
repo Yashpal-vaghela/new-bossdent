@@ -80,7 +80,7 @@ export const Product = () => {
         setloading(false);
       }
     } catch (err) {
-      console.log("err",err)
+      console.log("err", err);
       // if (err.name !== "AbortError") {
       //   console.error(err);
       //   setloading(false);
@@ -181,7 +181,9 @@ export const Product = () => {
           ? i?.variation_id === selectedAttributes?.id
           : true && i?.product_id === product?.id;
       });
+      // console.log("pro", product, selectedAttributes);
       // console.log("slug", AlreadyExistsData);
+
       if (product?.id !== 4070) {
         if (AlreadyExistsData.length > 0) {
           if (
@@ -214,38 +216,42 @@ export const Product = () => {
                   }`
                 );
               } else {
-                const payload = {
-                  cart_id: AlreadyExistsData[0]?.cart_id,
-                  quantity: AlreadyExistsData[0]?.quantity + quantity,
-                };
-                console.warn("EditCartData api call", payload);
-                setApiLoading(true);
-                // setLoading(true);
-                try {
-                  const res = await axios.post(
-                    `${BASE_URL}/update-cart`,
-                    payload,
-                    {
-                      headers: {
-                        Authorization: `Bearer ${token}`
-                          .replace(/\s+/g, " ")
-                          .trim(),
-                        "Content-Type": "application/json",
-                      },
+                if (selectedAttributes?.stock !== "outofstock") {
+                  const payload = {
+                    cart_id: AlreadyExistsData[0]?.cart_id,
+                    quantity: AlreadyExistsData[0]?.quantity + quantity,
+                  };
+                  console.warn("EditCartData api call", payload);
+                  setApiLoading(true);
+                  // setLoading(true);
+                  try {
+                    const res = await axios.post(
+                      `${BASE_URL}/update-cart`,
+                      payload,
+                      {
+                        headers: {
+                          Authorization: `Bearer ${token}`
+                            .replace(/\s+/g, " ")
+                            .trim(),
+                          "Content-Type": "application/json",
+                        },
+                      }
+                    );
+                    setApiLoading(false);
+                    toast.success("Product updated in cart successfully!");
+                    if (showVariationModal === true) {
+                      setShowVariationModal((prev) => !prev);
                     }
-                  );
-                  setApiLoading(false);
-                  toast.success("Product updated in cart successfully!");
-                  if (showVariationModal === true) {
-                    setShowVariationModal((prev) => !prev);
+                    dispatch(CartTotal(res.data.cart_total));
+                    dispatch(AddToCart({ ...res.data, items: res.data.items }));
+                    if (slug) {
+                      navigate(slug);
+                    }
+                  } catch (error) {
+                    console.log("error", error);
                   }
-                  dispatch(CartTotal(res.data.cart_total));
-                  dispatch(AddToCart({ ...res.data, items: res.data.items }));
-                  if (slug) {
-                    navigate(slug);
-                  }
-                } catch (error) {
-                  console.log("error", error);
+                }else{
+                  toast.error(`${product?.name} is outofstock`)
                 }
               }
             }
@@ -280,51 +286,56 @@ export const Product = () => {
                   }`
                 );
               } else {
-                const payload = {
-                  product_id: product?.id,
-                  variation_id:
-                    selectedAttributes === 0
-                      ? selectedAttributes
-                      : selectedAttributes?.id,
-                  quantity: quantity,
-                };
-                setApiLoading(true);
-                try {
-                  const res = await axios.post(
-                    `${BASE_URL}/new-add-to-cart`,
-                    payload,
-                    {
-                      headers: {
-                        Authorization: `Bearer ${token}`
-                          .replace(/\s+/g, " ")
-                          .trim(),
-                        "Content-Type": "application/json",
-                      },
+                if (selectedAttributes?.stock !== "outofstock") {
+                  const payload = {
+                    product_id: product?.id,
+                    variation_id:
+                      selectedAttributes === 0
+                        ? selectedAttributes
+                        : selectedAttributes?.id,
+                    quantity: quantity,
+                  };
+                  setApiLoading(true);
+                  try {
+                    const res = await axios.post(
+                      `${BASE_URL}/new-add-to-cart`,
+                      payload,
+                      {
+                        headers: {
+                          Authorization: `Bearer ${token}`
+                            .replace(/\s+/g, " ")
+                            .trim(),
+                          "Content-Type": "application/json",
+                        },
+                      }
+                    );
+                    if (showVariationModal === true) {
+                      setShowVariationModal((prev) => !prev);
                     }
-                  );
-                  if (showVariationModal === true) {
-                    setShowVariationModal((prev) => !prev);
+                    setApiLoading(false);
+                    toast.success("Product added to cart successfully!");
+                    res !== undefined &&
+                      dispatch(CartTotal(res.data.cart_total));
+                    dispatch(
+                      AddToCart({
+                        ...res.data,
+                        items: [...cart.items, res.data?.data],
+                      })
+                    );
+                    if (slug) {
+                      navigate(slug);
+                    }
+                  } catch (error) {
+                    console.log("error", error);
                   }
-                  setApiLoading(false);
-                  toast.success("Product added to cart successfully!");
-                  res !== undefined && dispatch(CartTotal(res.data.cart_total));
-                  dispatch(
-                    AddToCart({
-                      ...res.data,
-                      items: [...cart.items, res.data?.data],
-                    })
-                  );
-                  if (slug) {
-                    navigate(slug);
-                  }
-                } catch (error) {
-                  console.log("error", error);
+                }else{
+                  toast.error(`${product?.name} is outofstock`)
                 }
               }
             }
           }
         }
-      }else{
+      } else {
         navigate(`/products/${product.slug}`);
       }
     }
@@ -390,6 +401,9 @@ export const Product = () => {
     }
   };
 
+  const handleCardModalError = () =>{
+    
+  }
   return (
     <React.Fragment>
       <div className="home-main product-main pt-0  pt-lg-0">
@@ -432,6 +446,7 @@ export const Product = () => {
                 product={selectedProductForModal}
                 onAddToCart={handleAddToCartFromModal}
                 variations={selectedProductForModal?.variation}
+                handleCardModalError={handleCardModalError}
               ></AddToCartModal>
               <div className="container">
                 <div className="product-category-content d-flex gap-5 my-4">
