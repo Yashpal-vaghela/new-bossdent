@@ -207,6 +207,12 @@ export const Checkout = () => {
       });
   };
   /* eslint-disable react-hooks/exhaustive-deps */
+  useEffect(()=>{
+    if(Object.keys(user).length !== 0){
+      fetchPincodeDetails(user?.zipcode)
+    }
+  },[])
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     setStates(Indian_states_cities_list?.STATES_OBJECT);
     window.scrollTo({ top: 0, behavior: "smooth" });

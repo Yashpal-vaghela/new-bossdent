@@ -348,10 +348,13 @@
   font-weight: 600;
 }
 .product-variation-modal .modal-stockStatus{
-  color: rgba(0, 255, 0, 1);
+  color: rgba(0, 255, 0, 1) ;
   font-size: 18px;
   font-weight: 600;
   letter-spacing: 0.3px;
+}
+.product-variation-modal .modal-stockStatus.text-success{
+   color: rgba(0, 255, 0, 1) !important
 }
 .product-variation-modal .modal-price{
   font-size: 20px;
@@ -450,6 +453,16 @@
     width: 25px;
     height: 25px;
   }
+  .product-variation-modal .modal-title, .contact-details-modal .modal-title{
+    font-size: 26px;
+  }
+  .product-variation-modal .modal-category-title,
+  .product-variation-modal .modal-stockStatus{
+    font-size: 16px;
+  }
+  .product-variation-modal .modal-price{
+    font-size: 18px;
+  }
 }
 @media (max-width: 768px) {
   .product-section .card .heart-icon {
@@ -470,6 +483,19 @@
         width:30px;
         height: 30px;
     } */
+  .product-variation-modal .modal-title, .contact-details-modal .modal-title{
+    font-size: 24px;
+  }
+  .product-variation-modal .modal-category-title, .product-variation-modal .modal-stockStatus{
+    font-size: 14px;
+  }
+  .product-variation-modal .modal-price{
+    font-size: 16px;
+  }
+  /* .modal-variation-wrapper .form-label{
+    font-size: 14px;
+    margin-bottom: 3px;
+  } */
 }
 @media (max-width: 576px) {
   /* .product-main{
@@ -490,5 +516,13 @@
   .product-section .card .card-body {
     padding: 10px 5px;
   }
-  
+  .product-variation-modal .modal-title, .contact-details-modal .modal-title{
+    font-size: 22px;
+  }
+  .product-variation-modal .modal-body{
+    padding: 0rem 0.8rem 0rem;
+  }
+  .footer-section p{
+    text-align: center;
+  }
 }

@@ -53,7 +53,6 @@ export const AddToCartModal = ({
   //   }) || null;
   // };
 
-
   const handleQuantity = (e,action) => {
     e.preventDefault();
     if(action === "PLUS"){
@@ -62,7 +61,13 @@ export const AddToCartModal = ({
       setQuantity((prev)=> prev - 1);
     }
   };
-
+  const selectedVariation = getMatchedVariation();
+  // const displayStockText = selectedVariation  ? selectedVariation.stock === "outofstock" ? "Out of Stock"
+  //                                                                                       : `In Stock (${selectedVariation.stock_quantity})`
+  //                                             : product?.stock;
+  const displayPrice = selectedVariation
+    ? selectedVariation.price || selectedVariation.product_price
+    : product?.product_price || product?.price;
   if (!isOpen || !product) return null;
   return (
     <div className={`modal fade product-variation-modal ${isOpen ? "show d-block" : ""}`} ref={modalRef}>
@@ -89,12 +94,32 @@ export const AddToCartModal = ({
                     </h3>
                   )
                 }
-              
-                <p className="mb-0 modal-stockStatus">{product?.stock}</p>
+                {/* {console.log("sel",selectedAttributes,product,variation)} */}
+                {/* {
+                  variation?.map((i,index)=>Object.keys(i?.attributes)[index])[1] !== undefined ? "asd":"srty"
+                } */}
+                {/* {
+                  variation?.length > 0 ? <p className="mb-0 modal-stockStatus">{product?.stock}</p>: <p className="mb-0 modal-stockStatus">{product?.stock}</p>
+                } */}
+                <p
+                  className={`mb-1 modal-stockStatus ${
+                    selectedVariation?.stock === "outofstock" ? "text-danger" : "text-success"
+                  }`}
+                >
+                  {selectedVariation
+                    ? selectedVariation.stock === "outofstock"
+                      ? "Out of Stock"
+                      : "In Stock"
+                    : product?.stock}
+                </p>
+
+                {/* <p className="mb-0 modal-stockStatus">{product?.stock}</p> */}
                 <p className="mb-1 modal-price">
                   Price: {product?.product_price ? 
                   <b>₹{Number(product?.product_price).toFixed(2)}</b> : 
-                  <b>₹{Number(product?.price).toFixed(2)}</b>} 
+                  <b>₹{Number(displayPrice).toFixed(2)}</b>
+                  // <b>₹{Number(product?.price).toFixed(2)}</b>
+                  } 
                 </p>
               </div>
               <img
@@ -111,7 +136,7 @@ export const AddToCartModal = ({
                     <>
                         <label className="form-label">Select {variation?.map((i,index)=>Object.keys(i?.attributes)[index])[0]?.replace(/^pa_/, '')}</label>
                         <select className="modal-variation-select form-select" name={Object.keys(variation[0]?.attributes || {})[0]?.replace('pa_', '')} onChange={(e)=>handleAttributeSelect(e)}>
-                            {variation !== undefined ?
+                          {variation !== undefined ?
                             <>  
                               <option>Select {variation?.map((i,index)=>Object.keys(i?.attributes)[index])[0]?.replace(/^pa_/, '')}</option>
                               {variation?.map((sizeKey,index) => {
