@@ -82,14 +82,21 @@ export const Checkout = () => {
       if (formik?.values.payment_method && formik?.values) {
         try {
           setApiLoading(true);
-          await axios.post(`${BASE_URL}/create-order`, formik.values, {
+          let payload = {}
+          if(formik?.values.payment_method === "COD"){
+            payload = {...formik?.values,delivery_charge:Number(deliverydata),handling_charge:25}
+          }else{
+            payload = {...formik?.values,delivery_charge:Number(deliverydata),handling_charge:0}
+          }
+          console.log("formik",formik?.values,"payload",payload)
+          await axios.post(`${BASE_URL}/create-order`, payload, {
               headers: {
                 Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
                 "Content-Type": "application/json",
               },
             })
             .then(async (res) => {
-              if (formik?.values.payment_method === "PhonePe") {
+              if (formik?.values.payment_method === "prepaid") {
                 setApiLoading(true);
                 const paymentResponse = await fetch(`${BASE_URL}/phonepe/new-initiate`, {
                     method: "POST",
@@ -100,13 +107,7 @@ export const Checkout = () => {
                     body: JSON.stringify({
                       order_id: `${res.data.order_id}`,
                       user_id: user.length !== 0 && user.user_id,
-                      amount: Number(
-                        `${
-                          (Number(res.data.order_total) +
-                            Number(deliverydata)) *
-                          100
-                        }`
-                      ),
+                      amount: `${(Number(res.data.order_total))}`,
                       mobile: user.length !== 0 && user.phone_number.slice(2),
                       redirect_url: window.location.origin + "/payment/success",
                     }),
@@ -131,6 +132,8 @@ export const Checkout = () => {
               } else {
                 DeletCartItems();
                 navigate("/payment/success");
+                localStorage.setItem("orderId", res.data.order_id);
+                localStorage.setItem("payment_method",JSON.stringify(formik?.values?.payment_method))
               }
             });
         } catch (err) {
@@ -502,7 +505,7 @@ export const Checkout = () => {
                     type="radio"
                     className="form-check-input"
                     name="payment_method"
-                    value="PhonePe"
+                    value="prepaid"
                     onChange={formik?.handleChange}
                   ></input>
                   <label className="form-check-label d-flex gap-2 align-items-center justify-content-center">
