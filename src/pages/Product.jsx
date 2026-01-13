@@ -1,15 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import BASE_URL from "../api/config";
 import { AddToCartModal } from "../component/AddToCartModal";
 import { toast } from "react-toastify";
-import {
-  AddToWishlist,
-  WishlistCounter,
-  wishlistId,
-} from "../redux/wishlistSlice";
+import {AddToWishlist,WishlistCounter,wishlistId} from "../redux/wishlistSlice";
 import { AddToCart, CartTotal } from "../redux/cartSlice";
 import useValidateUser from "../component/useValidateUser";
 import Loader2 from "../component/Loader2";
@@ -44,8 +40,9 @@ export const Product = () => {
   const [searchParams] = useSearchParams();
   const category = searchParams.get("category");
   const validateUser = useValidateUser();
+  const hasFetched = useRef(false);
 
-  const fetchProductData = async (controller) => {
+  const fetchProductData = async () => {
     setloading(true);
     try {
       let apiUrl = "";
@@ -54,7 +51,7 @@ export const Product = () => {
       } else {
         apiUrl += `${BASE_URL}/products`;
       }
-      const res = await axios.get(apiUrl, { signal: controller.signal });
+      const res = await axios.get(apiUrl);
       let allProducts = res.data.data ? res.data.data : res.data || [];
       if (sortOrder === "high-low") {
         allProducts = allProducts.sort(
@@ -104,10 +101,14 @@ export const Product = () => {
 
   /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
-    const controller = new AbortController();
+    if(hasFetched.current) return;
+    hasFetched.current = true;
     window.scrollTo({ top: 0, behavior: "smooth" });
-    fetchProductData(controller);
-    return () => controller.abort();
+    fetchProductData();
+    // const controller = new AbortController();
+    // window.scrollTo({ top: 0, behavior: "smooth" });
+    // fetchProductData(controller);
+    // return () => controller.abort();
   }, [currentPage, searchParams, sortOrder]);
 
   const handleFilterProduct = async (e, slug) => {

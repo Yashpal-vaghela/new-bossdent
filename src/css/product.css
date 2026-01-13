@@ -291,14 +291,20 @@
   background: rgba(0,0,0,0.6);
   backdrop-filter: blur(1px);
 }
-.product-variation-modal .modal-dialog,
+/* .product-variation-modal .modal-dialog,
 .contact-details-modal .modal-dialog{
   display: flex;
   margin: auto;
   align-items: center;
   justify-content: center;
   height: 100%;
-
+} */
+.contact-details-modal .modal-dialog{
+  display: flex;
+  margin: auto;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }
 .product-variation-modal .modal-content,
 .contact-details-modal .modal-content{
@@ -329,9 +335,10 @@
 .product-variation-modal .modal-title,
 .contact-details-modal .modal-title{
   font-size: 28px;
-  line-height: 1.9;
+  line-height: 1.5;
   font-weight: 700;
-  color:#fff
+  color:#fff;
+  margin-bottom: 5px;
 }
 .contact-details-modal .modal-title{
   font-weight: 600;
@@ -406,6 +413,11 @@
   margin: 0px;
   font-weight: 600;
   width:46%;
+}
+@media(min-width:768px){
+  .product-variation-modal .modal-dialog{
+    max-width:600px;
+  }
 }
 @media (min-width: 1300px) and (max-width: 4000px) {
   .product-section .card .product-cart-wrapper {

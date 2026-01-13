@@ -15,6 +15,7 @@ import { ReturnExchange } from '../pages/ReturnExchange';
 import { Contact } from '../pages/Contact';
 import { Checkout } from '../pages/Checkout';
 import ProtectedRoute from './ProtectedRoute';
+import ProtectedOrderRoute from './ProtectedOrderRoute';
 import { OrderHistory } from '../pages/OrderHistory';
 import { Success } from '../pages/payment/Success';
 import { Settings } from '../pages/Settings';
@@ -23,7 +24,6 @@ import Order from '../pages/Order';
 import Delivery from '../pages/Delivery';
 import PaymentInfo from '../pages/PaymentInfo';
 import Return from '../pages/Return';
-import { ProtectedOrderRoute } from './ProtectedOrderRoute';
 
 export const Allrouters = () => {
     return (
@@ -35,15 +35,16 @@ export const Allrouters = () => {
                 <Route path="/products/:slug" element={<SingleProduct></SingleProduct>}></Route>
                 <Route path="/payment/success" element={<Success></Success>}></Route>
                 {/* <Route path="/category/:slug" element={<Category />}></Route> */}
+                {/* <Route path="/cart" element={<Cart></Cart>}></Route> */}
                 <Route path="/cart" element={<ProtectedOrderRoute><Cart></Cart></ProtectedOrderRoute>}></Route>
-                <Route path="/checkout" element={<ProtectedRoute><Checkout></Checkout></ProtectedRoute>}></Route>
+                <Route path="/checkout" element={<ProtectedOrderRoute><Checkout></Checkout></ProtectedOrderRoute>}></Route>
                 <Route path="/wishlist" element={<ProtectedOrderRoute><Wishlist></Wishlist></ProtectedOrderRoute>}></Route>
                 <Route path="/contact" element={<Contact></Contact>}></Route>
                 {/* <Route path="/login" element={<Login></Login>}></Route> */}
-                <Route path="/profile" element={<ProtectedOrderRoute><Profile></Profile></ProtectedOrderRoute>}></Route>
+                <Route path="/profile" element={<ProtectedRoute><Profile></Profile></ProtectedRoute>}></Route>
                 <Route path="/order-history" element={<ProtectedOrderRoute><OrderHistory></OrderHistory></ProtectedOrderRoute>}></Route>
-                <Route path="/order-history/:id" element={<ProtectedOrderRoute><OrderHistory></OrderHistory></ProtectedOrderRoute>}></Route>
-                <Route path="/settings" element={<ProtectedOrderRoute><Settings></Settings></ProtectedOrderRoute>}></Route>
+                <Route path="/order-history/:id" element={<ProtectedRoute><OrderHistory></OrderHistory></ProtectedRoute>}></Route>
+                <Route path="/settings" element={<ProtectedRoute><Settings></Settings></ProtectedRoute>}></Route>
                 {/* <Route path="/help-center" element={<ProtectedOrderRoute><HelpCenter></HelpCenter></ProtectedOrderRoute>}></Route>
                 <Route path="/help-center/order" element={<ProtectedOrderRoute><Order></Order></ProtectedOrderRoute>}></Route> */}
                 {/* <Route path="/help-center/delivery" element={<ProtectedOrderRoute><Delivery></Delivery></ProtectedOrderRoute>}></Route> */}

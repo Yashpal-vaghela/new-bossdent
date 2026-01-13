@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import HomeBanner from "../component/HomeBanner";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -20,9 +20,10 @@ const Home = () => {
   const dispatch = useDispatch();
   const [dentalProducts, setDentalProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
-
   const getCartData = useSelector((state) => state.cart.cart);
-  const fetchProducts = async (controller, categorySlug = null) => {
+  const hasFetched = useRef(false);
+
+  const fetchProducts = async (categorySlug = null) => {
     setLoadingProducts(true);
     try {
       let apiUrl = "";
@@ -31,7 +32,7 @@ const Home = () => {
       } else {
         apiUrl += `${BASE_URL}/products`;
       }
-      const response = await axios.get(apiUrl, { signal: controller.signal });
+      const response = await axios.get(apiUrl, );
       setDentalProducts(response.data?.data || []);
       setLoadingProducts(false);
     } catch (error) {
@@ -39,16 +40,21 @@ const Home = () => {
     }
   };
   useEffect(() => {
-    const controller = new AbortController();
+    if(hasFetched.current) return;
+    hasFetched.current = true;
     window.scrollTo({ top: 0, behavior: "smooth" });
-    fetchProducts(controller);
-    return () => controller.abort();
+    fetchProducts();
+    // const controller = new AbortController();
+    // window.scrollTo({ top: 0, behavior: "smooth" });
+    // fetchProducts(controller);
+    // return () => controller.abort();
   }, []);
   const visibleProducts = Array.isArray(dentalProducts)
     ? dentalProducts.length > 8
       ? dentalProducts.slice(0, 8)
       : dentalProducts
     : [];
+    
   const OtherBanner = [
     {
       id: 1,
@@ -64,6 +70,36 @@ const Home = () => {
       id: 3,
       img: "/img/other-banner-img3.webp",
       slug: "/products/micro-applicator-tips",
+    },
+    {
+      id: 4,
+      img: "/img/other-banner-img4.webp",
+      slug: "/products/tieon-surgeon-cap-washable",
+    },
+    {
+      id: 5,
+      img: "/img/other-banner-img5.webp",
+      slug: "/products/sterilization-rolls",
+    },
+    {
+      id: 6,
+      img: "/img/other-banner-img6.webp",
+      slug: "/products/4-ply-mask-meltblown",
+    },
+    {
+      id: 7,
+      img: "/img/other-banner-img7.webp",
+      slug: "/products/premium-patient-drape-washable-cotton-pvc",
+    },
+    {
+      id: 8,
+      img: "/img/other-banner-img8.webp",
+      slug: "/products?category=tips",
+    },
+    {
+      id: 9,
+      img: "/img/other-banner-img9.webp",
+      slug: "/products?category=polishing-kits",
     },
   ];
 
@@ -145,7 +181,7 @@ const Home = () => {
             getCartData={getCartData}
             dispatch={dispatch}
           />
-          {/* <section className="follow-section">
+          <section className="follow-section">
             <div className="container">
               <h2 className="text-white fs-2 text-center section-title">
                 Follow us on Instagram
@@ -167,7 +203,7 @@ const Home = () => {
                 })}
               </div>
             </div>
-          </section> */}
+          </section>
         </>
       )}
     </div>

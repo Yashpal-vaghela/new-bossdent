@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import BASE_URL from "../api/config";
 import axios from "axios";
@@ -40,6 +40,7 @@ const SingleProduct = () => {
   const [apiloading, setApiLoading] = useState(false);
   const validateUser = useValidateUser();
   const navigate = useNavigate();
+  const hasFetched = useRef(false);
 
   const a =
     cartData.length !== 0
@@ -61,26 +62,28 @@ const SingleProduct = () => {
     : singleProduct?.variations?.slice(0, 3);
   const dispatch = useDispatch();
 
-  const SingleProductData = async (controller) => {
+  const SingleProductData = async () => {
     setloading(true);
     try {
-      const res = await axios.get(`${BASE_URL}/new-product/${slug}`, {
-        signal: controller.signal,
-      });
+      const res = await axios.get(`${BASE_URL}/new-product/${slug}`);
       setSingleProduct(res.data?.data);
       setloading(false);
-      handleRelatedProducts(controller, res.data.data?.id);
+      handleRelatedProducts(res.data.data?.id);
     } catch (err) {
       if (err.name !== "AbortError") console.error(err);
     }
   };
   /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
-    const controller = new AbortController();
-    SingleProductData(controller);
+    if(hasFetched.current) return;
+    hasFetched.current = true;
+    SingleProductData();
     window.scrollTo({ top: 0, behavior: "smooth" });
-    return () => controller.abort();
-  }, [slug]);
+    // const controller = new AbortController();
+    // SingleProductData(controller);
+    // window.scrollTo({ top: 0, behavior: "smooth" });
+    // return () => controller.abort();
+  }, []);
 
   useEffect(() => {
     if (token === "null" || !token) {
@@ -344,11 +347,8 @@ const SingleProduct = () => {
     }
   };
 
-  const handleRelatedProducts = async (controller, productId) => {
-    await axios
-      .get(`${BASE_URL}/related-products?product_id=${productId}`, {
-        signal: controller.signal,
-      })
+  const handleRelatedProducts = async (productId) => {
+    await axios.get(`${BASE_URL}/related-products?product_id=${productId}`)
       .then((res) => {
         setRelatedProducts(res.data.related_products);
       })

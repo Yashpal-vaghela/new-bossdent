@@ -41,10 +41,8 @@ export const AddToCartModal = ({
       return Object.values(v?.attributes)[1] ? sizeMatch && packMatch : sizeMatch;
     });
   }
-
   // const getMatchedVariation = () => {
   //   if (!Object.keys(selectedAttributes).length) return null;
-
   //   return product?.variations.find((variation) => {
   //     return Object.entries(selectedAttributes).every(
   //       ([attrName, selectedValue]) =>
@@ -62,16 +60,12 @@ export const AddToCartModal = ({
     }
   };
   const selectedVariation = getMatchedVariation();
-  // const displayStockText = selectedVariation  ? selectedVariation.stock === "outofstock" ? "Out of Stock"
-  //                                                                                       : `In Stock (${selectedVariation.stock_quantity})`
-  //                                             : product?.stock;
-  const displayPrice = selectedVariation
-    ? selectedVariation.price || selectedVariation.product_price
-    : product?.product_price || product?.price;
+  const displayPrice = selectedVariation ? selectedVariation.price || selectedVariation.product_price: product?.product_price || product?.price;
+
   if (!isOpen || !product) return null;
   return (
     <div className={`modal fade product-variation-modal ${isOpen ? "show d-block" : ""}`} ref={modalRef}>
-      <div className="modal-dialog">
+      <div className="modal-dialog modal-dialog-centered">
         <div className="modal-content">
           <div className="modal-header">
             <button
@@ -82,8 +76,7 @@ export const AddToCartModal = ({
             ></button>
           </div>
           <div className="modal-body">
-            <h2 className="modal-title">{product?.name} {
-              selectedAttributes !== undefined && Object.values(selectedAttributes)[0]}</h2>
+            <h2 className="modal-title">{product?.name} {selectedAttributes !== undefined && Object.values(selectedAttributes)[0]}</h2>
             <div className="modal-img-wrapper d-flex align-items-start justify-content-between">
               <div className="modal-subdescription-wrapper">
                 {
@@ -94,12 +87,8 @@ export const AddToCartModal = ({
                     </h3>
                   )
                 }
-                {/* {console.log("sel",selectedAttributes,product,variation)} */}
                 {/* {
                   variation?.map((i,index)=>Object.keys(i?.attributes)[index])[1] !== undefined ? "asd":"srty"
-                } */}
-                {/* {
-                  variation?.length > 0 ? <p className="mb-0 modal-stockStatus">{product?.stock}</p>: <p className="mb-0 modal-stockStatus">{product?.stock}</p>
                 } */}
                 <p
                   className={`mb-1 modal-stockStatus ${

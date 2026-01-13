@@ -22,8 +22,7 @@ export const OrderHistory = () => {
 
   const handlefetchOrderData = async (controller) => {
     setApiLoading(true);
-    await axios
-      .get(`${BASE_URL}/get-all-orders`, {
+    await axios.get(`${BASE_URL}/get-all-orders`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -36,6 +35,7 @@ export const OrderHistory = () => {
         dispatch(AddToOrder(res?.data?.orders));
       })
       .catch((err) => {
+        setApiLoading(false);
         console.log("err", err);
       });
   };

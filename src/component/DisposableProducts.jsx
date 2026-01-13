@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import BASE_URL from "../api/config";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -20,11 +20,11 @@ const DisposableProducts = ({ token, getCartData, dispatch }) => {
   const [selectedProductForModal, setSelectedProductForModal] = useState(null);
 
   const validateUser = useValidateUser();
+  const hasFetched = useRef(false);
+
   const fetchDisposableProducts = async (controller) => {
     try {
-      const response = await axios.get(`${BASE_URL}/category/disposable`, {
-        signal: controller.signal,
-      });
+      const response = await axios.get(`${BASE_URL}/category/disposable`);
       const product = response.data?.data || [];
       SetDisposableProduct(product);
     } catch (error) {
@@ -184,11 +184,14 @@ const DisposableProducts = ({ token, getCartData, dispatch }) => {
     }
   };
   useEffect(() => {
-    const controller = new AbortController();
-    fetchDisposableProducts(controller);
-    return () => {
-      controller.abort();
-    };
+    if(hasFetched.current) return;
+    hasFetched.current = true;
+    fetchDisposableProducts();
+    // const controller = new AbortController();
+    // fetchDisposableProducts(controller);
+    // return () => {
+    //   controller.abort();
+    // };
   }, []);
   return (
     <section className="RecentSearch-section">

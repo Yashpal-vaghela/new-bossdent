@@ -2,13 +2,14 @@ import axios from "axios";
 import { useFormik } from "formik";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import BASE_URL from "../api/config";
 import Indian_states_cities_list from "indian-states-cities-list";
 import { AddToCart } from "../redux/cartSlice";
 import { toast } from "react-toastify";
 import Loader2 from "../component/Loader2";
+import useValidateUser from "../component/useValidateUser";
 
 const checkoutSchema = yup.object().shape({
   first_name: yup.string().required("First Name Field is required"),
@@ -32,6 +33,9 @@ export const Checkout = () => {
   // const paymentIntervalRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const validateUser = useValidateUser();
+
   const initialValues = {
     first_name: Object.keys(user).length !== 0 ? user?.first_name : "",
     last_name: Object.keys(user).length !== 0 ? user?.last_name : "",
@@ -211,6 +215,11 @@ export const Checkout = () => {
   };
   /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(()=>{
+    if(cartData?.items !== undefined || cartData?.items?.length > 0 ){
+      localStorage.setItem("redireact_after_login", location.pathname);
+      validateUser();
+      navigate("/", { replace: true });
+    }
     if(Object.keys(user).length !== 0){
       fetchPincodeDetails(user?.zipcode)
     }

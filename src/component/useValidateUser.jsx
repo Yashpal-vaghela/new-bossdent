@@ -1,29 +1,30 @@
 // import { useLocation, useNavigate } from 'react-router-dom';
 
 const useValidateUser = () => {
-    const validateUser = () =>{
-        
+    // const location = useLocation();
+    // const navigate = useNavigate();
+
+    const validateUser = () => {
         setTimeout(() => {
-            // toast.error("Please login to add product to wishlist!");
             const modal = document.getElementById("exampleModal");
-            if (modal) {
-                modal.classList.add("show");
-                modal.style.display = "block";
+            if (!modal) return;
 
-                // Add backdrop
-                const backdrop = document.createElement("div");
-                backdrop.className = "modal-backdrop fade show";
-                document.body.appendChild(backdrop);
+            // ❗ Prevent duplicate backdrop
+            if (document.querySelector(".modal-backdrop")) return;
 
-                // Body settings
-                document.body.classList.add("modal-open");
-                document.body.style.overflow = "hidden";
-                document.body.style.paddingRight = "15px";
-            }
-            // navigate(`/${location.pathname}`,{ state: { from: location.pathname } })
-            // navigate("/");
+            modal.classList.add("show");
+            modal.style.display = "block";
+
+            const backdrop = document.createElement("div");
+            backdrop.className = "modal-backdrop fade show";
+            document.body.appendChild(backdrop);
+
+            document.body.classList.add("modal-open");
+            document.body.style.overflow = "hidden";
+            document.body.style.paddingRight = "15px";
         }, 1000);
-    }
+    };
+
     return validateUser;
 }
 

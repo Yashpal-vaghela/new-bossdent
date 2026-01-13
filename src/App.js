@@ -1,4 +1,4 @@
-import React, { useEffect} from "react";
+import React, { useEffect, useRef} from "react";
 import "./App.css";
 import { Allrouters } from "./component/Allrouters";
 import Navbar from "./component/Navbar";
@@ -27,19 +27,37 @@ function App() {
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.category.loading);
   const token = useSelector((state)=>state.auth.token);
-  
+  const hasInitialized = useRef(false);
+
+  /* eslint-disable react-hooks/exhaustive-deps */
+  // useEffect(() => {
+  //   const controller = new AbortController();
+  //   if (token || token !== "null"){  
+  //     dispatch(fetchUser(undefined, { signal: controller.signal }));
+  //     dispatch(fetchCart(undefined, { signal: controller.signal }));
+  //     dispatch(fetchWishList(undefined, { signal: controller.signal }));
+  //   };
+  //     dispatch(fetchCategories(undefined, { signal: controller.signal }));
+  //   return () => {
+  //     controller.abort(); // cleanup on unmount
+  //   };
+  // }, []);
+
   useEffect(() => {
-    const controller = new AbortController();
-    if (token){  
-      dispatch(fetchUser(undefined, { signal: controller.signal }));
-      dispatch(fetchCart(undefined, { signal: controller.signal }));
-      dispatch(fetchWishList(undefined, { signal: controller.signal }));
-    };
-      dispatch(fetchCategories(undefined, { signal: controller.signal }));
-    return () => {
-      controller.abort(); // cleanup on unmount
-    };
-  }, []);
+    // ⛔ Prevent double execution in StrictMode
+    if (hasInitialized.current) return;
+    hasInitialized.current = true;
+
+    // 🔥 USER DEPENDENT APIS
+    if (token && token !== "null") {
+      dispatch(fetchUser());
+      dispatch(fetchCart());
+      dispatch(fetchWishList());
+    }
+
+    // 🔥 PUBLIC API (always)
+    dispatch(fetchCategories());
+  }, [dispatch, token]);
 
   return (
     <React.Fragment>

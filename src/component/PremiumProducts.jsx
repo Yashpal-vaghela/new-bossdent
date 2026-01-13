@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import BASE_URL from "../api/config";
 import { Link } from "react-router-dom";
@@ -23,12 +23,11 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
   const wishlistData = useSelector((state) => state?.wishlist?.wishlist);
   const wishlistId1 = useSelector((state) => state.wishlist?.wishlistId);
   const validateUser = useValidateUser();
+  const hasFetched = useRef(false);
 
-  const fetchPremiumProducts = async (controller) => {
+  const fetchPremiumProducts = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/category/premium-product`, {
-        signal: controller.signal,
-      });
+      const response = await axios.get(`${BASE_URL}/category/premium-product`);
       const product = response.data?.data || [];
       setPremiumProducts(product);
     } catch (error) {
@@ -244,11 +243,14 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
     }
   };
   useEffect(() => {
-    const controller = new AbortController();
-    fetchPremiumProducts(controller);
-    return () => {
-      controller.abort();
-    };
+    if(hasFetched.current) return;
+    hasFetched.current = true;
+    fetchPremiumProducts();
+    // const controller = new AbortController();
+    // fetchPremiumProducts(controller);
+    // return () => {
+    //   controller.abort();
+    // };
   }, []);
   return (
     <section className="premium-products-section">

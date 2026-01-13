@@ -22,8 +22,7 @@ const Profile = () => {
   const handlefetchOrderData = async (controller) => {
     setloading(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
-    await axios
-      .get(`${BASE_URL}/get-all-orders`, {
+    await axios.get(`${BASE_URL}/get-all-orders`, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -35,7 +34,7 @@ const Profile = () => {
         setOrderData(res?.data?.orders);
         dispatch(AddToOrder(res.data?.orders));
       })
-      .catch((err) => console.log("err", err));
+      .catch((err) => {setloading(false);console.log("err", err)});
   };
 
   const formatDate = (dateString) => {

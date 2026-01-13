@@ -16,18 +16,17 @@ const Cart = () => {
   const [apiloading, setApiLoading] = useState(false);
   const cartTotal = useSelector((state) => state.cart.cartTotal);
   const cartData = useSelector((state) => state.cart.cart);
+  const loading = useSelector((state)=>state.cart.loading);
   const deliverydata = useSelector((state) => state.cart.deliveryCharge);
   const [showDialogBox, setShowDialogBox] = useState(false);
   const [selectProductModal, setSelectProductModal] = useState(false);
   const validateUser = useValidateUser();
+  console.log("cart",cartData,loading);
 
   const handleClearCart = async () => {
     setApiLoading(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
-    await axios
-      .post(
-        `${BASE_URL}/delete-cart`,
-        {},
+    await axios.post(`${BASE_URL}/delete-cart`,{},
         {
           headers: {
             Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
@@ -135,7 +134,7 @@ const Cart = () => {
         </div>
       </section>
       <>
-        {apiloading && <Loader2></Loader2>}
+        {(apiloading || loading) && <Loader2></Loader2>}
         {cartData?.items.length === 0 ? (
           <>
             <div className="my-5 text-center cart-page-empty">
