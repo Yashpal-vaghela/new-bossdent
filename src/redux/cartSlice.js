@@ -37,7 +37,7 @@ export const fetchCart = createAsyncThunk("cart/fetchCart", async (_, { signal, 
 const cartSlice = createSlice({
     name:'cart',
     initialState:{
-        cart:{items:[]},
+        cart:{items:[],cart_count:0,cart_total:0},
         cartCount:0,
         cartTotal:0,
         deliveryCharge:0,

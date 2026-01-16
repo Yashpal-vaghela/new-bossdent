@@ -1,15 +1,15 @@
 import axios from "axios";
 import { useFormik } from "formik";
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useMemo, useRef, useState,useCallback } from "react";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import BASE_URL from "../api/config";
 import Indian_states_cities_list from "indian-states-cities-list";
 import { AddToCart } from "../redux/cartSlice";
 import { toast } from "react-toastify";
 import Loader2 from "../component/Loader2";
-import useValidateUser from "../component/useValidateUser";
+// import useValidateUser from "../component/useValidateUser";
 
 const checkoutSchema = yup.object().shape({
   first_name: yup.string().required("First Name Field is required"),
@@ -24,58 +24,44 @@ const checkoutSchema = yup.object().shape({
 });
 export const Checkout = () => {
   const [apiloading, setApiLoading] = useState(false);
-  const token = useSelector((state) => state.auth.token);
-  const [States, setStates] = useState([]);
-  const [codoption, setcodOption] = useState(false);
-  const user = useSelector((state) => state.user.user);
-  const cartData = useSelector((state) => state.cart.cart);
-  const deliverydata = useSelector((state) => state.cart.deliveryCharge);
-  // const paymentIntervalRef = useRef(null);
+  const States = Indian_states_cities_list?.STATES_OBJECT;
+  const { token, user, cartData, deliverydata } = useSelector((state) => ({
+    token: state.auth.token,
+    user: state.user.user,
+    cartData: state.cart.cart,
+    deliverydata: state.cart.deliveryCharge,
+  }),shallowEqual);
+  const codeoption = useMemo(()=>{
+    return Number(cartData.cart_total || 0) <= 10000;
+  },[cartData?.cart_total]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
-  const validateUser = useValidateUser();
-
-  const initialValues = {
-    first_name: Object.keys(user).length !== 0 ? user?.first_name : "",
-    last_name: Object.keys(user).length !== 0 ? user?.last_name : "",
-    address: Object.keys(user).length !== 0 ? user?.address : "",
-    email: Object.keys(user).length !== 0 ? user?.email : "",
-    city: Object.keys(user).length !== 0 ? user?.city : "",
-    phone: Object.keys(user).length !== 0 ? user?.phone_number.slice(2) : "",
-    state: Object.keys(user).length !== 0 ? user?.state : "",
-    zipcode: Object.keys(user).length !== 0 ? user?.zipcode : "",
+  const hasFetched = useRef(false);
+  // const location = useLocation();
+  // const validateUser = useValidateUser();
+  const initialValues = useMemo(() => ({
+    first_name: user?.first_name || "",
+    last_name: user?.last_name || "",
+    address: user?.address || "",
+    email: user?.email || "",
+    city: user?.city || "",
+    phone: user?.phone_number?.slice(2) || "",
+    state: user?.state || "",
+    zipcode: user?.zipcode || "",
     payment_method: "",
-  };
-  const fetchPincodeDetails = async (pincode) => {
+  }), [user]);
+  /* eslint-disable react-hooks/exhaustive-deps */
+  const fetchPincodeDetails = useCallback(async (pincode) => {
     try {
-      const res = await axios.get(
-        `https://api.postalpincode.in/pincode/${pincode}`
-      );
-      console.log("res", res.data);
-      if (
-        res.data &&
-        res.data[0].Status === "Success" &&
-        res.data[0].PostOffice.length > 0
-      ) {
-        // const postOffice = res.data[0].PostOffice[0]
-      } else {
-        // toast.error("Invalid Pincode");
-        formik.setFieldTouched("zipcode", true);
+      const res = await axios.get(`https://api.postalpincode.in/pincode/${pincode}`);
+
+      if (res.data?.[0]?.Status !== "Success") {
         formik.setFieldError("zipcode", "Invalid pincode");
-        // formik.setFieldValue("zipcode", "");
-        // formik.setFieldValue("state", "");
       }
-      // if(res.data && res.data)
-    } catch (err) {
-      console.error("Pincode API error:", err);
-      formik.setFieldTouched("zipcode", true);
-      formik.setFieldError(
-        "zipcode",
-        "Unable to fetch pincode details. Try again."
-      );
+    } catch {
+      formik.setFieldError("zipcode", "Unable to fetch pincode details");
     }
-  };
+  }, []);
   const formik = useFormik({
     initialValues,
     enableReinitialize: true,
@@ -92,7 +78,6 @@ export const Checkout = () => {
           }else{
             payload = {...formik?.values,delivery_charge:Number(deliverydata),handling_charge:0}
           }
-          console.log("formik",formik?.values,"payload",payload)
           await axios.post(`${BASE_URL}/create-order`, payload, {
               headers: {
                 Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
@@ -149,89 +134,31 @@ export const Checkout = () => {
       }
     },
   });
-
-  // useEffect(() => {
-  //   const orderId = JSON.parse(localStorage.getItem("orderId"));
-  //   if (!orderId) return;
-
-  //   const interval = setInterval(() => {
-  //     checkPaymentStatus(orderId);
-  //   }, 5000);
-
-  //   return () => clearInterval(interval);
-  // }, []);
-  // const checkPaymentStatus = async (orderId) => {
-  //   setApiLoading(true);
-  //   try {
-  //     const res = await axios.get(
-  //       `${BASE_URL}/phonepe/status?order_id=${orderId}`,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
-  //     if (res.data.payment_status === "COMPLETED") {
-  //       toast.success("Payment Successful!");
-  //       clearInterval(paymentIntervalRef.current);
-  //       paymentIntervalRef.current = null;
-  //       setApiLoading(false);
-  //       navigate("/payment/success");
-  //     }
-  //     if (res.data.payment_status === "FAILED") {
-  //       toast.error("Payment Failed!");
-  //       clearInterval(paymentIntervalRef.current);
-  //       paymentIntervalRef.current = null;
-  //       setApiLoading(false);
-  //       navigate("/payment/success");
-  //     }
-  //     localStorage.setItem("orderId", JSON.stringify(orderId));
-  //   } catch (err) {
-  //     console.log("Poll error", err);
-  //   }
-  // };
   const DeletCartItems = async () => {
     setApiLoading(true);
-    await axios
-      .post(
-        `${BASE_URL}/delete-cart`,
-        {},
-        {
+    await axios.post(`${BASE_URL}/delete-cart`,{},{
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-        }
-      )
-      .then((res) => {
+    }).then((res) => {
         setApiLoading(false);
         dispatch(AddToCart({ ...res.data, items: [] }));
-      })
-      .catch((err) => {
+    }).catch((err) => {
         setApiLoading(false);
         console.log("err", err);
-      });
+    });
   };
   /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(()=>{
-    if(cartData?.items !== undefined || cartData?.items?.length > 0 ){
-      localStorage.setItem("redireact_after_login", location.pathname);
-      validateUser();
-      navigate("/", { replace: true });
-    }
+    if(hasFetched.current) return;
+      hasFetched.current = true;
+
     if(Object.keys(user).length !== 0){
       fetchPincodeDetails(user?.zipcode)
     }
-  },[])
-  /* eslint-disable react-hooks/exhaustive-deps */
-  useEffect(() => {
-    setStates(Indian_states_cities_list?.STATES_OBJECT);
     window.scrollTo({ top: 0, behavior: "smooth" });
-    if (Number(cartData?.cart_total) <= 10000) {
-      setcodOption(true);
-    }
-  }, [user]);
+  },[]);
 
   return (
     <div className="home-main pt-0  cart-main">
@@ -471,7 +398,7 @@ export const Checkout = () => {
               <div className="cart-total-container">
                 <h2 className="cart-total-title">Cart Total</h2>
                 {cartData?.items !== undefined &&
-                cartData?.items.length !== 0 ? (
+                  cartData?.items.length !== 0 ? (
                   cartData?.items.map((i, index) => {
                     return (
                       <div
@@ -502,12 +429,7 @@ export const Checkout = () => {
                 </div>
                 <div className="cart-total-content">
                   <p>Total:</p>
-                  <p>
-                    ₹
-                    {(
-                      Number(cartData?.cart_total) + Number(deliverydata)
-                    ).toFixed(2)}
-                  </p>
+                  <p>₹ {(Number(cartData?.cart_total) + Number(deliverydata)).toFixed(2)}</p>
                 </div>
                 <div className="form-check my-2">
                   <input
@@ -526,8 +448,8 @@ export const Checkout = () => {
                     UPI, Credit or Debit Card, Net Banking, Buy Now Pay later
                   </label>
                 </div>
-
-                {/* {codoption && (
+                {console.log("code",cartData?.items)}
+                {codeoption && (
                   <div className="form-check my-2">
                     <input
                       type="radio"
@@ -535,28 +457,9 @@ export const Checkout = () => {
                       name="payment_method"
                       value="COD"
                       disabled={
-                        cartData?.items?.length === 1 &&
-                        cartData?.items[0].category_ids.some((i) => i === 116)
+                        cartData?.items?.length === 1 ||
+                        cartData?.items.some((item)=>item.category_ids?.includes(116) && Number(item.quantity) > 5)
                       }
-                      onChange={formik?.handleChange}
-                    ></input>
-                    <label className="form-check-label d-flex  align-items-center justify-content-between">
-                      <img
-                        src="./img/payment_option2.svg"
-                        className="img-fluid"
-                        alt="Phone-pe-svg-icon"
-                      ></img>
-                      Cash On Delivery <b>Pay Extra ₹25 on COD</b>
-                    </label>
-                  </div>
-                )} */}
-                {codoption && (
-                  <div className="form-check my-2">
-                    <input
-                      type="radio"
-                      className="form-check-input"
-                      name="payment_method"
-                      value="COD"
                       onChange={formik?.handleChange}
                     ></input>
                     <label className="form-check-label d-flex  align-items-center justify-content-between">
