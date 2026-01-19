@@ -96,7 +96,7 @@ export const Checkout = () => {
                     body: JSON.stringify({
                       order_id: `${res.data.order_id}`,
                       user_id: user.length !== 0 && user.user_id,
-                      amount: `${(Number(res.data.order_total) * 100)}`,
+                      amount: `${(Number(res.data.order_total) + Number(deliverydata)) * 100}`,
                       mobile: user.length !== 0 && user.phone_number.slice(2),
                       redirect_url: window.location.origin + "/payment/success",
                     }),
