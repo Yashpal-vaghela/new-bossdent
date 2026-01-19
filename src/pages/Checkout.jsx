@@ -96,7 +96,7 @@ export const Checkout = () => {
                     body: JSON.stringify({
                       order_id: `${res.data.order_id}`,
                       user_id: user.length !== 0 && user.user_id,
-                      amount: `${(Number(res.data.order_total))}`,
+                      amount: `${(Number(res.data.order_total) * 100)}`,
                       mobile: user.length !== 0 && user.phone_number.slice(2),
                       redirect_url: window.location.origin + "/payment/success",
                     }),
@@ -448,7 +448,7 @@ export const Checkout = () => {
                     UPI, Credit or Debit Card, Net Banking, Buy Now Pay later
                   </label>
                 </div>
-                {console.log("code",cartData?.items)}
+                {/* {console.log("code",cartData?.items)} */}
                 {codeoption && (
                   <div className="form-check my-2">
                     <input
