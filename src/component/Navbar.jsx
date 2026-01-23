@@ -49,7 +49,7 @@ const Navbar = () => {
       setSuggestions([]);
     }
   };
-  const handleClick = (product) => {
+  const handleClick = (e,product) => {
     navigate(`/products/${encodeURIComponent(product.slug)}`);
     handleOffcanvas1();
     handleClearSearch();
@@ -262,7 +262,7 @@ const Navbar = () => {
                             {suggestions.map((product, index) => (
                               <li
                                 key={index}
-                                onClick={() => handleClick(product)}
+                                onClick={(e) => handleClick(e,product)}
                               >
                                 {product.title}
                               </li>
@@ -426,7 +426,7 @@ const Navbar = () => {
                                 {suggestions.map((product, index) => (
                                   <li
                                     key={index}
-                                    onClick={() => handleClick(product)}
+                                    onClick={(e) => handleClick(e,product)}
                                   >
                                     {product.title}
                                   </li>

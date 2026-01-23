@@ -103,14 +103,14 @@ const Home = () => {
     },
   ];
 
-  const SocialData = [
-    { id: 1, img: "/img/instagram-post11.jpg" },
-    { id: 2, img: "/img/instagram-post9.jpg" },
-    { id: 3, img: "/img/instagram-post12.jpg" },
-    { id: 4, img: "/img/instagram-post10.jpg" },
-    { id: 5, img: "/img/instagram-post8.jpg" },
-    { id: 6, img: "/img/instagram-post13.jpg" },
-  ];
+  // const SocialData = [
+  //   { id: 1, img: "/img/instagram-post11.jpg" },
+  //   { id: 2, img: "/img/instagram-post9.jpg" },
+  //   { id: 3, img: "/img/instagram-post12.jpg" },
+  //   { id: 4, img: "/img/instagram-post10.jpg" },
+  //   { id: 5, img: "/img/instagram-post8.jpg" },
+  //   { id: 6, img: "/img/instagram-post13.jpg" },
+  // ];
 
   return (
     <div className="home-main overflow-hidden pt-0 pt-sm-0">
@@ -181,7 +181,7 @@ const Home = () => {
             getCartData={getCartData}
             dispatch={dispatch}
           />
-          <section className="follow-section">
+          {/* <section className="follow-section">
             <div className="container">
               <h2 className="text-white fs-2 text-center section-title">
                 Follow us on Instagram
@@ -203,7 +203,7 @@ const Home = () => {
                 })}
               </div>
             </div>
-          </section>
+          </section> */}
         </>
       )}
     </div>

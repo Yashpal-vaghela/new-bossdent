@@ -464,16 +464,20 @@ const SingleProduct = () => {
       });
   };
   const handleCheckout = (e, product, id, qty) => {
-    // console.log("e", e, product, id, qty);
+    console.log("e", e, product, id, qty);
     if (product.variations !== null) {
       handleCardError("error");
     } else {
       handleCardError("without-error");
       if (id !== 4070) {
-        handleAddToCart(product, id, qty, 0);
-        setTimeout(() => {
-          navigate("/checkout");
-        }, 1000);
+        if(product?.stock_status !== "outofstock"){
+          handleAddToCart(product, id, qty, 0);
+          setTimeout(() => {
+            navigate("/checkout");
+          }, 1000);
+        }else{
+          toast.error(`${product?.sku} is outofstock`)
+        }
         // console.log("addtocart");
       } else {
         setShowContactModal((prev) => !prev);
@@ -776,7 +780,7 @@ const SingleProduct = () => {
                                     </>
                                   ) : (
                                     <button
-                                      className={`btn btn-addToCart me-0 ms-auto d-flex align-items-center justify-content-between ${singleProduct.stock_status}`}
+                                      className={`btn btn-addToCart me-0 ms-auto d-flex align-items-center justify-content-between ${singleProduct.variations.length === 0 ? singleProduct.stock_status : item?.stock_status}`}
                                       onClick={(e) =>
                                         handleQuantity(
                                           e,

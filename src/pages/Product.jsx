@@ -1,11 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import BASE_URL from "../api/config";
 import { AddToCartModal } from "../component/AddToCartModal";
 import { toast } from "react-toastify";
-import {AddToWishlist,WishlistCounter,wishlistId} from "../redux/wishlistSlice";
+import {
+  AddToWishlist,
+  WishlistCounter,
+  wishlistId,
+} from "../redux/wishlistSlice";
 import { AddToCart, CartTotal } from "../redux/cartSlice";
 import useValidateUser from "../component/useValidateUser";
 import Loader2 from "../component/Loader2";
@@ -40,19 +44,30 @@ export const Product = () => {
   const [searchParams] = useSearchParams();
   const category = searchParams.get("category");
   const validateUser = useValidateUser();
-  const hasFetched = useRef(false);
+  const Params = useLocation();
+  console.log("params",Params);
+  // const hasFetched = useRef(false);
 
-  const fetchProductData = async () => {
+  const handleFilterPriceProduct = (e) => {
+    setSortOrder(e.target.value);
+    fetchProductData();
+    // fetchProducts(category);
+  };
+  const fetchProductData = async (controller) => {
     setloading(true);
     try {
       let apiUrl = "";
+      console.log("categ",category)
       if (category) {
         apiUrl += `${BASE_URL}/category/${category}`;
+        setSelectCategory(category);
       } else {
         apiUrl += `${BASE_URL}/products`;
+        setSelectCategory("");
       }
-      const res = await axios.get(apiUrl);
+      const res = await axios.get(apiUrl, { signal: controller.signal });
       let allProducts = res.data.data ? res.data.data : res.data || [];
+      // console.log("allProduct",allProducts);
       if (sortOrder === "high-low") {
         allProducts = allProducts.sort(
           (a, b) => getFinalPrice(b) - getFinalPrice(a)
@@ -84,10 +99,48 @@ export const Product = () => {
       // }
     }
   };
+  // const fetchProducts = async (category) => {
+  //   console.log("categ",category)
+  //   try{
+  //     let apiUrl = "";
+  //     if(category){
+  //       apiUrl += `${BASE_URL}/category/${category}`;
+  //     }else{
+  //       apiUrl += `${BASE_URL}/products`;
+  //     }
+  //     // const url = category ? `${BASE_URL}/category/${category}`: `${BASE_URL}/products`
+  //     const res = await axios.get(apiUrl);
+  //     let allProducts = res.data.data ? res.data.data : res.data || [];
+  //     console.log("sortOrder",sortOrder);
+  //     if(sortOrder === "high-low"){
+  //       allProducts = allProducts.sort((a,b)=>getFinalPrice(b) - getFinalPrice(a));
+  //     }
+  //     if(sortOrder === "low-high"){
+  //       allProducts = allProducts.sort((a,b)=>getFinalPrice(a) - getFinalPrice(b));
+  //     }
+  //     const indexOfLastProduct = currentPage * itemsPerPage;
+  //     const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
+  //     const currentsProducts = allProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  //     const totalPages = Math.ceil(allProducts.length / itemsPerPage);
+  //     console.log("total",totalPages);
+  //     setTotalPages(totalPages);
+  //     setProducts(currentsProducts);
+  //   } catch (err) {
+  //     console.log("err", err);
+  //   }
+  //   // return currentsProducts;
+  // }
 
-  const handleFilterPriceProduct = (e) => {
-    setSortOrder(e.target.value);
-  };
+  // /* eslint-disable react-hooks/exhaustive-deps */
+  // useEffect(() => {
+  //   let mounted = true;
+  //   setloading(true);
+  //   fetchProducts(category)
+  //     .then((data) => mounted && setProducts(data))
+  //     .finally(() => mounted && setloading(false));
+  //   return () => (mounted = false);
+  //   // fetchProducts(category)
+  // }, [category,currentPage]);
 
   const getFinalPrice = (p) => {
     return Number(p.sale_price || p.price || p.regular_price || 0);
@@ -101,18 +154,23 @@ export const Product = () => {
 
   /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
-    if(hasFetched.current) return;
-    hasFetched.current = true;
+    console.log("current",searchParams,category);
+    // if(hasFetched.current) return;
+    // hasFetched.current = true;
+    if (searchParams.has("category") && !category) {
+      navigate("/products", { replace: true });
+    }
     window.scrollTo({ top: 0, behavior: "smooth" });
-    fetchProductData();
-    // const controller = new AbortController();
-    // window.scrollTo({ top: 0, behavior: "smooth" });
-    // fetchProductData(controller);
-    // return () => controller.abort();
+    // fetchProductData();
+    const controller = new AbortController();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    fetchProductData(controller);
+    return () => controller.abort();
+    
   }, [currentPage, searchParams, sortOrder]);
 
   const handleFilterProduct = async (e, slug) => {
-    if (slug === "all-products") {
+    if (slug === "all-products" && searchParams.has("category") !== "/products") {
       navigate("/products");
       const controller = new AbortController();
       fetchProductData(controller);
@@ -121,13 +179,30 @@ export const Product = () => {
     } else {
       setloading(true);
       setSelectCategory(e.target.value);
-      navigate(`?category=${slug}`);
+      // console.log("categ",category,slug,categories);
+      if (searchParams.has("category") && slug) {
+        navigate("/products", { replace: true });
+      }else{
+        navigate(`?category=${slug}`);
+      }
+      
       try {
         const res = await axios.get(`${BASE_URL}/category/${slug}`);
         if (res.data) {
           setloading(false);
         }
-        const filterProducts = res.data.data || [];
+        let filterProducts = res.data.data ? res.data.data : res.data || [];
+        console.log("res", res.data.data);
+        if (sortOrder === "high-low") {
+          filterProducts = filterProducts.sort(
+            (a, b) => getFinalPrice(b) - getFinalPrice(a)
+          );
+        }
+        if (sortOrder === "low-high") {
+          filterProducts = filterProducts.sort(
+            (a, b) => getFinalPrice(a) - getFinalPrice(b)
+          );
+        }
         setTotalPages(Math.ceil(filterProducts.length / itemsPerPage));
         setcurrentPage(1);
         setProducts(filterProducts.slice(0, itemsPerPage));
@@ -251,8 +326,8 @@ export const Product = () => {
                   } catch (error) {
                     console.log("error", error);
                   }
-                }else{
-                  toast.error(`${product?.name} is outofstock`)
+                } else {
+                  toast.error(`${product?.name} is outofstock`);
                 }
               }
             }
@@ -329,8 +404,8 @@ export const Product = () => {
                   } catch (error) {
                     console.log("error", error);
                   }
-                }else{
-                  toast.error(`${product?.name} is outofstock`)
+                } else {
+                  toast.error(`${product?.name} is outofstock`);
                 }
               }
             }
@@ -402,9 +477,7 @@ export const Product = () => {
     }
   };
 
-  const handleCardModalError = () =>{
-    
-  }
+  const handleCardModalError = () => {};
   return (
     <React.Fragment>
       <div className="home-main product-main pt-0  pt-lg-0">
@@ -417,7 +490,7 @@ export const Product = () => {
                 </li>
                 <li className="breadcrumb-item active">
                   {searchParams.size !== 0 ? (
-                    <Link to="/products?category">Category</Link>
+                    <Link to="/products">Category</Link>
                   ) : (
                     <Link to="/products">Products</Link>
                   )}
@@ -457,7 +530,7 @@ export const Product = () => {
                     onChange={(e) => handleFilterProduct(e, e.target.value)}
                     value={selectCategory || ""}
                   >
-                    <option>Category</option>
+                    <option value="">Category</option>
                     <option value="all-products">All Products</option>
                     {categories?.map((category, index) => {
                       return (
