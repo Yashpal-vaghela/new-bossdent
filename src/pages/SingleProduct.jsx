@@ -471,10 +471,15 @@ const SingleProduct = () => {
       handleCardError("without-error");
       if (id !== 4070) {
         if(product?.stock_status !== "outofstock"){
-          handleAddToCart(product, id, qty, 0);
-          setTimeout(() => {
-            navigate("/checkout");
-          }, 1000);
+          if(token === "null" || !token){
+            validateUser();
+            toast.error("Please login to product add to cart!");
+          }else{
+            handleAddToCart(product, id, qty, 0);
+            setTimeout(() => {
+              navigate("/checkout");
+            }, 1000);
+          }
         }else{
           toast.error(`${product?.sku} is outofstock`)
         }
