@@ -113,6 +113,16 @@ const Cart = () => {
       }
     }
   };
+  const handleCheckout = () =>{
+    console.log("cartDat",cartData.items);
+    const a = cartData.items.filter((i)=>i.stock_status === "outofstock")
+    console.log("a",a);
+    if(a.length <= 0){
+       navigate("/checkout");
+    }else{
+      toast.error("Please remove outofstock product in your cartlist.");
+    }
+  }
   useEffect(()=>{
     window.scrollTo({ top: 0, behavior: "smooth" });
   },[])
@@ -185,18 +195,20 @@ const Cart = () => {
                                   ></img>
                                 </div>
                                 <div className="card-item-product-title">
-                                  <p className="cart-item-name mb-1">
-                                    {item?.product_name}
+                                  <p className="cart-item-name mb-1 d-flex d-md-block justify-content-between align-items-center">
+                                    {item?.product_name} <button className={`btn d-block d-md-none cart-item-stock ${item?.stock_status}`}> {item?.stock_status}</button>
                                   </p>
                                   <p className="cart-item-price mb-2 d-flex justify-content-between align-items-center d-md-block gap-1">
                                     ₹ {item?.product_price}
+                                    &nbsp;  <button className={`btn d-none d-md-block cart-item-stock ${item?.stock_status}`}> {item?.stock_status}</button>
                                     <b className="cart-item-pack d-block d-md-none">
                                       {" "}
                                       1 pcs / box
                                     </b>
                                   </p>
+                                 
                                   <p className="cart-item-subtotal mb-3 d-block d-md-none">
-                                    ₹ {item?.subtotal}
+                                    ₹ {item?.subtotal} 
                                   </p>
                                   <div className="cart-item-quantity justify-content-center  d-flex d-md-none">
                                     <button
@@ -317,11 +329,11 @@ const Cart = () => {
                           )}
                         </p>
                       </div>
-                      <Link to="/checkout">
-                        <button className="btn btn-checkout">
+                      {/* <Link to="/checkout" >
+                      </Link> */}
+                      <button className="btn btn-checkout" onClick={()=>handleCheckout()}>
                           Proceed to checkout
                         </button>
-                      </Link>
                     </div>
                   </div>
                 </div>

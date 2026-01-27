@@ -22,6 +22,23 @@
 /* .cart-item{
     gap:3px;
 } */
+ .cart-item-stock.instock{
+    background: rgba(32, 181, 38, 1);
+    color: #fff;
+    text-transform: capitalize;
+    padding: 2px 5px;
+    font-size: 14px;
+    margin: 6px 0px;
+}
+.cart-item-stock.outstock,
+.cart-item-stock.outofstock{
+    background: rgba(234, 75, 72, 1);
+    color:#fff;
+    text-transform: capitalize;
+    padding: 2px 5px;
+    font-size: 14px;
+    margin: 6px 0px;
+}
 .cart-header {
   grid-template-columns: 1fr 2fr 1fr 1fr 1fr 0.2fr;
   padding: 20px 15px;
