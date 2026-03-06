@@ -7,7 +7,8 @@ import * as yup from "yup";
 import BASE_URL from "../api/config";
 import Indian_states_cities_list from "indian-states-cities-list";
 import { AddToCart } from "../redux/cartSlice";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
+// import { toast } from "react-toastify";
 import Loader2 from "../component/Loader2";
 // import useValidateUser from "../component/useValidateUser";
 

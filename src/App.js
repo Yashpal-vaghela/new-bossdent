@@ -1,4 +1,4 @@
-import React, { useEffect, useRef} from "react";
+import React, { useEffect, useRef } from "react";
 import "./App.css";
 import { Allrouters } from "./component/Allrouters";
 import Navbar from "./component/Navbar";
@@ -14,8 +14,9 @@ import "./css/login.css";
 import "./css/support.css";
 import "./css/contact.css";
 import "./css/about.css";
-import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+// import { ToastContainer } from "react-toastify";
+import toast, { Toaster } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCart } from "./redux/cartSlice";
 import { fetchWishList } from "./redux/wishlistSlice";
@@ -26,7 +27,7 @@ import Loader2 from "./component/Loader2";
 function App() {
   const dispatch = useDispatch();
   const loading = useSelector((state) => state.category.loading);
-  const token = useSelector((state)=>state.auth.token);
+  const token = useSelector((state) => state.auth.token);
   const hasInitialized = useRef(false);
 
   /* eslint-disable react-hooks/exhaustive-deps */
@@ -62,7 +63,22 @@ function App() {
   return (
     <React.Fragment>
       <BrowserRouter>
-        <ToastContainer></ToastContainer>
+        <Toaster
+          position="bottom-center"
+          toastOptions={{
+            style: {
+              borderRadius: "25px",
+              background: "white",
+              boxShadow: "0px 0px 6px #fff",
+              color: "#000",
+              fontSize: "14px",
+            },
+
+            duration: 2000,
+          }}
+        />
+
+        {/* <ToastContainer></ToastContainer> */}
         <Navbar></Navbar>
         {/* <Allrouters></Allrouters> */}
         {loading ? <Loader2></Loader2> : <Allrouters></Allrouters>}

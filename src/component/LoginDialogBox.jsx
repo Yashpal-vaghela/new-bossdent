@@ -2,8 +2,9 @@ import axios from "axios";
 import React, { useEffect, useState, useRef } from "react";
 import BASE_URL from "../api/config";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import { toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { fetchCart } from "../redux/cartSlice";
 import { fetchWishList } from "../redux/wishlistSlice";
@@ -24,6 +25,13 @@ const LoginDialogBox = () => {
 
   const handleRequestOTP = async (e, action) => {
     if (formvalue?.phone_number || formvalue !== "") {
+
+      if (!/^\d{10}$/.test(formvalue?.phone_number)) {
+        toast.error('Please enter valid 10 digit phone number');
+        return;
+      } // add validation for whatapp number
+
+
       if (action === "login") {
         setStep(2);
         setTime(60);
@@ -162,6 +170,7 @@ const LoginDialogBox = () => {
           document.body.style.overflow = "";
           document.body.style.paddingRight = "";
         }
+        // console.log(res.data.data)
         // navigate("/profile");
         toast.success("OTP verified successfully!");
         setApiLoading(false);
@@ -249,6 +258,12 @@ const LoginDialogBox = () => {
                       value={formvalue?.phone_number || ""}
                       onChange={handleChange}
                       maxLength={10}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          console.log("enter")
+                          handleRequestOTP(e, "login"); // triggers OTP on Enter click
+                        }
+                      }}
                     ></input>
                   </div>
                   <button
@@ -302,7 +317,7 @@ const LoginDialogBox = () => {
                       <button
                         className="btn btn-sendOTP text-white"
                         onClick={(e) => handleRequestOTP(e, "resend")}
-                      >
+                      > 
                         Resend OTP
                       </button>
                     )}

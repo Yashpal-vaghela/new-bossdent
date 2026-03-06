@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import BASE_URL from "../api/config";
 import { AddToCartModal } from "../component/AddToCartModal";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
+// import { toast } from "react-toastify";
 import {
   AddToWishlist,
   WishlistCounter,

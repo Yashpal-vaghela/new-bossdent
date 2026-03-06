@@ -4,7 +4,8 @@ import BASE_URL from "../api/config";
 import { Link } from "react-router-dom";
 import { AddToCartModal } from "./AddToCartModal";
 import useValidateUser from "./useValidateUser";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { AddToCart } from "../redux/cartSlice";
 import { useSelector } from "react-redux";
 import {

@@ -3,21 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import BASE_URL from "../api/config";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
+// import { toast } from "react-toastify";
 import { AddToCart } from "../redux/cartSlice";
 import Loader2 from "./Loader2";
 import useValidateUser from "./useValidateUser";
 import { AddToCartModal } from "./AddToCartModal";
 
-export const DentalProductSection = ({
-  getCartData,
-  token,
-  dispatch,
-  categories,
-  loadingProducts,
-  visibleProducts,
-  fetchProduct,
-}) => {
+export const DentalProductSection = ({ getCartData, token, dispatch, categories, loadingProducts, visibleProducts, fetchProduct, }) => {
   const [showAll, setShowAll] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [apiloading, setApiLoading] = useState(false);
@@ -86,19 +79,17 @@ export const DentalProductSection = ({
         } else {
           if (selectedAttributes === null && selectedAttributes !== undefined) {
             toast.error(
-              `Please select ${
-                product?.variations?.map(
-                  (i, index) => Object.keys(i?.attributes)[index]
-                )[0]
+              `Please select ${product?.variations?.map(
+                (i, index) => Object.keys(i?.attributes)[index]
+              )[0]
               }`
             );
           } else {
             if (selectedAttributes === undefined) {
               toast.error(
-                `please select ${
-                  product?.variations?.map(
-                    (i, index) => Object.keys(i?.attributes)[index]
-                  )[1]
+                `please select ${product?.variations?.map(
+                  (i, index) => Object.keys(i?.attributes)[index]
+                )[1]
                 }`
               );
             } else {
@@ -173,7 +164,7 @@ export const DentalProductSection = ({
             }
           }
         }
-      }else{
+      } else {
         navigate(`/products/${product.slug}`);
       }
     }
@@ -197,9 +188,8 @@ export const DentalProductSection = ({
           <div className="product-filter-content">
             <ul className="product-filter-category-list">
               <li
-                className={`product-category ${
-                  selectedCategory === null ? "active" : ""
-                }`}
+                className={`product-category ${selectedCategory === null ? "active" : ""
+                  }`}
                 onClick={(e) => handleCategoryClick(e, null)}
               >
                 All Products
@@ -209,9 +199,8 @@ export const DentalProductSection = ({
                 return (
                   <li
                     key={index}
-                    className={`product-category ${
-                      selectedCategory === category.slug ? "active" : ""
-                    }`}
+                    className={`product-category ${selectedCategory === category.slug ? "active" : ""
+                      }`}
                     onClick={(e) => handleCategoryClick(e, category.slug)}
                   >
                     {category.name}
@@ -246,7 +235,7 @@ export const DentalProductSection = ({
                         {Math.round(
                           ((item.regular_price - item.sale_price) /
                             item.regular_price) *
-                            100
+                          100
                         )}
                         %
                       </span>

@@ -8,11 +8,13 @@ import {
   wishlistId,
 } from "../redux/wishlistSlice";
 import { AddToken } from "../redux/authSlice";
+import toast from "react-hot-toast";
+
 
 export const ProfileSideBar = () => {
   const location = useLocation();
   const dispatch = useDispatch();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const handleLogout = () => {
     const controller = new AbortController();
     localStorage.removeItem("auth_token");
@@ -21,7 +23,8 @@ export const ProfileSideBar = () => {
     dispatch(WishlistCounter(0));
     dispatch(wishlistId(0));
     dispatch(AddToken("null"));
-    // navigate("/");
+     toast.success("You have been logged out successfully"); // add logout toast
+    navigate("/");
     return () => {
       controller.abort();
     };

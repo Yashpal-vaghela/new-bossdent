@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import LoginDialogBox from "./LoginDialogBox";
@@ -8,12 +8,13 @@ import BASE_URL from "../api/config";
 import { AddToken } from "../redux/authSlice";
 
 const Navbar = () => {
+  const searchInputRef = useRef(null); // auto focus ref
   const [searchQuery, setSearchQuery] = useState("");
   const [searchIcon, setSearchIcon] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
   const { categories } = useSelector((state) => state.category);
   const cartCounter = useSelector((state) => state.cart.cartCount);
-
+  const [loading, setLoading] = useState(false); // suggetions box load
   const cartTotal = useSelector((state) => state.cart.cartTotal);
   const token = useSelector((state) => state.auth.token);
   const wishlistCounter = useSelector((state) => state.wishlist.wishlistCount);
@@ -22,34 +23,94 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleSearchChange = async (e) => {
+  const debounceRef = useRef(null);// ref for debouncing
+
+  const handleSearchChange = (e) => {
     const query = e.target.value;
     setSearchQuery(query);
-    if (query) {
-      setSearchIcon(true);
-    } else {
-      setSearchIcon(false);
+    setSearchIcon(!!query); // true if query exists, false otherwise
+
+    // Clear previous timeout to avoid multiple API calls
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
     }
-    try {
-      const response = await axios.get(
-        `${BASE_URL}/product-suggestions?s=${query}`
-      );
-      // console.warn("response", response);
-      const filterData = response?.data?.suggestions?.filter((product) => {
-        return product?.name.toLowerCase().includes(query.toLowerCase());
-      });
-      const products = filterData.map((product) => ({
-        id: product?.id,
-        title: product?.name,
-        slug: product?.slug,
-      }));
-      setSuggestions(products);
-    } catch (error) {
-      console.error("Error fetching search suggestions:", error);
+
+    if (query) {
+      setLoading(true);
+
+      // Set a new debounce timeout
+      debounceRef.current = setTimeout(async () => {
+        try {
+          console.log("API call for:", query);
+          const response = await axios.get(
+            `${BASE_URL}/product-suggestions?s=${query}`
+          );
+
+          const filterData = response?.data?.suggestions?.filter((product) =>
+            product?.name.toLowerCase().includes(query.toLowerCase())
+          );
+
+          const products = filterData.map((product) => ({
+            id: product?.id,
+            title: product?.name,
+            slug: product?.slug,
+          }));
+
+          setSuggestions(products);
+        } catch (error) {
+          console.error("Error fetching search suggestions:", error);
+          setSuggestions([]);
+        } finally {
+          setLoading(false);
+        }
+      }, 300);
+    } else {
+      // If query is empty, clear suggestions and stop loading
       setSuggestions([]);
+      setLoading(false);
     }
   };
-  const handleClick = (e,product) => {
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
+
+
+
+
+  // const handleSearchChange = async (e) => {
+  //   const query = e.target.value;
+
+  //   setSearchQuery(query);
+  //   if (query) {
+  //     setSearchIcon(true);
+  //   } else {
+  //     setSearchIcon(false);
+  //   }
+  //   try {
+  //     const response = await axios.get(
+  //       `${BASE_URL}/product-suggestions?s=${query}`
+  //     );
+  //     // console.warn("response", response);
+  //     const filterData = response?.data?.suggestions?.filter((product) => {
+  //       return product?.name.toLowerCase().includes(query.toLowerCase());
+  //     });
+  //     const products = filterData.map((product) => ({
+  //       id: product?.id,
+  //       title: product?.name,
+  //       slug: product?.slug,
+  //     }));
+  //     setSuggestions(products);
+  //   } catch (error) {
+  //     console.error("Error fetching search suggestions:", error);
+  //     setSuggestions([]);
+  //   }
+  // };
+  const handleClick = (e, product) => {
     navigate(`/products/${encodeURIComponent(product.slug)}`);
     handleOffcanvas1();
     handleClearSearch();
@@ -262,7 +323,7 @@ const Navbar = () => {
                             {suggestions.map((product, index) => (
                               <li
                                 key={index}
-                                onClick={(e) => handleClick(e,product)}
+                                onClick={(e) => handleClick(e, product)}
                               >
                                 {product.title}
                               </li>
@@ -274,7 +335,8 @@ const Navbar = () => {
                           <ul className="suggestions">
                             <li>
                               <h2 className="d-flex m-auto align-items-center justify-content-center">
-                                No Products Items Found!
+                                {/* No Products Items Found! */}
+                                {loading ? "Searching..." : "No Products Items Found"}
                               </h2>
                             </li>
                           </ul>
@@ -315,19 +377,18 @@ const Navbar = () => {
           <div className="offcanvas-body container align-items-center">
             <ul className="navbar-nav me-auto me-lg-0">
               <li className="nav-item">
-                <Link to="/" onClick={handleOffcanvas1} className={`${location.pathname === "/" ? "text-grident fw-semibold":""}`}>
+                <Link to="/" onClick={handleOffcanvas1} className={`${location.pathname === "/" ? "text-grident fw-semibold" : ""}`}>
                   Home
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/products" onClick={handleOffcanvas1} className={`${location.pathname === "/products" ? "text-grident fw-semibold":""}`}>
+                <Link to="/products" onClick={handleOffcanvas1} className={`${location.pathname === "/products" ? "text-grident fw-semibold" : ""}`}>
                   Product
                 </Link>
               </li>
               <li className="nav-item dropdown">
                 <Link
-                  // className="nav-link dropdown-toggle"
-                  className={`nav-link dropdown-toggle ${location.pathname === "/products?category" ? "text-grident fw-semibold":""}`}
+                  className={`nav-link dropdown-toggle ${location.pathname === "/products?category" ? "text-grident fw-semibold" : ""}`}
                   to="#"
                   role="button"
                   data-bs-toggle="dropdown"
@@ -336,9 +397,9 @@ const Navbar = () => {
                   Categories{" "}
                   <img
                     src="/img/arrow-down-img.svg"
-                    className="arrow-down-img img-fluid"
+                    className="arrow-down-img img-fluid dropdown-arrow"
                     alt="arrow-down-img"
-                  ></img>
+                  />
                 </Link>
                 <ul className="dropdown-menu">
                   {categories?.map((category, index) => (
@@ -357,23 +418,23 @@ const Navbar = () => {
                 </ul>
               </li>
               <li className="nav-item">
-                <Link to="/about" onClick={handleOffcanvas1} className={`${location.pathname === "/about" ? "text-grident fw-semibold":""}`}>
+                <Link to="/about" onClick={handleOffcanvas1} className={`${location.pathname === "/about" ? "text-grident fw-semibold" : ""}`}>
                   About Us
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/contact" onClick={handleOffcanvas1} className={`${location.pathname === "/contact" ? "text-grident fw-semibold":""}`}>
+                <Link to="/contact" onClick={handleOffcanvas1} className={`${location.pathname === "/contact" ? "text-grident fw-semibold" : ""}`}>
                   Contact Us
                 </Link>
               </li>
               <li className="nav-item d-block d-lg-none">
                 {
                   token !== "null" ? (
-                    <Link to="/profile" onClick={handleOffcanvas1} className={`${location.pathname === "/profile" ? "text-grident fw-semibold":""}`}>
+                    <Link to="/profile" onClick={handleOffcanvas1} className={`${location.pathname === "/profile" ? "text-grident fw-semibold" : ""}`}>
                       Account
                     </Link>
                   ) : (
-                    <Link to="#"  data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={handleOffcanvas1} >
+                    <Link to="#" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={handleOffcanvas1} >
                       Account
                     </Link>
                   )
@@ -407,6 +468,7 @@ const Navbar = () => {
                         ></img>
                       )}
                       <input
+                        ref={searchInputRef}
                         className="form-control w-75 d-none searchInput"
                         type="text"
                         placeholder="Search..."
@@ -426,7 +488,7 @@ const Navbar = () => {
                                 {suggestions.map((product, index) => (
                                   <li
                                     key={index}
-                                    onClick={(e) => handleClick(e,product)}
+                                    onClick={(e) => handleClick(e, product)}
                                   >
                                     {product.title}
                                   </li>
@@ -441,7 +503,8 @@ const Navbar = () => {
                               <ul className="suggestions">
                                 <li>
                                   <h2 className="d-flex m-auto align-items-center justify-content-center">
-                                    No Products Items Found!
+                                    {/* No Products Items Found! */}
+                                    {loading ? "Searching..." : "No Products Items Found!"}
                                   </h2>
                                 </li>
                               </ul>
@@ -458,7 +521,14 @@ const Navbar = () => {
                       id="search-icon"
                       width="30"
                       height="30"
-                      onClick={() => setSearchIcon((prev) => !prev)}
+                      onClick={() => {
+                        setSearchIcon((prev) => !prev) // toggle input visibility
+                        setTimeout(() => {
+                          // searchInputRef.current?.classList.remove("d-none"); // make it visible
+                          searchInputRef.current?.focus(); // focus the input
+                        }, 0);
+
+                      }}
                     ></img>
                   )}
                 </div>

@@ -6,7 +6,8 @@ import BASE_URL from "../api/config";
 import Loader2 from "../component/Loader2";
 import { AddToCart, CartTotal } from "../redux/cartSlice";
 import useValidateUser from "../component/useValidateUser";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { ConfirmationDialog } from "../component/ConfirmationDialog";
 
 const Cart = () => {
