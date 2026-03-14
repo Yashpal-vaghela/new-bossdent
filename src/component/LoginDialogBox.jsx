@@ -22,7 +22,8 @@ const LoginDialogBox = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [apiloading, setApiLoading] = useState(false);
-
+  const phoneInputRef = useRef(null);// ref for auto focus when show number dailbox
+  const otpRefs = useRef(Array(6).fill(null)); // ref for auto focus when show otp dailbox
   const handleRequestOTP = async (e, action) => {
     if (formvalue?.phone_number || formvalue !== "") {
 
@@ -79,6 +80,24 @@ const LoginDialogBox = () => {
       setformValue({ [name]: value });
     }
   };
+
+// Focus phone input only when step === 1 AND modal just opened
+useEffect(() => {
+  const modal = document.getElementById("exampleModal");
+  const handleShown = () => {
+    if (step === 1) phoneInputRef.current?.focus();
+  };
+  modal.addEventListener("shown.bs.modal", handleShown);
+
+  return () => modal.removeEventListener("shown.bs.modal", handleShown);
+}, []); // no dependency on step
+
+// Focus OTP input whenever step changes to 2
+useEffect(() => {
+  if (step === 2) {
+    setTimeout(() => otpRefs.current[0]?.focus(), 50); // small delay to ensure input is rendered
+  }
+}, [step]);
 
   useEffect(() => {
     if (step !== 2 || showResend) return; // stop if showing resend
@@ -258,6 +277,7 @@ const LoginDialogBox = () => {
                       value={formvalue?.phone_number || ""}
                       onChange={handleChange}
                       maxLength={10}
+                      ref={phoneInputRef}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           console.log("enter")
@@ -305,6 +325,7 @@ const LoginDialogBox = () => {
                         maxLength="1"
                         className="otp-box"
                         value={value}
+                        ref={(el) => (otpRefs.current[i] = el)} // assign ref
                         onChange={(e) => handleSubmitOTP(e, i)}
                         onKeyDown={(e) => handleBackspace(e, i)}
                       />
@@ -317,7 +338,7 @@ const LoginDialogBox = () => {
                       <button
                         className="btn btn-sendOTP text-white"
                         onClick={(e) => handleRequestOTP(e, "resend")}
-                      > 
+                      >
                         Resend OTP
                       </button>
                     )}

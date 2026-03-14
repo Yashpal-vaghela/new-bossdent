@@ -4,6 +4,7 @@ import BASE_URL from "../../api/config";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import toast from "react-hot-toast";
 
 export const Success = () => {
   const [paymentStatus, setPaymentStatus] = useState("PROCESSING");
@@ -39,12 +40,23 @@ export const Success = () => {
 
   /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
+
+
+    if (payment_method === null) {
+      toast.error("Payment method not found");
+      setTimeout(() => {
+        navigate("/");
+      }, 2000);
+
+      return;
+    }
+
     if (!orderId) {
       navigate("/");
       return;
     }
-    console.log("payment",payment_method)
-    if(payment_method !== "COD"){
+    console.log("payment", payment_method)
+    if (payment_method !== "COD") {
       // Initial delay before first fetch (e.g., 2 seconds)
       const timeout = setTimeout(fetchPaymentCallBack, 2000);
 

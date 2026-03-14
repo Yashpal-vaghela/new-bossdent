@@ -14,9 +14,7 @@ import "./css/login.css";
 import "./css/support.css";
 import "./css/contact.css";
 import "./css/about.css";
-// import "react-toastify/dist/ReactToastify.css";
-// import { ToastContainer } from "react-toastify";
-import toast, { Toaster } from "react-hot-toast";
+import  { Toaster } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCart } from "./redux/cartSlice";
 import { fetchWishList } from "./redux/wishlistSlice";
@@ -55,7 +53,6 @@ function App() {
       dispatch(fetchCart());
       dispatch(fetchWishList());
     }
-
     // 🔥 PUBLIC API (always)
     dispatch(fetchCategories());
   }, [dispatch, token]);

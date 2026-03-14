@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useFormik } from "formik";
-import React, { useEffect, useMemo, useRef, useState,useCallback } from "react";
+import React, { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
@@ -8,9 +8,8 @@ import BASE_URL from "../api/config";
 import Indian_states_cities_list from "indian-states-cities-list";
 import { AddToCart } from "../redux/cartSlice";
 import toast from "react-hot-toast";
-// import { toast } from "react-toastify";
-import Loader2 from "../component/Loader2";
-// import useValidateUser from "../component/useValidateUser";
+import Loader2 from "../component/Loader2"
+import { codPincodes } from "../pincodeData/codPincodes"  // local data to check pincode
 
 const checkoutSchema = yup.object().shape({
   first_name: yup.string().required("First Name Field is required"),
@@ -24,6 +23,14 @@ const checkoutSchema = yup.object().shape({
   payment_method: yup.string().required("Please choose payment method is required"),
 });
 export const Checkout = () => {
+  const [codAvailable, setCodAvailable] = useState(false); // chek for case on delevery
+  const checkCODAvailability = (pincode) => {
+    if (codPincodes[pincode]) {
+      setCodAvailable(true);
+    } else {
+      setCodAvailable(false);
+    }
+  };
   const [apiloading, setApiLoading] = useState(false);
   const States = Indian_states_cities_list?.STATES_OBJECT;
   const { token, user, cartData, deliverydata } = useSelector((state) => ({
@@ -31,15 +38,14 @@ export const Checkout = () => {
     user: state.user.user,
     cartData: state.cart.cart,
     deliverydata: state.cart.deliveryCharge,
-  }),shallowEqual);
-  const codeoption = useMemo(()=>{
+  }), shallowEqual);
+
+  const codeoption = useMemo(() => {
     return Number(cartData.cart_total || 0) <= 10000;
-  },[cartData?.cart_total]);
+  }, [cartData?.cart_total]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const hasFetched = useRef(false);
-  // const location = useLocation();
-  // const validateUser = useValidateUser();
   const initialValues = useMemo(() => ({
     first_name: user?.first_name || "",
     last_name: user?.last_name || "",
@@ -63,6 +69,8 @@ export const Checkout = () => {
       formik.setFieldError("zipcode", "Unable to fetch pincode details");
     }
   }, []);
+
+
   const formik = useFormik({
     initialValues,
     enableReinitialize: true,
@@ -74,41 +82,41 @@ export const Checkout = () => {
         try {
           setApiLoading(true);
           let payload = {}
-          if(formik?.values.payment_method === "COD"){
-            payload = {...formik?.values,delivery_charge:Number(deliverydata),handling_charge:25}
-          }else{
-            payload = {...formik?.values,delivery_charge:Number(deliverydata),handling_charge:0}
+          if (formik?.values.payment_method === "COD") {
+            payload = { ...formik?.values, delivery_charge: Number(deliverydata), handling_charge: 25 }
+          } else {
+            payload = { ...formik?.values, delivery_charge: Number(deliverydata), handling_charge: 0 }
           }
           await axios.post(`${BASE_URL}/create-order`, payload, {
-              headers: {
-                Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
-                "Content-Type": "application/json",
-              },
-            })
+            headers: {
+              Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
+              "Content-Type": "application/json",
+            },
+          })
             .then(async (res) => {
               if (formik?.values.payment_method === "prepaid") {
                 setApiLoading(true);
                 const paymentResponse = await fetch(`${BASE_URL}/phonepe/new-initiate`, {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                      Authorization: `Bearer ${token}`,
-                    },
-                    body: JSON.stringify({
-                      order_id: `${res.data.order_id}`,
-                      user_id: user.length !== 0 && user.user_id,
-                      amount: `${(Number(res.data.order_total)) * 100}`,
-                      mobile: user.length !== 0 && user.phone_number.slice(2),
-                      redirect_url: window.location.origin + "/payment/success",
-                    }),
-                  }
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                  },
+                  body: JSON.stringify({
+                    order_id: `${res.data.order_id}`,
+                    user_id: user.length !== 0 && user.user_id,
+                    amount: `${(Number(res.data.order_total)) * 100}`,
+                    mobile: user.length !== 0 && user.phone_number.slice(2),
+                    redirect_url: window.location.origin + "/payment/success",
+                  }),
+                }
                 );
                 if (!paymentResponse.ok) {
                   const paymentErrorText = await paymentResponse.text();
-                  throw new Error("Failed to initiate payment.",paymentErrorText);
+                  throw new Error("Failed to initiate payment.", paymentErrorText);
                 }
                 const paymentData = await paymentResponse.json();
-                if (paymentData.phonepe_response.success && paymentData.phonepe_response &&paymentData.phonepe_response.data.instrumentResponse &&paymentData.phonepe_response.data.instrumentResponse.redirectInfo) {
+                if (paymentData.phonepe_response.success && paymentData.phonepe_response && paymentData.phonepe_response.data.instrumentResponse && paymentData.phonepe_response.data.instrumentResponse.redirectInfo) {
                   setApiLoading(false);
                   const paymentUrl = paymentData.phonepe_response.data.instrumentResponse.redirectInfo.url;
                   //window.open(paymentUrl);
@@ -123,7 +131,7 @@ export const Checkout = () => {
                 DeletCartItems();
                 navigate("/payment/success");
                 localStorage.setItem("orderId", res.data.order_id);
-                localStorage.setItem("payment_method",JSON.stringify(formik?.values?.payment_method))
+                localStorage.setItem("payment_method", JSON.stringify(formik?.values?.payment_method))
               }
             });
         } catch (err) {
@@ -135,31 +143,38 @@ export const Checkout = () => {
       }
     },
   });
+
+  const COD_CHARGE = 25;
+const codCharge = formik?.values?.payment_method === "COD" ? COD_CHARGE : 0;
+
+  const finalTotal =
+    Number(cartData?.cart_total || 0) +
+    Number(deliverydata || 0) +
+    codCharge;
+
   const DeletCartItems = async () => {
     setApiLoading(true);
-    await axios.post(`${BASE_URL}/delete-cart`,{},{
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
+    await axios.post(`${BASE_URL}/delete-cart`, {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
     }).then((res) => {
-        setApiLoading(false);
-        dispatch(AddToCart({ ...res.data, items: [] }));
+      setApiLoading(false);
+      dispatch(AddToCart({ ...res.data, items: [] }));
     }).catch((err) => {
-        setApiLoading(false);
-        console.log("err", err);
+      setApiLoading(false);
+      console.log("err", err);
     });
   };
   /* eslint-disable react-hooks/exhaustive-deps */
-  useEffect(()=>{
-    if(hasFetched.current) return;
-      hasFetched.current = true;
-
-    if(Object.keys(user).length !== 0){
-      fetchPincodeDetails(user?.zipcode)
+  useEffect(() => {
+    if (formik.values.zipcode && formik.values.zipcode.length === 6) {
+      fetchPincodeDetails(formik.values.zipcode);
+      checkCODAvailability(formik.values.zipcode);
     }
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  },[]);
+    // window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [formik.values.zipcode]);
 
   return (
     <div className="home-main pt-0  cart-main">
@@ -383,6 +398,9 @@ export const Checkout = () => {
 
                         if (value.length === 6) {
                           fetchPincodeDetails(value);
+                          checkCODAvailability(value);
+                        } else {
+                          setCodAvailable(false);
                         }
                       }}
                     ></input>
@@ -416,6 +434,9 @@ export const Checkout = () => {
                 ) : (
                   <></>
                 )}
+
+
+
                 <div className="cart-total-content">
                   <p>Subtotal:</p>
                   <p>₹{cartData?.cart_total}</p>
@@ -428,9 +449,17 @@ export const Checkout = () => {
                       : `₹${Number(deliverydata).toFixed(2)}`}{" "}
                   </p>
                 </div>
+                {formik.values.payment_method === "COD" && (
+                  <div className="cart-total-content">
+                    <p>COD Charges:</p>
+                    <p>₹25</p>
+                  </div>
+                )}
                 <div className="cart-total-content">
+
+
                   <p>Total:</p>
-                  <p>₹ {(Number(cartData?.cart_total) + Number(deliverydata)).toFixed(2)}</p>
+                  <p>₹ {finalTotal.toFixed(2)}</p>
                 </div>
                 <div className="form-check my-2">
                   <input
@@ -449,7 +478,7 @@ export const Checkout = () => {
                     UPI, Credit or Debit Card, Net Banking, Buy Now Pay later
                   </label>
                 </div>
-                {/* {console.log("code",cartData?.items)} */}
+
                 {codeoption && (
                   <div className="form-check my-2">
                     <input
@@ -458,19 +487,31 @@ export const Checkout = () => {
                       name="payment_method"
                       value="COD"
                       disabled={
-                        cartData?.items?.length === 1 ||
-                        cartData?.items.some((item)=>item.category_ids?.includes(116) && Number(item.quantity) > 5)
+                        !codAvailable || // COD unavailable for this pincode
+                        cartData?.items?.some(
+                          (item) =>
+                            item.category_ids?.includes(116) &&
+                            Number(item.quantity) > 5
+                        )
                       }
                       onChange={formik?.handleChange}
-                    ></input>
-                    <label className="form-check-label d-flex  align-items-center justify-content-between">
+                      checked={formik?.values?.payment_method === "COD"}
+                    />
+                    <label className="form-check-label d-flex align-items-center justify-content-between">
                       <img
                         src="./img/payment_option2.svg"
                         className="img-fluid"
-                        alt="Phone-pe-svg-icon"
-                      ></img>
+                        alt="COD-icon"
+                      />
                       Cash On Delivery <b>Pay Extra ₹25 on COD</b>
                     </label>
+
+                    {/* Optional message for user */}
+                    {!codAvailable && formik.values.zipcode.length === 6 && (
+                      <p className="text-danger mt-1">
+                        COD not available for this pincode
+                      </p>
+                    )}
                   </div>
                 )}
                 {formik?.errors?.payment_method && (

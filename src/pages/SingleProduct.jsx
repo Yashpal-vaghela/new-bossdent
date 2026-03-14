@@ -46,11 +46,11 @@ const SingleProduct = () => {
   const a =
     cartData.length !== 0
       ? cartData?.items.map((i) => {
-          return {
-            id: i?.variation_id === 0 ? i?.product_id : i?.variation_id,
-            quantity: i.quantity,
-          };
-        })
+        return {
+          id: i?.variation_id === 0 ? i?.product_id : i?.variation_id,
+          quantity: i.quantity,
+        };
+      })
       : [];
 
   const b = a.reduce((acc, item) => {
@@ -68,6 +68,7 @@ const SingleProduct = () => {
     try {
       const res = await axios.get(`${BASE_URL}/new-product/${slug}`);
       setSingleProduct(res.data?.data);
+      // console.log(res.data)
       setloading(false);
       handleRelatedProducts(res.data.data?.id);
     } catch (err) {
@@ -75,16 +76,22 @@ const SingleProduct = () => {
     }
   };
   /* eslint-disable react-hooks/exhaustive-deps */
+  // useEffect(() => {
+  //   if(hasFetched.current) return;
+  //   hasFetched.current = true;
+  //   SingleProductData();
+  //   window.scrollTo({ top: 0, behavior: "smooth" });
+  //   // const controller = new AbortController();
+  //   // SingleProductData(controller);
+  //   // window.scrollTo({ top: 0, behavior: "smooth" });
+  //   // return () => controller.abort();
+  // }, []);
+
+//  add to show product in current pages 
   useEffect(() => {
-    if(hasFetched.current) return;
-    hasFetched.current = true;
     SingleProductData();
     window.scrollTo({ top: 0, behavior: "smooth" });
-    // const controller = new AbortController();
-    // SingleProductData(controller);
-    // window.scrollTo({ top: 0, behavior: "smooth" });
-    // return () => controller.abort();
-  }, []);
+  }, [slug]);
 
   useEffect(() => {
     if (token === "null" || !token) {
@@ -149,7 +156,7 @@ const SingleProduct = () => {
             setShowContactModal((prev) => !prev);
           }
         }
-      }else{
+      } else {
         toast.error(`${product?.sku} is outofstock`)
       }
     }
@@ -234,11 +241,11 @@ const SingleProduct = () => {
       const AlreadyExistingdata = cartData?.items?.filter((i, index) => {
         return i?.variation_id !== 0
           ? (typeof id === "object"
-              ? i?.variation_id === id?.id
-              : i?.variation_id ===
-                (Object.keys(selectattributes).length !== 0
-                  ? id
-                  : selectattributes)) && i?.product_id === singleproduct?.id
+            ? i?.variation_id === id?.id
+            : i?.variation_id ===
+            (Object.keys(selectattributes).length !== 0
+              ? id
+              : selectattributes)) && i?.product_id === singleproduct?.id
           : i?.product_id === singleproduct?.id;
       });
       // console.log(
@@ -256,7 +263,7 @@ const SingleProduct = () => {
         const payload = {
           cart_id: AlreadyExistingdata[0]?.cart_id,
           quantity:
-            typeof id === "object" ? qty[id?.id] : AlreadyExistingdata[0]?.quantity ?  AlreadyExistingdata[0]?.quantity + 1 
+            typeof id === "object" ? qty[id?.id] : AlreadyExistingdata[0]?.quantity ? AlreadyExistingdata[0]?.quantity + 1
               : qty[id]
         };
         // console.log("payload",payload,typeof id);
@@ -385,13 +392,12 @@ const SingleProduct = () => {
       } else {
         if (selectedAttributes === null && selectedAttributes !== undefined) {
           handleCardModalError("error");
-           toast.error(
-              `please select ${
-                product?.variations?.map(
-                  (i, index) => Object.keys(i?.attributes)[index]
-                )[0]
-              }`
-            );
+          toast.error(
+            `please select ${product?.variations?.map(
+              (i, index) => Object.keys(i?.attributes)[index]
+            )[0]
+            }`
+          );
         } else {
           if (AlreadyExistsData.length > 0) {
             const payload = {
@@ -464,32 +470,82 @@ const SingleProduct = () => {
         console.log("err", err);
       });
   };
+  // const handleCheckout = (e, product, id, qty) => {
+
+  //   console.log("e", e, product, id, qty);
+  //   if (product.variations !== null) {
+  //     handleCardError("error");
+  //   } else {
+  //     handleCardError("without-error");
+  //     if (id !== 4070) {
+  //       if (product?.stock_status !== "outofstock") {
+  //         if (token === "null" || !token) {
+  //           validateUser();
+  //           toast.error("Please login to product add to cart!");
+  //         } else {
+  //           handleAddToCart(product, id, qty, 0);
+  //           setTimeout(() => {
+  //             navigate("/checkout");
+  //           }, 1000);
+  //         }
+  //       } else {
+  //         toast.error(`${product?.sku} is outofstock`)
+  //       }
+  //       // console.log("addtocart");
+  //     } else {
+  //       setShowContactModal((prev) => !prev);
+  //     }
+  //   }
+  // };
+
+
+  // single variation also add to buy button to process to pay button inebel  
+
   const handleCheckout = (e, product, id, qty) => {
-    console.log("e", e, product, id, qty);
-    if (product.variations !== null) {
-      handleCardError("error");
+  if (product?.variations && product?.variations.length > 0) {
+
+    // check if any variation of this product already in cart
+    const alreadyInCart = cartData?.items?.some(
+      (i) => i.product_id === product.id
+    );
+
+    if (alreadyInCart) {
+      navigate("/checkout");
     } else {
-      handleCardError("without-error");
-      if (id !== 4070) {
-        if(product?.stock_status !== "outofstock"){
-          if(token === "null" || !token){
-            validateUser();
-            toast.error("Please login to product add to cart!");
-          }else{
-            handleAddToCart(product, id, qty, 0);
-            setTimeout(() => {
-              navigate("/checkout");
-            }, 1000);
-          }
-        }else{
-          toast.error(`${product?.sku} is outofstock`)
-        }
-        // console.log("addtocart");
-      } else {
-        setShowContactModal((prev) => !prev);
-      }
+      handleCardError("error");
+      toast.error("Please select variation first!");
     }
-  };
+
+  } else {
+
+    handleCardError("without-error");
+
+    if (id !== 4070) {
+      if (product?.stock_status !== "outofstock") {
+
+        if (token === "null" || !token) {
+          validateUser();
+          toast.error("Please login to product add to cart!");
+        } else {
+
+          handleAddToCart(product, id, qty, 0);
+
+          setTimeout(() => {
+            navigate("/checkout");
+          }, 1000);
+
+        }
+
+      } else {
+        toast.error(`${product?.sku} is outofstock`);
+      }
+
+    } else {
+      setShowContactModal((prev) => !prev);
+    }
+
+  }
+};
   const handleCardError = (action) => {
     //  const card = document.getElementsByClassName("single-variation-wrapper");
     const card1 = document.querySelectorAll(".btn-addToCart");
@@ -567,7 +623,7 @@ const SingleProduct = () => {
                             ((singleProduct?.regular_price -
                               singleProduct?.sale_price) /
                               singleProduct?.regular_price) *
-                              100
+                            100
                           )}
                           %
                         </span>
@@ -617,7 +673,7 @@ const SingleProduct = () => {
                                       ((singleProduct?.regular_price -
                                         singleProduct?.sale_price) /
                                         singleProduct?.regular_price) *
-                                        100
+                                      100
                                     )}
                                     %
                                   </b>
@@ -691,7 +747,7 @@ const SingleProduct = () => {
                 >
                   {singleProduct?.variations &&
                     visibleVariation?.map((item, index) => {
-                      console.log("item",item)
+                      // console.log("item", item)
                       return (
                         <div
                           className="single-variation-wrapper mb-3 mb-md-4"
@@ -732,11 +788,10 @@ const SingleProduct = () => {
                             </div>
                             <div className="col-lg-4 col-md-6 col-6 px-1">
                               <div
-                                className={`d-flex align-items-center  ${
-                                  Object.keys(item?.attributes)[1]
-                                    ? "mb-3 justify-content-end"
-                                    : "mb-2 justify-content-end"
-                                }`}
+                                className={`d-flex align-items-center  ${Object.keys(item?.attributes)[1]
+                                  ? "mb-3 justify-content-end"
+                                  : "mb-2 justify-content-end"
+                                  }`}
                               >
                                 <p className="text-end mb-0">
                                   {Object.keys(item?.attributes)[0].replace(
@@ -813,7 +868,7 @@ const SingleProduct = () => {
                             <p>
                               Price:&nbsp;
                               {item?.sale_price !== null &&
-                              item?.sale_price === item?.regular_price ? (
+                                item?.sale_price === item?.regular_price ? (
                                 <>
                                   <b className="text-decoration-line-through">
                                     ₹{Number(item?.regular_price).toFixed(2)}
@@ -862,7 +917,7 @@ const SingleProduct = () => {
                             <p>
                               Price:&nbsp;
                               {singleProduct?.sale_price !== null &&
-                              singleProduct?.sale_price ===
+                                singleProduct?.sale_price ===
                                 singleProduct?.regular_price ? (
                                 <>
                                   <b className="text-decoration-line-through">

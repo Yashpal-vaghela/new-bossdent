@@ -1,31 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { Link,useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../api/config";
 import Loader2 from "../component/Loader2";
 
 const Category = () => {
-    const { slug } = useParams();
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
+  const { slug } = useParams();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-        const fetchCategoryProducts = async() => {
-            try {
-                setLoading(true);
-                const response = await axios.get(`${BASE_URL}/category/${slug}`);
-                const data = response.data?.data || [];
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    const fetchCategoryProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`${BASE_URL}/category/${slug}`);
+        const data = response.data?.data || [];
 
-                setProducts(data);
-            }catch (err){
-                console.error("Error fetching category products:", err);
-            }finally {
-                setLoading(false);
-            }
-        };
-        fetchCategoryProducts();
-    },[slug])
+        setProducts(data);
+      } catch (err) {
+        console.error("Error fetching category products:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCategoryProducts();
+  }, [slug])
   return (
     <React.Fragment>
       <div className="home-main pt-4 pt-lg-0">
@@ -44,7 +44,7 @@ const Category = () => {
           </div>
         </section>
         {loading ? (
-         <Loader2></Loader2>
+          <Loader2></Loader2>
         ) : (
           <>
             <section className="product-section">
@@ -87,7 +87,7 @@ const Category = () => {
                             <img
                               className="heart-icon img-fluid"
                               src="/img/heart-icon.svg"
-                              alt="heart-icon"  
+                              alt="heart-icon"
                             ></img>
                             <img
                               src={product?.image}
@@ -104,7 +104,7 @@ const Category = () => {
                                 <span className="product-price card-text">
                                   ₹&nbsp;
                                   {product?.regular_price !== null &&
-                                  product.regular_price !== product.price ? (
+                                    product.regular_price !== product.price ? (
                                     <>
                                       <b>{`${greaterPrice}.00`}</b>
                                       {`${lowerPrice}.00`}
