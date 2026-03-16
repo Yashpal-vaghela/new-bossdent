@@ -126,14 +126,12 @@ const Cart = () => {
   }
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-
-    // Agar token nahi hai, toh pichle page par bhejo aur login dikhao
     if (!token || token === "null") {
       navigate(-1); // Pichle page par wapas le jane ke liye
       validateUser(); // Login DialogBox open karne ke liye
       toast.error("Please login to access your cart!");
     }
-  }, [token, navigate, validateUser]); // In dependencies ka hona zaroori hai
+  }, [token, navigate, validateUser]);
 
   return (
     <div className="home-main pt-0 pt-lg-0 cart-main">
