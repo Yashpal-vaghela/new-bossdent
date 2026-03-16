@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../css/wishlist.css";
 import { useDispatch, useSelector } from "react-redux";
 // import { toast } from "react-toastify";
@@ -17,6 +17,7 @@ import useValidateUser from "../component/useValidateUser";
 import Loader2 from "../component/Loader2";
 
 const Wishlist = () => {
+  const navigate = useNavigate();
   const [showVariationModal, setShowVariationModal] = useState(false);
   const [selectedProductForModal, setSelectedProductForModal] = useState(null);
   const token = useSelector((state) => state.auth.token);
@@ -143,19 +144,17 @@ const Wishlist = () => {
               selectedAttributes !== undefined
             ) {
               toast.error(
-                `please select ${
-                  product?.variations?.map(
-                    (i, index) => Object.keys(i?.attributes)[index]
-                  )[0]
+                `please select ${product?.variations?.map(
+                  (i, index) => Object.keys(i?.attributes)[index]
+                )[0]
                 }`
               );
             } else {
               if (selectedAttributes === undefined) {
                 toast.error(
-                  `please select ${
-                    product?.variations?.map(
-                      (i, index) => Object.keys(i?.attributes)[index]
-                    )[1]
+                  `please select ${product?.variations?.map(
+                    (i, index) => Object.keys(i?.attributes)[index]
+                  )[1]
                   }`
                 );
               } else {
@@ -218,19 +217,17 @@ const Wishlist = () => {
               selectedAttributes !== undefined
             ) {
               toast.error(
-                `please select ${
-                  product?.variations?.map(
-                    (i, index) => Object.keys(i?.attributes)[index]
-                  )[0]
+                `please select ${product?.variations?.map(
+                  (i, index) => Object.keys(i?.attributes)[index]
+                )[0]
                 }`
               );
             } else {
               if (selectedAttributes === undefined) {
                 toast.error(
-                  `please select ${
-                    product?.variations?.map(
-                      (i, index) => Object.keys(i?.attributes)[index]
-                    )[1]
+                  `please select ${product?.variations?.map(
+                    (i, index) => Object.keys(i?.attributes)[index]
+                  )[1]
                   }`
                 );
               } else {
@@ -283,14 +280,34 @@ const Wishlist = () => {
       }
     }
   };
-  const handleCardModalError = () => {};
+  const handleCardModalError = () => { };
 
   useEffect(() => {
+    // 1. Agar token missing hai toh redirect aur login prompt
+    if (!token || token === "null") {
+      // User ko pichle page par wapas bhej raha hai
+      // Agar pichla page nahi hai toh ye home page par le jayega
+      navigate(-1);
+
+      // Login dialog open karne ke liye hook trigger karein
+      validateUser();
+
+      // Yahan toast dikhana chahein toh dikha sakte hain
+      toast.error("Please login to access your wishlist!");
+      return; // Aage ka code execute na ho isliye return
+    }
+
+    // 2. Agar token hai, toh baki logic chalne dein
     window.scrollTo({ top: 0, behavior: "smooth" });
-    setTimeout(() => {
+
+    const timer = setTimeout(() => {
       setloading(false);
     }, 2000);
-  }, []);
+
+    return () => clearTimeout(timer);
+  }, [token, navigate, validateUser]);
+
+  // ... baki component logic same rahega
   return (
     <div className="home-main pt-0">
       <section className="Breadcrumbs-section">

@@ -17,24 +17,24 @@ const Cart = () => {
   const [apiloading, setApiLoading] = useState(false);
   const cartTotal = useSelector((state) => state.cart.cartTotal);
   const cartData = useSelector((state) => state.cart.cart);
-  const loading = useSelector((state)=>state.cart.loading);
+  const loading = useSelector((state) => state.cart.loading);
   const deliverydata = useSelector((state) => state.cart.deliveryCharge);
   const [showDialogBox, setShowDialogBox] = useState(false);
   const [selectProductModal, setSelectProductModal] = useState(false);
   const validateUser = useValidateUser();
-  console.log("cart",cartData,loading);
+  console.log("cart", cartData, loading);
 
   const handleClearCart = async () => {
     setApiLoading(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
-    await axios.post(`${BASE_URL}/delete-cart`,{},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
-            "Content-Type": "application/json",
-          },
-        }
-      )
+    await axios.post(`${BASE_URL}/delete-cart`, {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`.replace(/\s+/g, " ").trim(),
+          "Content-Type": "application/json",
+        },
+      }
+    )
       .then((res) => {
         setApiLoading(false);
         dispatch(AddToCart({ ...res.data, items: [] }));
@@ -83,7 +83,7 @@ const Cart = () => {
       const cartItemUpdate = cartData?.items.find((item) => {
         return item?.variation_id !== 0
           ? item?.variation_id === product?.variation_id &&
-              item.product_id === product.product_id
+          item.product_id === product.product_id
           : item.product_id === product.product_id;
       });
       let newQuantity =
@@ -114,19 +114,26 @@ const Cart = () => {
       }
     }
   };
-  const handleCheckout = () =>{
-    console.log("cartDat",cartData.items);
-    const a = cartData.items.filter((i)=>i.stock_status === "outofstock")
-    console.log("a",a);
-    if(a.length <= 0){
-       navigate("/checkout");
-    }else{
+  const handleCheckout = () => {
+    console.log("cartDat", cartData.items);
+    const a = cartData.items.filter((i) => i.stock_status === "outofstock")
+    console.log("a", a);
+    if (a.length <= 0) {
+      navigate("/checkout");
+    } else {
       toast.error("Please remove outofstock product in your cartlist.");
     }
   }
-  useEffect(()=>{
+  useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-  },[])
+
+    // Agar token nahi hai, toh pichle page par bhejo aur login dikhao
+    if (!token || token === "null") {
+      navigate(-1); // Pichle page par wapas le jane ke liye
+      validateUser(); // Login DialogBox open karne ke liye
+      toast.error("Please login to access your cart!");
+    }
+  }, [token, navigate, validateUser]); // In dependencies ka hona zaroori hai
 
   return (
     <div className="home-main pt-0 pt-lg-0 cart-main">
@@ -207,19 +214,19 @@ const Cart = () => {
                                       1 pcs / box
                                     </b>
                                   </p>
-                                 
+
                                   <p className="cart-item-subtotal mb-3 d-block d-md-none">
-                                    ₹ {item?.subtotal} 
+                                    ₹ {item?.subtotal}
                                   </p>
                                   <div className="cart-item-quantity justify-content-center  d-flex d-md-none">
                                     <button
-                                     onClick={(e) =>
-                                      Number(item?.quantity) !== 1 && handleUpdateQty(e, item, "MINUS")
-                                    }
+                                      onClick={(e) =>
+                                        Number(item?.quantity) !== 1 && handleUpdateQty(e, item, "MINUS")
+                                      }
                                       // onClick={(e) =>
                                       //   handleUpdateQty(e, item, "MINUS")
                                       // }
-                                      className={`${Number(item?.quantity) === 1 ? "disactive": ""}`}
+                                      className={`${Number(item?.quantity) === 1 ? "disactive" : ""}`}
                                     >
                                       -
                                     </button>
@@ -241,7 +248,7 @@ const Cart = () => {
                                     onClick={(e) =>
                                       Number(item?.quantity) !== 1 && handleUpdateQty(e, item, "MINUS")
                                     }
-                                    className={`${Number(item?.quantity) === 1 ? "disactive": ""}`}
+                                    className={`${Number(item?.quantity) === 1 ? "disactive" : ""}`}
                                   >
                                     -
                                   </button>
@@ -305,7 +312,7 @@ const Cart = () => {
                     )}
                   </div>
                   <div className="col-lg-4">
-                    
+
                     <div className="cart-total-container">
                       <h2 className="cart-total-title">Cart Total</h2>
                       <div className="cart-total-content">
@@ -332,9 +339,9 @@ const Cart = () => {
                       </div>
                       {/* <Link to="/checkout" >
                       </Link> */}
-                      <button className="btn btn-checkout" onClick={()=>handleCheckout()}>
-                          Proceed to checkout
-                        </button>
+                      <button className="btn btn-checkout" onClick={() => handleCheckout()}>
+                        Proceed to checkout
+                      </button>
                     </div>
                   </div>
                 </div>
