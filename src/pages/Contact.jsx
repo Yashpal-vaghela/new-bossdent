@@ -47,32 +47,28 @@ export const Contact = () => {
     validateOnChange: true,
     validateOnBlur: true,
     onSubmit: async () => {
-      const userLoggedIn = !!localStorage.getItem("auth_token");
+      setApiLoading(true);
 
-      if (userLoggedIn) {
-        setApiLoading(true);
+      try {
+        const res = await axios.post(
+          "https://admin.bossdentindia.com/wp-json/custom/v1/submit-form",
+          {
+            name: formik.values.name,
+            email: formik.values.email,
+            phone: formik.values.phone,
+            subject: formik.values.subject,
+            message: formik.values.message,
+          }
+        );
 
-        try {
-          const res = await axios.post(
-            "https://admin.bossdentindia.com/wp-json/custom/v1/submit-form",
-            {
-              name: formik.values.name,
-              email: formik.values.email,
-              phone: formik.values.phone,
-              subject: formik.values.subject,
-              message: formik.values.message,
-            }
-          );
-
-          setApiLoading(false);
-          formik.resetForm();
-          toast.success("Form submitted successfully.");
-          console.log("res", res);
-        } catch (err) {
-          setApiLoading(false);
-          toast.error("There was an error submitting the form.");
-          console.log("err", err);
-        }
+        formik.resetForm();
+        toast.success("Form submitted successfully.");
+        console.log("res", res);
+      } catch (err) {
+        toast.error("There was an error submitting the form.");
+        console.log("err", err);
+      } finally {
+        setApiLoading(false); // ✅ always run
       }
     },
   });
@@ -98,8 +94,6 @@ export const Contact = () => {
         </div>
       </section>
 
-      {apiloading && <Loader2 />}
-
       <section className="contact-section my-4 my-md-5">
         <div className="container">
           <div className="row pt-2 pb-4 gap-3 gap-sm-0">
@@ -122,7 +116,7 @@ export const Contact = () => {
                 </p>
 
                 <form className="form contact-form" onSubmit={formik.handleSubmit}>
-                  
+
                   {/* Name */}
                   <div className={`${formik.touched.name && formik.errors.name ? "my-3" : "mb-4"}`}>
                     <input
@@ -209,11 +203,21 @@ export const Contact = () => {
                   </div>
 
                   <button
-                    className="btn contact-btn"
+                    className="btn contact-btn d-flex align-items-center justify-content-center"
                     type="submit"
                     disabled={!formik.isValid || apiloading}
                   >
-                    Submit Now
+                    {apiloading ? (
+                      <>
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          role="status"
+                        ></span>
+                        Submitting...
+                      </>
+                    ) : (
+                      "Submit Now"
+                    )}
                   </button>
                 </form>
               </div>
