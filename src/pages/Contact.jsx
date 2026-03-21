@@ -47,15 +47,12 @@ export const Contact = () => {
     validateOnChange: true,
     validateOnBlur: true,
     onSubmit: async () => {
-      const userLoggedIn = !!localStorage.getItem("auth_token");
-
-      if (userLoggedIn) {
-        setApiLoading(true);
 
         try {
           const res = await axios.post(
             "https://admin.bossdentindia.com/wp-json/custom/v1/submit-form",
             {
+              form_id: 1,
               name: formik.values.name,
               email: formik.values.email,
               phone: formik.values.phone,
@@ -73,7 +70,6 @@ export const Contact = () => {
           toast.error("There was an error submitting the form.");
           console.log("err", err);
         }
-      }
     },
   });
 
