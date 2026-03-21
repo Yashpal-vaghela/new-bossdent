@@ -53,6 +53,7 @@ export const Contact = () => {
         const res = await axios.post(
           "https://admin.bossdentindia.com/wp-json/custom/v1/submit-form",
           {
+              form_id: 1,
             name: formik.values.name,
             email: formik.values.email,
             phone: formik.values.phone,
