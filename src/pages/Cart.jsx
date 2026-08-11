@@ -6,7 +6,6 @@ import BASE_URL from "../api/config";
 import Loader2 from "../component/Loader2";
 import { AddToCart, CartTotal } from "../redux/cartSlice";
 import useValidateUser from "../component/useValidateUser";
-// import { toast } from "react-toastify";
 import toast from "react-hot-toast";
 import { ConfirmationDialog } from "../component/ConfirmationDialog";
 
@@ -127,8 +126,8 @@ const Cart = () => {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     if (!token || token === "null") {
-      navigate(-1); // Pichle page par wapas le jane ke liye
-      validateUser(); // Login DialogBox open karne ke liye
+      navigate(-1); 
+      validateUser(); 
       toast.error("Please login to access your cart!");
     }
   }, [token, navigate, validateUser]);

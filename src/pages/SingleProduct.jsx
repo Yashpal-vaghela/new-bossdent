@@ -43,6 +43,8 @@ const SingleProduct = () => {
   const navigate = useNavigate();
   const hasFetched = useRef(false);
 
+  // console.log(relatedProducts)
+
   const a =
     cartData.length !== 0
       ? cartData?.items.map((i) => {
@@ -75,17 +77,6 @@ const SingleProduct = () => {
       if (err.name !== "AbortError") console.error(err);
     }
   };
-  /* eslint-disable react-hooks/exhaustive-deps */
-  // useEffect(() => {
-  //   if(hasFetched.current) return;
-  //   hasFetched.current = true;
-  //   SingleProductData();
-  //   window.scrollTo({ top: 0, behavior: "smooth" });
-  //   // const controller = new AbortController();
-  //   // SingleProductData(controller);
-  //   // window.scrollTo({ top: 0, behavior: "smooth" });
-  //   // return () => controller.abort();
-  // }, []);
 
 //  add to show product in current pages 
   useEffect(() => {
@@ -103,7 +94,7 @@ const SingleProduct = () => {
     setShowQuantity([]);
   };
   const handleQuantity = (e, id, action, item, product) => {
-    console.log("id", id, action, item, product);
+    // console.log("id", id, action, item, product);
     if (token === "null" || !token) {
       validateUser();
       toast.error("Please login to product add to cart!");
@@ -131,9 +122,6 @@ const SingleProduct = () => {
                 "PLUS"
               );
             }
-            // else{
-            //   handleAddToCart(singleProduct,id,{...quantity,[id]:currentQty+quantity},item?.attributes,"PLUS")
-            // }
           }
         } else {
           if (product?.id !== 4070) {
@@ -141,8 +129,6 @@ const SingleProduct = () => {
             setShowQuantity(filterData);
             const currentQty = quantity[id] || 1;
             setQuantity({ ...quantity, [id]: currentQty });
-            // console.log("cur",currentQty,filterData,"showQUn",showQuantity)
-            // handleCardError("without-error");
             if (currentQty < 2) {
               handleAddToCart(
                 singleProduct,
@@ -248,17 +234,7 @@ const SingleProduct = () => {
               : selectattributes)) && i?.product_id === singleproduct?.id
           : i?.product_id === singleproduct?.id;
       });
-      // console.log(
-      //   "singleProduct",
-      //   singleProduct,
-      //   id,
-      //   qty,
-      //   selectattributes,
-      //   action,
-      //   "Already",
-      //   AlreadyExistingdata,
-      //   showQuantity
-      // );
+     
       if (AlreadyExistingdata.length > 0) {
         const payload = {
           cart_id: AlreadyExistingdata[0]?.cart_id,
@@ -266,13 +242,8 @@ const SingleProduct = () => {
             typeof id === "object" ? qty[id?.id] : AlreadyExistingdata[0]?.quantity ? AlreadyExistingdata[0]?.quantity + 1
               : qty[id]
         };
-        // console.log("payload",payload,typeof id);
         handleEditApi(payload);
-        // if (showQuantity.length !== 0) {
-        //   handleEditApi(payload);
-        // }
       } else {
-        // console.log("sel",Object.keys(selectattributes) )
         const payload = {
           product_id: singleProduct?.id,
           variation_id:
@@ -285,12 +256,6 @@ const SingleProduct = () => {
         };
         handleAddApi(payload);
       }
-      // if (action === "/checkout") {
-      //   navigate(`${action}`);
-      //   if (cartData?.items?.length === 0) {
-      //     toast.error("Your cart is empty!");
-      //   }
-      // }
     }
   };
 
@@ -470,37 +435,6 @@ const SingleProduct = () => {
         console.log("err", err);
       });
   };
-  // const handleCheckout = (e, product, id, qty) => {
-
-  //   console.log("e", e, product, id, qty);
-  //   if (product.variations !== null) {
-  //     handleCardError("error");
-  //   } else {
-  //     handleCardError("without-error");
-  //     if (id !== 4070) {
-  //       if (product?.stock_status !== "outofstock") {
-  //         if (token === "null" || !token) {
-  //           validateUser();
-  //           toast.error("Please login to product add to cart!");
-  //         } else {
-  //           handleAddToCart(product, id, qty, 0);
-  //           setTimeout(() => {
-  //             navigate("/checkout");
-  //           }, 1000);
-  //         }
-  //       } else {
-  //         toast.error(`${product?.sku} is outofstock`)
-  //       }
-  //       // console.log("addtocart");
-  //     } else {
-  //       setShowContactModal((prev) => !prev);
-  //     }
-  //   }
-  // };
-
-
-  // single variation also add to buy button to process to pay button inebel  
-
   const handleCheckout = (e, product, id, qty) => {
   if (product?.variations && product?.variations.length > 0) {
 
@@ -712,16 +646,6 @@ const SingleProduct = () => {
                           <div className="singleProduct-info-wrapper">
                             <button
                               className="btn btn-buyNow mt-3 w-100"
-                              // onClick={(e) => {
-                              //   navigate("/checkout");
-                              //   handleAddToCart(
-                              //     e,
-                              //     singleProduct,
-                              //     singleProduct?.id,
-                              //     quantity,
-                              //     "/checkout"
-                              //   );
-                              // }}
                               onClick={(e) =>
                                 handleCheckout(
                                   e,
@@ -763,10 +687,6 @@ const SingleProduct = () => {
                                 <p>
                                   Pack Size:{" "}
                                   <b>
-                                    {/* {singleProduct?.short_description.replace(
-                                      /<\/?(p|ul|li)>/g,
-                                      ""
-                                    )}, */}
                                     {singleProduct.short_description
                                       .replace(/<\/li>\s*<li>/g, ", ")
                                       .replace(/<\/?(p|ul|li)>/g, "")}

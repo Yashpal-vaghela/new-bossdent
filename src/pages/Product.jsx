@@ -19,7 +19,6 @@ export const Product = () => {
   const [categoryOpen, setCategoryOpen] = React.useState(false);
   const [priceOpen, setPriceOpen] = React.useState(false);
   const [products, setProducts] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
   const [apiLoading, setApiLoading] = useState(false);
@@ -36,10 +35,11 @@ export const Product = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const validateUser = useValidateUser();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
 
   const category = searchParams.get("category");
+  const currentPage = parseInt(searchParams.get("page")) || 1;
 
   const itemsPerPage = useMemo(() => {
     if (window.innerWidth >= 1400) return 12;
@@ -80,7 +80,6 @@ export const Product = () => {
 
         if (isActive) {
           setProducts(fetchedProducts);
-          setCurrentPage(res?.data?.current_page || 1);
           setTotalPages(res?.data?.total_pages || 0);
         }
 
@@ -113,33 +112,35 @@ export const Product = () => {
 
   }, [category, currentPage, sortOrder]);
 
-  useEffect(() => {
-    setCurrentPage(1);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [category, sortOrder]);
-
   const handlePageChange = (pageNumber) => {
     if (pageNumber < 1 || pageNumber > totalPages) return;
-    setCurrentPage(pageNumber);
+    const params = new URLSearchParams(searchParams);
+    params.set("page", pageNumber);
+    setSearchParams(params);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleFilterPriceProduct = (e) => {
     setSortOrder(e.target.value);
+    const params = new URLSearchParams(searchParams);
+    params.set("page", 1);
+    setSearchParams(params);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleFilterProduct = (e, slug) => {
     const value = slug || "";
-    setCurrentPage(1);
 
     if (value === "all-products" || value === "") {
       setSelectCategory("");
       navigate("/products");
+      window.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
 
     setSelectCategory(value);
     navigate(`/products?category=${value}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const renderPagination = () => {

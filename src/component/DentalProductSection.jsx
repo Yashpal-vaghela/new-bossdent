@@ -21,14 +21,14 @@ export const DentalProductSection = ({ getCartData, token, dispatch, categories,
   const validateUser = useValidateUser();
   const navigate = useNavigate();
   const handleCategoryClick = async (e, slug) => {
-    console.log("slug", slug, slug);
+    // console.log("slug", slug, slug);
     const controller = new AbortController();
     setSelectedCategory(slug);
     let apiUrl = "";
     if (slug) {
-      apiUrl += `${BASE_URL}/category/${slug}`;
+      apiUrl += `${BASE_URL}/new-category/${slug}?page=1&per_page=12`;
     } else {
-      apiUrl += `${BASE_URL}/products`;
+      apiUrl += `${BASE_URL}/productspg?page=1&per_page=12`;
     }
     setApiLoading(true);
     await axios
@@ -48,7 +48,7 @@ export const DentalProductSection = ({ getCartData, token, dispatch, categories,
         }
         setApiLoading(false);
         setVisibleProduct(visiblePro);
-        console.log("res", res.data.data, visiblePro);
+        // console.log("res", res.data.data, visiblePro);
       })
       .catch((err) => console.log("err", err));
 

@@ -8,36 +8,42 @@ export const About = () => {
       img: "/img/about-img1.webp",
       title: "Impression Trays",
       description: "durable and precise for accurate results",
+      slug: "/products/autoclavable-impressions-tray-rim-lock",
     },
     {
       id: 2,
       img: "/img/about-img21.webp",
       title: "Face Masks",
       description: "a reliable barrier for hygiene and safety",
+      slug: "/products/3-ply-mask-meltblown",
     },
     {
       id: 3,
       img: "/img/about-img3.webp",
       title: "Gloves",
       description: "comfortable protection for safe dental procedures",
+      slug: "/products/latex-gloves-powdered",
     },
     {
       id: 4,
       img: "/img/about-img4.webp",
       title: "Patient Bibs",
       description: "disposable protection for clean, stress-free treatment",
+      slug: "/products/patient-bibs",
     },
     {
       id: 5,
       img: "/img/about-img5.webp",
       title: "Surgeon Caps",
       description: "lightweight, hygienic coverage for professionals",
+      slug: "/products/bouffant-cap",
     },
     {
       id: 6,
       img: "/img/about-img6.webp",
       title: "Drapes & Sleeves",
       description: "disposable solutions for a sterile environment",
+      slug: "/products/premium-patient-drape-washable-cotton-pvc",
     },
   ];
   useEffect(() => {
@@ -132,15 +138,18 @@ export const About = () => {
             {DentalProduct?.map((i, index) => {
               return (
                 <div className="col-lg-4 col-6" key={index}>
-                  <div className="card">
-                    <h3 className="mb-1 mb-md-0">{i?.title}</h3>
-                    <img
-                      src={i?.img}
-                      className="img-fluid"
-                      alt="dental-supply-product-img"
-                    />
-                    <p>{i?.description}</p>
-                  </div>
+                  {/* Card ko Link se wrap kiya gaya hai */}
+                  <Link to={i.slug} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <div className="card h-100" style={{ cursor: "pointer" }}>
+                      <h3 className="mb-1 mb-md-0">{i?.title}</h3>
+                      <img
+                        src={i?.img}
+                        className="img-fluid"
+                        alt="dental-supply-product-img"
+                      />
+                      <p>{i?.description}</p>
+                    </div>
+                  </Link>
                 </div>
               );
             })}

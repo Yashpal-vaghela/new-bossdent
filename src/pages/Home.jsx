@@ -14,6 +14,7 @@ import CategorySection from "../component/CategorySection";
 import { DentalProductSection } from "../component/DentalProductSection";
 import Loader2 from "../component/Loader2";
 
+
 const Home = () => {
   const token = useSelector((state) => state.auth.token);
   const { categories, loading } = useSelector((state) => state.category);
@@ -28,33 +29,34 @@ const Home = () => {
     try {
       let apiUrl = "";
       if (categorySlug) {
-        apiUrl += `${BASE_URL}/category/${categorySlug}`;
+        apiUrl += `${BASE_URL}/new-category/${categorySlug}?page=1&per_page=12`;
       } else {
-        apiUrl += `${BASE_URL}/products`;
+        apiUrl += `${BASE_URL}/productspg?page=1&per_page=12`;
       }
-      const response = await axios.get(apiUrl, );
+      const response = await axios.get(apiUrl,);
       setDentalProducts(response.data?.data || []);
       setLoadingProducts(false);
     } catch (error) {
       console.error("Error fetching products:", error);
+    } finally {
+      setLoadingProducts(false);
     }
   };
+
   useEffect(() => {
-    if(hasFetched.current) return;
+    if (hasFetched.current) return;
     hasFetched.current = true;
     window.scrollTo({ top: 0, behavior: "smooth" });
     fetchProducts();
-    // const controller = new AbortController();
-    // window.scrollTo({ top: 0, behavior: "smooth" });
-    // fetchProducts(controller);
-    // return () => controller.abort();
+
   }, []);
+
   const visibleProducts = Array.isArray(dentalProducts)
     ? dentalProducts.length > 8
       ? dentalProducts.slice(0, 8)
       : dentalProducts
     : [];
-    
+
   const OtherBanner = [
     {
       id: 1,
@@ -102,15 +104,6 @@ const Home = () => {
       slug: "/products?category=polishing-kits",
     },
   ];
-
-  // const SocialData = [
-  //   { id: 1, img: "/img/instagram-post11.jpg" },
-  //   { id: 2, img: "/img/instagram-post9.jpg" },
-  //   { id: 3, img: "/img/instagram-post12.jpg" },
-  //   { id: 4, img: "/img/instagram-post10.jpg" },
-  //   { id: 5, img: "/img/instagram-post8.jpg" },
-  //   { id: 6, img: "/img/instagram-post13.jpg" },
-  // ];
 
   return (
     <div className="home-main overflow-hidden pt-0 pt-sm-0">
@@ -181,29 +174,6 @@ const Home = () => {
             getCartData={getCartData}
             dispatch={dispatch}
           />
-          {/* <section className="follow-section">
-            <div className="container">
-              <h2 className="text-white fs-2 text-center section-title">
-                Follow us on Instagram
-              </h2>
-              <div className="row">
-                {SocialData?.map((item, index) => {
-                  return (
-                    <div className="col-lg-2 col-md-3 col-4" key={index} >
-                      <Link to="#" >
-                        <img
-                          src={item?.img}
-                          className="img-fluid h-100"
-                          alt="instagram-post"
-                          style={{border:"1px solid #fff"}}
-                        ></img>
-                      </Link>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </section> */}
         </>
       )}
     </div>

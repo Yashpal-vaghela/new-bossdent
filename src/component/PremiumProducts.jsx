@@ -18,7 +18,7 @@ import Loader2 from "./Loader2";
 const PremiumProducts = ({ token, getCartData, dispatch }) => {
   const [premiumProducts, setPremiumProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [apiloading,setApiLoading] = useState(false);
+  const [apiloading, setApiLoading] = useState(false);
   const [showVariationModal, setShowVariationModal] = useState(false);
   const [selectedProductForModal, setSelectedProductForModal] = useState(null);
   const wishlistData = useSelector((state) => state?.wishlist?.wishlist);
@@ -28,7 +28,7 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
 
   const fetchPremiumProducts = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/category/premium-product`);
+      const response = await axios.get(`${BASE_URL}/new-category/premium-product?page=1&per_page=12`);
       const product = response.data?.data || [];
       setPremiumProducts(product);
     } catch (error) {
@@ -66,19 +66,17 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
         } else {
           if (selectedAttributes === null && selectedAttributes !== undefined) {
             toast.error(
-              `Please select ${
-                product?.variations?.map(
-                  (i, index) => Object.keys(i?.attributes)[index]
-                )[0]
+              `Please select ${product?.variations?.map(
+                (i, index) => Object.keys(i?.attributes)[index]
+              )[0]
               }`
             );
           } else {
             if (selectedAttributes === undefined) {
               toast.error(
-                `please select ${
-                  product?.variations?.map(
-                    (i, index) => Object.keys(i?.attributes)[index]
-                  )[1]
+                `please select ${product?.variations?.map(
+                  (i, index) => Object.keys(i?.attributes)[index]
+                )[1]
                 }`
               );
             } else {
@@ -124,19 +122,17 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
         } else {
           if (selectedAttributes === null && selectedAttributes !== undefined) {
             toast.error(
-              `please select ${
-                product?.variations?.map(
-                  (i, index) => Object.keys(i?.attributes)[index]
-                )[0]
+              `please select ${product?.variations?.map(
+                (i, index) => Object.keys(i?.attributes)[index]
+              )[0]
               }`
             );
           } else {
             if (selectedAttributes === undefined) {
               toast.error(
-                `please select ${
-                  product?.variations?.map(
-                    (i, index) => Object.keys(i?.attributes)[index]
-                  )[1]
+                `please select ${product?.variations?.map(
+                  (i, index) => Object.keys(i?.attributes)[index]
+                )[1]
                 }`
               );
             } else {
@@ -244,7 +240,7 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
     }
   };
   useEffect(() => {
-    if(hasFetched.current) return;
+    if (hasFetched.current) return;
     hasFetched.current = true;
     fetchPremiumProducts();
     // const controller = new AbortController();
@@ -269,8 +265,8 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
           </h2>
           <button className="btn btn-default txt-grident btn-view">
             <Link to={`/products?category=premium-product`}>
-               view All
-            <i className="fa-solid fa-arrow-right" />
+              view All
+              <i className="fa-solid fa-arrow-right" />
             </Link>
           </button>
         </div>
@@ -294,7 +290,7 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
                       ((premiumProducts[6]?.regular_price -
                         premiumProducts[6]?.sale_price) /
                         premiumProducts[6]?.regular_price) *
-                        100
+                      100
                     )}
                     %
                   </span>
@@ -371,7 +367,7 @@ const PremiumProducts = ({ token, getCartData, dispatch }) => {
                     {Math.round(
                       ((item?.regular_price - item?.sale_price) /
                         item?.regular_price) *
-                        100
+                      100
                     )}
                     %
                   </span>
